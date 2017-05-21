@@ -1,0 +1,111 @@
+
+html, body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+}
+
+html {
+    font-family: verdana, tahoma, arial, sans-serif;
+    color: #000000;
+    background: #E0E0E0;
+}
+
+.mycard {
+    margin: 0.3rem;
+    border: 0.3rem solid #FFFFFF;
+    padding: 0.5rem;
+    background: #F0F0F0;
+}
+
+#desc {
+    padding: 0.25rem 0.5rem;
+}
+
+
+#game {
+    display: table;
+    width: 100%;
+    height: auto;
+}
+
+
+input, select, button {
+    box-sizing: border-box;
+    width: 100%;
+    outline: none;
+    box-shadow: none;
+    transition-duration: 0.2s;
+    font-size: 1rem;
+}
+
+input:focus, select:focus, button:focus {
+    box-shadow: 0 0 0.5rem 0.25rem rgba(0, 0, 0, 0.4);
+}
+
+input, select {
+    margin: 0.25rem 0 1rem 0;
+    padding: 0.25rem;
+    background: #FFFFFF;
+    border: 0.15rem solid #404040;
+    border-radius: 0;
+}
+
+button {
+    margin: 0.75rem 0 0 0;
+    padding: 0.75rem 1.5rem;
+    background: #404040;
+    color: white;
+    border: none;
+    border-radius: 0;
+    cursor: pointer;
+}
+
+.qhover {
+    background: crimson;
+}
+
+@media (min-width: 641px) {
+    body {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .mycard {
+        margin: 0.75rem 1rem 1rem 0.75rem;
+        border: 0.75rem solid #FFFFFF;
+        box-shadow: 0.75rem 0.75rem 0.75rem rgba(0, 0, 0, 0.25);
+    }
+
+    #ctrl {
+        flex: 1 0 16rem;
+        max-width: 24rem;
+    }
+
+    #desc {
+        flex: 1 0 14rem;
+        max-width: 36rem;
+    }
+
+    #game {
+        display: table;
+        width: 600px;
+        height: 600px;
+    }
+}
+
+/* own stuff */
+
+.divTableRow {
+    display: table-row;
+}
+.divTableCell {
+    border: 1px solid #999999;
+    display: table-cell;
+    padding: 3px 10px;
+}
+.divTableBody {
+    display: table-row-group;
+}
