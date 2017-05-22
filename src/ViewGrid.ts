@@ -5,10 +5,11 @@ class ViewGrid {
     private gridSize: number = -1;
     private table: HTMLElement = undefined;
     private grid: HTMLElement[][] = undefined;
+    public hoverset: (x: number, y: number) => void;
 
     public static reloadGlobalGrid(): void {
-        var grid = ViewGrid.instance.generate();
-        var game = document.getElementById("game");
+        const grid = ViewGrid.instance.generate();
+        const game = document.getElementById("game");
         while (game.firstChild) {
             game.removeChild(game.firstChild);
         }
@@ -23,16 +24,19 @@ class ViewGrid {
         this.table = document.createElement("div");
         this.table.classList.add("divTableBody");
 
-        for (var y = 0; y < RuleSet.GridSize; y++) {
+        for (let y = 0; y < RuleSet.GridSize; y++) {
             this.grid[y] = [];
-            var row = document.createElement("div");
+            const row = document.createElement("div");
             row.classList.add("divTableRow");
 
-            for (var x = 0; x < RuleSet.GridSize; x++) {
-                var cell = document.createElement("div");
+            for (let x = 0; x < RuleSet.GridSize; x++) {
+                const cell = document.createElement("div");
                 cell.onmouseenter = ViewGrid.cellEnter;
                 cell.onmouseleave = ViewGrid.cellExit;
                 cell.classList.add("divTableCell");
+                const anycell: any = cell;
+                anycell.x = x;
+                anycell.y = y;
                 this.grid[y][x] = cell;
                 row.appendChild(cell);
             }

@@ -8,7 +8,7 @@ class Player {
         this.AvailableForms = new Array(RuleSet.ShapeCount);
     }
     reset() : void {
-        for (var i = 0; i < RuleSet.ShapeCount; i++) {
+        for (let i = 0; i < RuleSet.ShapeCount; i++) {
             this.AvailableForms[i] = true;
         }
     }

@@ -9,7 +9,7 @@ window.onload = () => {
 };
 
 function newGame(this: HTMLElement, ev: Event): void {
-    var sizeSelector
+    const sizeSelector
         = document.getElementById("newGame_size") as HTMLInputElement;
     RuleSet.GridSize = parseInt(sizeSelector.value);
     ViewGrid.reloadGlobalGrid();

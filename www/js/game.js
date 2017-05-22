@@ -182,6 +182,9 @@ var ViewGrid = (function () {
                 cell.onmouseenter = ViewGrid.cellEnter;
                 cell.onmouseleave = ViewGrid.cellExit;
                 cell.classList.add("divTableCell");
+                var anycell = cell;
+                anycell.x = x;
+                anycell.y = y;
                 this.grid[y][x] = cell;
                 row.appendChild(cell);
             }

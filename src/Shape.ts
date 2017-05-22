@@ -17,8 +17,8 @@ class Shape {
     public static readonly AllShapes: Shape[] = new Array(RuleSet.ShapeCount);
 
     public static initialize() : void {
-        for (var i = 0; i < RuleSet.ShapeCount; i++) {
-            var shape = Shape[ShapeType[i]]
+        for (let i = 0; i < RuleSet.ShapeCount; i++) {
+            const shape = Shape[ShapeType[i]];
             this.AllShapes[shape.Type] = shape;
         }
     }
