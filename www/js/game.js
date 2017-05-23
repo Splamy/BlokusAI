@@ -131,12 +131,26 @@ Util.keys = { 37: 1, 38: 1, 39: 1, 40: 1 };
 window.onload = function () {
     Shape.initialize();
     ViewGrid.reloadGlobalGrid();
+    ViewGrid.instance.hoverset = hoverSimple;
     console.log(Shape.AllShapes);
 };
 function newGame(ev) {
     var sizeSelector = document.getElementById("newGame_size");
     RuleSet.GridSize = parseInt(sizeSelector.value);
     ViewGrid.reloadGlobalGrid();
+}
+function hoverSimple(pos) {
+    var applyPos = [];
+    var shape = Shape.W.Form;
+    for (var y = 0; y < shape.length; y++) {
+        var row = shape[y];
+        for (var x = 0; x < row.length; x++) {
+            if (row[x]) {
+                applyPos.push(new Pos(pos.x + x, pos.y + y));
+            }
+        }
+    }
+    return applyPos;
 }
 /// <reference path="ShapeType.ts"/>
 /// <reference path="RuleSet.ts"/>
@@ -153,11 +167,20 @@ var Player = (function () {
 }());
 ;
 /// <reference path="RuleSet.ts"/>
+var Pos = (function () {
+    function Pos(x, y) {
+        this.x = x;
+        this.y = y;
+    }
+    return Pos;
+}());
 var ViewGrid = (function () {
     function ViewGrid() {
         this.gridSize = -1;
-        this.table = undefined;
-        this.grid = undefined;
+        this.table = null;
+        this.grid = null;
+        this.hoverPreview = null;
+        this.hoverset = null;
     }
     ViewGrid.reloadGlobalGrid = function () {
         var grid = ViewGrid.instance.generate();
@@ -168,7 +191,7 @@ var ViewGrid = (function () {
         game.appendChild(grid);
     };
     ViewGrid.prototype.generate = function () {
-        if (this.table !== undefined && RuleSet.GridSize === this.gridSize)
+        if (this.table !== null && RuleSet.GridSize === this.gridSize)
             return this.table;
         this.grid = [];
         this.table = document.createElement("div");
@@ -183,8 +206,8 @@ var ViewGrid = (function () {
                 cell.onmouseleave = ViewGrid.cellExit;
                 cell.classList.add("divTableCell");
                 var anycell = cell;
-                anycell.x = x;
-                anycell.y = y;
+                anycell.pos = new Pos(x, y);
+                anycell.gridOwner = this;
                 this.grid[y][x] = cell;
                 row.appendChild(cell);
             }
@@ -192,11 +215,44 @@ var ViewGrid = (function () {
         }
         return this.table;
     };
+    ViewGrid.prototype.clearHover = function () {
+        if (this.hoverPreview !== null) {
+            for (var i = 0; i < this.hoverPreview.length; i++) {
+                var element = this.hoverPreview[i];
+                this.grid[element.y][element.x].classList.remove("qhover");
+            }
+            this.hoverPreview = null;
+        }
+    };
+    ViewGrid.prototype.setHover = function (newHover) {
+        if (this.hoverPreview === null) {
+            this.hoverPreview = [];
+        }
+        for (var i = 0; i < newHover.length; i++) {
+            var pos = newHover[i];
+            if (pos.x < 0 || pos.x >= RuleSet.GridSize
+                || pos.y < 0 || pos.y >= RuleSet.GridSize
+                || this.grid[pos.y][pos.x].classList.contains("qhover"))
+                continue;
+            this.grid[pos.y][pos.x].classList.add("qhover");
+            this.hoverPreview.push(pos);
+        }
+    };
     ViewGrid.cellEnter = function (ev) {
-        this.classList.add("qhover");
+        var cell = this;
+        if (cell === undefined || cell.gridOwner.hoverset === null)
+            return;
+        cell.gridOwner.clearHover();
+        var newPrev = cell.gridOwner.hoverset(cell.pos);
+        if (newGame !== null) {
+            cell.gridOwner.setHover(newPrev);
+        }
     };
     ViewGrid.cellExit = function (ev) {
-        this.classList.remove("qhover");
+        var cell = this;
+        if (cell === undefined || cell.gridOwner.hoverset === null)
+            return;
+        cell.gridOwner.clearHover();
     };
     ViewGrid.prototype.display = function (gamestate) {
     };
