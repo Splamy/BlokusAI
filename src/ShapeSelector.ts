@@ -5,6 +5,11 @@ interface IShapeSelector {
 class ShapeSelector {
     private selectorBox: HTMLElement;
     private shapes: HTMLElement[];
+    private player: PlayerId;
+
+    constructor(player: PlayerId) {
+        this.player = player;
+    }
 
     public generate(): HTMLElement {
         this.shapes = [];
@@ -15,7 +20,7 @@ class ShapeSelector {
             const shape = Shape.AllShapes[i];
             const shapeGrid = new ViewGrid();
             const shapeGridDiv = shapeGrid.generate(shape.Form[0].length, shape.Form.length);
-            shapeGrid.setHover(Shape.AllShapes[i].at(Pos.Zero));
+            shapeGrid.setHover(Shape.at(Pos.Zero, Shape.AllShapes[i].Form), this.player);
             const anyShapeGridDiv: IShapeSelector = shapeGridDiv as any;
             anyShapeGridDiv.shapeId = i;
             this.shapes[i] = shapeGridDiv;
@@ -31,6 +36,13 @@ class ShapeSelector {
         const shapeSelector = (<any>this) as IShapeSelector;
         if (shapeSelector === undefined)
             return;
-        previewShape = Shape.AllShapes[shapeSelector.shapeId];
+        const selectedShape = Shape.AllShapes[shapeSelector.shapeId];
+        if (previewShape === selectedShape) {
+            previewShape = null;
+            Util.enableScroll();
+            return;
+        }
+        previewShape = selectedShape;
+        Util.disableScroll();
     }
 }

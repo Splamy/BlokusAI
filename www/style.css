@@ -120,19 +120,33 @@ button {
 
 /* Functionality css tools */
 
-.qhover {
-    position: relative;
+.player1 {
     background: linear-gradient(to bottom right, #ff9090 0%,#ff4c00 50%,#664040 51%,#2c2525 100%);
 }
+.player1::before {
+    background: crimson;
+}
 
-.qhover::before {
+
+.player2 {
+    background: linear-gradient(to bottom right, #ff9090 0%,#ff4c00 50%,#664040 51%,#2c2525 100%);
+}
+.player2::before {
+    background: crimson;
+}
+
+
+.player1, .player2 {
+    position: relative;
+}
+
+.player1::before, .player2::before{
     content: " ";
     position: absolute;
     top: 15%;
     left: 15%;
     right: 15%;
     bottom: 15%;
-    background: crimson;
 }
 
 .hide {

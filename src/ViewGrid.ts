@@ -1,37 +1,26 @@
 /// <reference path="RuleSet.ts"/>
-
-class Pos {
-    public readonly x: number;
-    public readonly y: number;
-
-    public static readonly Zero: Pos = new Pos(0, 0);
-
-    constructor(x: number, y: number) {
-        this.x = x; this.y = y;
-    }
-}
+/// <reference path="Pos.ts"/>
 
 interface IGridCell {
     pos: Pos;
     gridOwner: ViewGrid;
 }
 
-class ViewGrid {
-    public static instance: ViewGrid = new ViewGrid();
+interface IView {
+    display(gamestate: GameState): void;
+}
+
+class GameGrid /*implements IView*/ {
+    // TODO
+}
+
+class ViewGrid implements IView {
     private gridSize: Pos = Pos.Zero;
+    private gamestate: GameState = null;
     private table: HTMLElement = null;
     private grid: HTMLElement[][] = null;
     private hoverPreview: Pos[] = null;
-    public hoverset: ((pos: Pos) => Pos[]) = null;
-
-    public static reloadGlobalGrid(): void {
-        const grid = ViewGrid.instance.generate(RuleSet.GridSize);
-        const game = document.getElementById("game");
-        while (game.firstChild) {
-            game.removeChild(game.firstChild);
-        }
-        game.appendChild(grid);
-    }
+    public hoverset: ((this: ViewGrid, pos: Pos) => void) = null;
 
     public generate(width: number, height: number = width): HTMLElement {
         if (this.table !== null
@@ -52,6 +41,8 @@ class ViewGrid {
                 const cell = document.createElement("div");
                 cell.onmouseenter = ViewGrid.cellEnter;
                 cell.onmouseleave = ViewGrid.cellExit;
+                cell.onmousewheel = ViewGrid.wheelRotate;
+                cell.oncontextmenu = ViewGrid.rightClick;
                 cell.classList.add("divTableCell");
                 const anycell: IGridCell = <any>cell;
                 anycell.pos = new Pos(x, y);
@@ -69,36 +60,40 @@ class ViewGrid {
         if (this.hoverPreview !== null) {
             for (let i = 0; i < this.hoverPreview.length; i++) {
                 var element = this.hoverPreview[i];
-                this.grid[element.y][element.x].classList.remove("qhover");
+                Css.clearPlayerColor(this.grid[element.y][element.x].classList);
             }
             this.hoverPreview = null;
         }
     }
 
-    public setHover(newHover: Pos[]): void {
+    public setHover(newHover: Pos[], player: PlayerId): void {
         if (this.hoverPreview === null) {
             this.hoverPreview = [];
         }
         for (let i = 0; i < newHover.length; i++) {
             var pos = newHover[i];
             if (pos.x < 0 || pos.x >= this.gridSize.x
-                || pos.y < 0 || pos.y >= this.gridSize.y
-                || this.grid[pos.y][pos.x].classList.contains("qhover"))
+                || pos.y < 0 || pos.y >= this.gridSize.y)
                 continue;
-            this.grid[pos.y][pos.x].classList.add("qhover");
-            this.hoverPreview.push(pos);
+            if (this.gamestate === null ||
+                this.gamestate.gameGrid[pos.y][pos.x] === PlayerId.none) {
+                this.grid[pos.y][pos.x].classList.add(Css.playerColor(player));
+                this.hoverPreview.push(pos);
+            }
         }
+    }
+
+    public display(gamestate: GameState): void {
+        this.gamestate = gamestate;
+        // TODO generate
+        // TODO refresh available shapes
     }
 
     private static cellEnter(this: HTMLElement, ev: MouseEvent): void {
         const cell: IGridCell = this as any;
-        if (cell === undefined || cell.gridOwner.hoverset === null)
+        if (cell.gridOwner === undefined || cell.gridOwner.hoverset === null)
             return;
-        cell.gridOwner.clearHover();
-        const newPrev = cell.gridOwner.hoverset(cell.pos);
-        if (newPrev !== null) {
-            cell.gridOwner.setHover(newPrev);
-        }
+        cell.gridOwner.hoverset(cell.pos);
     }
 
     private static cellExit(this: HTMLElement, ev: MouseEvent): void {
@@ -108,7 +103,87 @@ class ViewGrid {
         cell.gridOwner.clearHover();
     }
 
-    public display(gamestate: any): void {
+    private static wheelRotate(this: HTMLElement, ev: WheelEvent): void {
+        const cell: IGridCell = this as any;
+        if (cell.gridOwner === undefined || cell.gridOwner.hoverset === null)
+            return;
+        previewVariant += ev.wheelDelta > 0 ? 1 : -1;
+        cell.gridOwner.hoverset(cell.pos);
+    }
 
+    private static rightClick(this: HTMLElement, ev: PointerEvent): boolean {
+        const cell: IGridCell = this as any;
+        if (cell.gridOwner === undefined || cell.gridOwner.hoverset === null)
+            return;
+        previewShape = null;
+        cell.gridOwner.clearHover();
+        Util.enableScroll();
+        return false;
+    }
+
+    // apparently rotates clockwise
+    public static RotateGrid<T>(grid: T[][]): T[][] {
+        const ret: T[][] = [];
+        for (let x = 0; x < grid[0].length; x++) {
+            ret[x] = [];
+            for (let y = 0; y < grid.length; y++) {
+                ret[x][grid.length - y - 1] = grid[y][x];
+            }
+        }
+        return ret;
+    }
+
+    public static FlipGrid<T>(grid: T[][]): T[][] {
+        const ret: T[][] = [];
+        for (let y = 0; y < grid.length; y++) {
+            ret[y] = [];
+            for (let x = 0; x < grid[0].length; x++) {
+                ret[y][x] = grid[y][grid[0].length - x - 1];
+            }
+        }
+        return ret;
+    }
+
+    public static AreEqual<T>(grid1: T[][], grid2: T[][]): boolean {
+        if (grid1.length != grid2.length)
+            return false;
+        for (let y = 0; y < grid1.length; y++) {
+            if (grid1[y].length != grid2[y].length)
+                return false;
+            for (let x = 0; x < grid1[y].length; x++) {
+                if (grid1[y][x] !== grid2[y][x])
+                    return false;
+            }
+        }
+        return true;
+    }
+
+    public static gridAsString(grid: boolean[][]): string {
+        let result: string = "\n";
+        for (let y = 0; y < grid.length; y++) {
+            for (let x = 0; x < grid[y].length; x++) {
+                result += grid[y][x] ? "X" : "_";
+            }
+            result += "\n";
+        }
+        return result;
+    }
+
+    public static generateGrid<T>(val: T, width: number, heigth: number = width): T[][] {
+        const ret: T[][] = new Array(heigth);
+        for (let y = 0; y < heigth; y++) {
+            ret[y] = new Array(width);
+            for (let x = 0; x < width; x++)
+                ret[y][x] = val;
+        }
+        return ret;
+    }
+
+    public static cloneGrid<T>(original: T[][]): T[][] {
+        const ret: T[][] = new Array(original.length);
+        for (let y = 0; y < original.length; y++) {
+            ret[y] = original[y].slice(0);
+        }
+        return ret;
     }
 }

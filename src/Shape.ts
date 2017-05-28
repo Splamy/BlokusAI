@@ -1,5 +1,6 @@
 /// <reference path="ShapeType.ts"/>
 /// <reference path="RuleSet.ts"/>
+/// <reference path="ViewGrid.ts"/>
 
 class Shape {
     public readonly Type: ShapeType;
@@ -11,10 +12,33 @@ class Shape {
     constructor(type: ShapeType, form: boolean[][]) {
         this.Type = type;
         this.Form = form;
-        // TODO generate variants
+        this.Variants = [];
+        this.generateVariations();
     }
 
-    public at(pos: Pos, shape: boolean[][] = this.Form, grip: Pos = Pos.Zero): Pos[] {
+    private generateVariations() {
+        let curVariant = this.Form;
+        for (let i = 0; i < 2; i++) {
+            for (let j = 0; j < 4; j++) {
+                let duplicate: boolean = false;
+                for (let k = 0; k < this.Variants.length; k++) {
+                    if (ViewGrid.AreEqual(curVariant, this.Variants[k]))
+                        duplicate = true;
+                    if (duplicate)
+                        break;
+                }
+
+                if (!duplicate)
+                    this.Variants.push(curVariant)
+
+                curVariant = ViewGrid.RotateGrid(curVariant);
+            }
+            if (i == 0)
+                curVariant = ViewGrid.FlipGrid(this.Form);
+        }
+    }
+
+    public static at(pos: Pos, shape: boolean[][], grip: Pos = Pos.Zero): Pos[] {
         const shapeArr: Pos[] = [];
         for (let y = 0; y < shape.length; y++) {
             var row = shape[y];
@@ -26,7 +50,7 @@ class Shape {
         }
         return shapeArr;
     }
-    
+
     public static readonly AllShapes: Shape[] = new Array(RuleSet.ShapeCount);
 
     public static initialize(): void {
