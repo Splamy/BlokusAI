@@ -1,12 +1,18 @@
 /// <reference path="Shape.ts"/>
 /// <reference path="Util.ts"/>
 
+let previewShape: Shape = null;
+
 window.onload = () => {
     Shape.initialize();
     ViewGrid.reloadGlobalGrid();
     ViewGrid.instance.hoverset = hoverSimple;
 
-    console.log(Shape.AllShapes);
+    const selectorDiv = document.getElementById("selector1");
+    const selector = new ShapeSelector();
+    selectorDiv.appendChild(selector.generate());
+
+    //console.log(Shape.AllShapes);
 };
 
 function newGame(this: HTMLElement, ev: Event): void {
@@ -17,15 +23,8 @@ function newGame(this: HTMLElement, ev: Event): void {
 }
 
 function hoverSimple(pos: Pos): Pos[] {
+    if(previewShape === null)
+        return null;
     const applyPos: Pos[] = [];
-    const shape = Shape.W.Form;
-    for (let y = 0; y < shape.length; y++) {
-        var row = shape[y];
-        for (let x = 0; x < row.length; x++) {
-            if (row[x]) {
-                applyPos.push(new Pos(pos.x + x, pos.y + y));
-            }
-        }
-    }
-    return applyPos;
+    return previewShape.at(pos);
 }

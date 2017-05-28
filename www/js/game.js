@@ -43,6 +43,20 @@ var Shape = (function () {
             this.AllShapes[shape.Type] = shape;
         }
     };
+    Shape.prototype.at = function (pos, shape, grip) {
+        if (shape === void 0) { shape = this.Form; }
+        if (grip === void 0) { grip = Pos.Zero; }
+        var shapeArr = [];
+        for (var y = 0; y < shape.length; y++) {
+            var row = shape[y];
+            for (var x = 0; x < row.length; x++) {
+                if (row[x]) {
+                    shapeArr.push(new Pos(pos.x + x - grip.x, pos.y + y - grip.y));
+                }
+            }
+        }
+        return shapeArr;
+    };
     return Shape;
 }());
 Shape.AllShapes = new Array(RuleSet.ShapeCount);
@@ -128,11 +142,15 @@ var Util = (function () {
 Util.keys = { 37: 1, 38: 1, 39: 1, 40: 1 };
 /// <reference path="Shape.ts"/>
 /// <reference path="Util.ts"/>
+var previewShape = null;
 window.onload = function () {
     Shape.initialize();
     ViewGrid.reloadGlobalGrid();
     ViewGrid.instance.hoverset = hoverSimple;
-    console.log(Shape.AllShapes);
+    var selectorDiv = document.getElementById("selector1");
+    var selector = new ShapeSelector();
+    selectorDiv.appendChild(selector.generate());
+    //console.log(Shape.AllShapes);
 };
 function newGame(ev) {
     var sizeSelector = document.getElementById("newGame_size");
@@ -140,17 +158,10 @@ function newGame(ev) {
     ViewGrid.reloadGlobalGrid();
 }
 function hoverSimple(pos) {
+    if (previewShape === null)
+        return null;
     var applyPos = [];
-    var shape = Shape.W.Form;
-    for (var y = 0; y < shape.length; y++) {
-        var row = shape[y];
-        for (var x = 0; x < row.length; x++) {
-            if (row[x]) {
-                applyPos.push(new Pos(pos.x + x, pos.y + y));
-            }
-        }
-    }
-    return applyPos;
+    return previewShape.at(pos);
 }
 /// <reference path="ShapeType.ts"/>
 /// <reference path="RuleSet.ts"/>
@@ -166,6 +177,35 @@ var Player = (function () {
     return Player;
 }());
 ;
+var ShapeSelector = (function () {
+    function ShapeSelector() {
+    }
+    ShapeSelector.prototype.generate = function () {
+        this.shapes = [];
+        this.selectorBox = document.createElement("div");
+        this.selectorBox.classList.add("grid");
+        for (var i = 0; i < RuleSet.ShapeCount; i++) {
+            var shape = Shape.AllShapes[i];
+            var shapeGrid = new ViewGrid();
+            var shapeGridDiv = shapeGrid.generate(shape.Form[0].length, shape.Form.length);
+            shapeGrid.setHover(Shape.AllShapes[i].at(Pos.Zero));
+            var anyShapeGridDiv = shapeGridDiv;
+            anyShapeGridDiv.shapeId = i;
+            this.shapes[i] = shapeGridDiv;
+            this.selectorBox.appendChild(shapeGridDiv);
+            shapeGridDiv.onclick = ShapeSelector.ShapeClick;
+            shapeGridDiv.classList.add("gridelem");
+        }
+        return this.selectorBox;
+    };
+    ShapeSelector.ShapeClick = function (ev) {
+        var shapeSelector = this;
+        if (shapeSelector === undefined)
+            return;
+        previewShape = Shape.AllShapes[shapeSelector.shapeId];
+    };
+    return ShapeSelector;
+}());
 /// <reference path="RuleSet.ts"/>
 var Pos = (function () {
     function Pos(x, y) {
@@ -174,33 +214,37 @@ var Pos = (function () {
     }
     return Pos;
 }());
+Pos.Zero = new Pos(0, 0);
 var ViewGrid = (function () {
     function ViewGrid() {
-        this.gridSize = -1;
+        this.gridSize = Pos.Zero;
         this.table = null;
         this.grid = null;
         this.hoverPreview = null;
         this.hoverset = null;
     }
     ViewGrid.reloadGlobalGrid = function () {
-        var grid = ViewGrid.instance.generate();
+        var grid = ViewGrid.instance.generate(RuleSet.GridSize);
         var game = document.getElementById("game");
         while (game.firstChild) {
             game.removeChild(game.firstChild);
         }
         game.appendChild(grid);
     };
-    ViewGrid.prototype.generate = function () {
-        if (this.table !== null && RuleSet.GridSize === this.gridSize)
+    ViewGrid.prototype.generate = function (width, height) {
+        if (height === void 0) { height = width; }
+        if (this.table !== null
+            && width === this.gridSize.x && height === this.gridSize.y)
             return this.table;
+        this.gridSize = new Pos(width, height);
         this.grid = [];
         this.table = document.createElement("div");
         this.table.classList.add("divTableBody");
-        for (var y = 0; y < RuleSet.GridSize; y++) {
+        for (var y = 0; y < height; y++) {
             this.grid[y] = [];
             var row = document.createElement("div");
             row.classList.add("divTableRow");
-            for (var x = 0; x < RuleSet.GridSize; x++) {
+            for (var x = 0; x < width; x++) {
                 var cell = document.createElement("div");
                 cell.onmouseenter = ViewGrid.cellEnter;
                 cell.onmouseleave = ViewGrid.cellExit;
@@ -230,8 +274,8 @@ var ViewGrid = (function () {
         }
         for (var i = 0; i < newHover.length; i++) {
             var pos = newHover[i];
-            if (pos.x < 0 || pos.x >= RuleSet.GridSize
-                || pos.y < 0 || pos.y >= RuleSet.GridSize
+            if (pos.x < 0 || pos.x >= this.gridSize.x
+                || pos.y < 0 || pos.y >= this.gridSize.y
                 || this.grid[pos.y][pos.x].classList.contains("qhover"))
                 continue;
             this.grid[pos.y][pos.x].classList.add("qhover");
@@ -244,7 +288,7 @@ var ViewGrid = (function () {
             return;
         cell.gridOwner.clearHover();
         var newPrev = cell.gridOwner.hoverset(cell.pos);
-        if (newGame !== null) {
+        if (newPrev !== null) {
             cell.gridOwner.setHover(newPrev);
         }
     };

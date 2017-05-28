@@ -14,9 +14,22 @@ class Shape {
         // TODO generate variants
     }
 
+    public at(pos: Pos, shape: boolean[][] = this.Form, grip: Pos = Pos.Zero): Pos[] {
+        const shapeArr: Pos[] = [];
+        for (let y = 0; y < shape.length; y++) {
+            var row = shape[y];
+            for (let x = 0; x < row.length; x++) {
+                if (row[x]) {
+                    shapeArr.push(new Pos(pos.x + x - grip.x, pos.y + y - grip.y));
+                }
+            }
+        }
+        return shapeArr;
+    }
+    
     public static readonly AllShapes: Shape[] = new Array(RuleSet.ShapeCount);
 
-    public static initialize() : void {
+    public static initialize(): void {
         for (let i = 0; i < RuleSet.ShapeCount; i++) {
             const shape = Shape[ShapeType[i]];
             this.AllShapes[shape.Type] = shape;

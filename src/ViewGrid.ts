@@ -4,6 +4,8 @@ class Pos {
     public readonly x: number;
     public readonly y: number;
 
+    public static readonly Zero: Pos = new Pos(0, 0);
+
     constructor(x: number, y: number) {
         this.x = x; this.y = y;
     }
@@ -16,14 +18,14 @@ interface IGridCell {
 
 class ViewGrid {
     public static instance: ViewGrid = new ViewGrid();
-    private gridSize: number = -1;
+    private gridSize: Pos = Pos.Zero;
     private table: HTMLElement = null;
     private grid: HTMLElement[][] = null;
     private hoverPreview: Pos[] = null;
     public hoverset: ((pos: Pos) => Pos[]) = null;
 
     public static reloadGlobalGrid(): void {
-        const grid = ViewGrid.instance.generate();
+        const grid = ViewGrid.instance.generate(RuleSet.GridSize);
         const game = document.getElementById("game");
         while (game.firstChild) {
             game.removeChild(game.firstChild);
@@ -31,20 +33,22 @@ class ViewGrid {
         game.appendChild(grid);
     }
 
-    public generate(): HTMLElement {
-        if (this.table !== null && RuleSet.GridSize === this.gridSize)
+    public generate(width: number, height: number = width): HTMLElement {
+        if (this.table !== null
+            && width === this.gridSize.x && height === this.gridSize.y)
             return this.table;
 
+        this.gridSize = new Pos(width, height);
         this.grid = [];
         this.table = document.createElement("div");
         this.table.classList.add("divTableBody");
 
-        for (let y = 0; y < RuleSet.GridSize; y++) {
+        for (let y = 0; y < height; y++) {
             this.grid[y] = [];
             const row = document.createElement("div");
             row.classList.add("divTableRow");
 
-            for (let x = 0; x < RuleSet.GridSize; x++) {
+            for (let x = 0; x < width; x++) {
                 const cell = document.createElement("div");
                 cell.onmouseenter = ViewGrid.cellEnter;
                 cell.onmouseleave = ViewGrid.cellExit;
@@ -61,7 +65,7 @@ class ViewGrid {
         return this.table;
     }
 
-    private clearHover(): void {
+    public clearHover(): void {
         if (this.hoverPreview !== null) {
             for (let i = 0; i < this.hoverPreview.length; i++) {
                 var element = this.hoverPreview[i];
@@ -71,14 +75,14 @@ class ViewGrid {
         }
     }
 
-    private setHover(newHover: Pos[]): void {
+    public setHover(newHover: Pos[]): void {
         if (this.hoverPreview === null) {
             this.hoverPreview = [];
         }
         for (let i = 0; i < newHover.length; i++) {
             var pos = newHover[i];
-            if (pos.x < 0 || pos.x >= RuleSet.GridSize
-                || pos.y < 0 || pos.y >= RuleSet.GridSize
+            if (pos.x < 0 || pos.x >= this.gridSize.x
+                || pos.y < 0 || pos.y >= this.gridSize.y
                 || this.grid[pos.y][pos.x].classList.contains("qhover"))
                 continue;
             this.grid[pos.y][pos.x].classList.add("qhover");
@@ -87,18 +91,18 @@ class ViewGrid {
     }
 
     private static cellEnter(this: HTMLElement, ev: MouseEvent): void {
-        const cell = (<any>this) as IGridCell;
+        const cell: IGridCell = this as any;
         if (cell === undefined || cell.gridOwner.hoverset === null)
             return;
         cell.gridOwner.clearHover();
         const newPrev = cell.gridOwner.hoverset(cell.pos);
-        if (newGame !== null) {
+        if (newPrev !== null) {
             cell.gridOwner.setHover(newPrev);
         }
     }
 
     private static cellExit(this: HTMLElement, ev: MouseEvent): void {
-        const cell = (<any>this) as IGridCell;
+        const cell: IGridCell = this as any;
         if (cell === undefined || cell.gridOwner.hoverset === null)
             return;
         cell.gridOwner.clearHover();

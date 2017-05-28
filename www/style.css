@@ -61,10 +61,6 @@ button {
     cursor: pointer;
 }
 
-.qhover {
-    background: crimson;
-}
-
 @media (min-width: 641px) {
     body {
         display: flex;
@@ -104,8 +100,41 @@ button {
 .divTableCell {
     border: 1px solid #999999;
     display: table-cell;
-    padding: 3px 10px;
+    padding: 10px 10px;
 }
 .divTableBody {
     display: table-row-group;
+}
+
+/* Moar style */
+
+.grid {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+}
+
+.gridelem {
+    padding: 3px;
+}
+
+/* Functionality css tools */
+
+.qhover {
+    position: relative;
+    background: linear-gradient(to bottom right, #ff9090 0%,#ff4c00 50%,#664040 51%,#2c2525 100%);
+}
+
+.qhover::before {
+    content: " ";
+    position: absolute;
+    top: 15%;
+    left: 15%;
+    right: 15%;
+    bottom: 15%;
+    background: crimson;
+}
+
+.hide {
+    display: none;
 }
