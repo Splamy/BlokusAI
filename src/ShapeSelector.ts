@@ -7,7 +7,7 @@ class ShapeSelector {
     private selectorBox: HTMLElement;
     private shapes: HTMLElement[];
     private player: PlayerId;
-    public shapeSelected: (shape: Shape) => void = null;
+    public readonly shapeSelected = new Ev<(shape: Shape) => void>();
 
     constructor(player: PlayerId) {
         this.player = player;
@@ -40,9 +40,9 @@ class ShapeSelector {
         if (shapeSelector === undefined)
             return;
         const cb = shapeSelector.selector.shapeSelected;
-        if (cb !== null) {
+        if (cb.isRegistered()) {
             const selectedShape = Shape.AllShapes[shapeSelector.shapeId];
-            cb(selectedShape);
+            cb.invoke(selectedShape);
         }
         Util.disableScroll();
     }

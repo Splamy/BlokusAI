@@ -8,7 +8,7 @@ class Css {
 
     public static clearPlayerColor(classList: DOMTokenList): void {
         classList.remove(Css.playerColor(PlayerId.p1));
-        classList.remove(Css.playerColor(PlayerId.p1));
+        classList.remove(Css.playerColor(PlayerId.p2));
     }
 
     public static defaultScheme: [number, number][] =

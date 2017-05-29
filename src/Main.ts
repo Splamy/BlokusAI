@@ -2,46 +2,54 @@
 /// <reference path="Util.ts"/>
 /// <reference path="PlayerId.ts"/>
 
-let gameState: GameState = null;
 let viewGrid: ViewGrid = null;
-let gameGrid: GameGrid = null;
 let players: [IPlayer, IPlayer] = [null, null];
+let p1Selector: ShapeSelector = null;
 
 window.onload = () => {
+    // generate color sheme for player 1 and 2
     Css.GenerateCustomStyle(0, 240);
+    // precalculate data for all shapes
     Shape.initialize();
+    // create view grid to display the game
     viewGrid = new ViewGrid();
 
     const selectorDiv = document.getElementById("selector1");
-    const selector = new ShapeSelector(PlayerId.p1);
-    selectorDiv.appendChild(selector.generate());
-
-    gameGrid = new GameGrid(viewGrid, selector);
+    p1Selector = new ShapeSelector(PlayerId.p1);
+    selectorDiv.appendChild(p1Selector.generate());
 
     newGameFunc();
 };
 
 function newGame(this: HTMLElement, ev: Event): void { newGameFunc(); }
 
+function placeCallback(pos: Pos, shape: Shape, variant: number): void {
+    const state = viewGrid.currentState();
+    const posArr = Shape.at(pos, shape.Variants[variant]);
+    const newState = state.place(posArr, shape.Type);
+    viewGrid.display(newState);
+}
+
 function newGameFunc(): void {
     const sizeSelector
         = document.getElementById("newGame_size") as HTMLInputElement;
     RuleSet.GridSize = parseInt(sizeSelector.value);
 
-    gameState = GameState.start();
+    const gameState = GameState.start();
     reloadGlobalGrid();
     viewGrid.display(gameState);
 
     for (let i = 0; i < 2; i++) {
         const brain = document.getElementById("newGame_player" + i) as HTMLInputElement;
-        players[i] = selectionToClass(brain.value);
+        players[i] = selectionToClass(brain.value, p1Selector);
+        players[i].placeCallback.register(null, placeCallback);
     }
 }
 
-function selectionToClass(selection: string): IPlayer {
+function selectionToClass(selection: string, selector?: ShapeSelector): IPlayer {
     switch (selection) {
-        case "0": return new Human(viewGrid, gameGrid);
-        //case 1: return new RandomAI(viewGrid, viewGrid);
+        case "0": return new Human(viewGrid, selector);
+        case "1": return new RandomAi();
         //case 2: return new EasyAI(viewGrid, viewGrid);
     }
 }

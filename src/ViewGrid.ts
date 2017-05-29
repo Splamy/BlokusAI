@@ -7,24 +7,24 @@ interface IGridCell {
 }
 
 interface IView {
-    display(gamestate: GameState): void;
+    display(gameState: GameState): void;
     currentState(): GameState;
 }
 
 interface IAction {
-    placeCallback: ((pos: Pos, shape: Shape, variant: number) => void);
+    placeCallback: Ev<(pos: Pos, shape: Shape, variant: number) => void>;
 }
 
 class ViewGrid implements IView {
     private gridSize: Pos = Pos.Zero;
-    private gamestate: GameState = null;
+    private gameState: GameState = null;
     private table: HTMLElement = null;
     private grid: HTMLElement[][] = null;
     private hoverPreview: Pos[] = null;
-    public cbHover: (this: ViewGrid, pos: Pos) => void = null;
-    public cbWheel: (this: ViewGrid, varDiff: number) => void = null;
-    public cbClear: (this: ViewGrid) => void = null;
-    public cbClick: (this: ViewGrid, pos: Pos) => void = null;
+    public readonly cbHover = new Ev<(grid: ViewGrid, pos: Pos) => void>();
+    public readonly cbWheel = new Ev<(grid: ViewGrid, varDiff: number) => void>();
+    public readonly cbClear = new Ev<(grid: ViewGrid) => void>();
+    public readonly cbClick = new Ev<(grid: ViewGrid, pos: Pos) => void>();
 
     public generate(width: number, height: number = width): HTMLElement {
         if (this.table !== null
@@ -81,60 +81,61 @@ class ViewGrid implements IView {
             if (pos.x < 0 || pos.x >= this.gridSize.x
                 || pos.y < 0 || pos.y >= this.gridSize.y)
                 continue;
-            if (this.gamestate === null ||
-                this.gamestate.gameGrid[pos.y][pos.x] === PlayerId.none) {
+            if (this.gameState === null ||
+                this.gameState.gameGrid[pos.y][pos.x] === PlayerId.none) {
                 this.grid[pos.y][pos.x].classList.add(Css.playerColor(player));
                 this.hoverPreview.push(pos);
             }
         }
     }
 
-    public display(gamestate: GameState): void {
+    public display(gameState: GameState): void {
         this.clearHover();
-        this.gamestate = gamestate;
+        this.gameState = gameState;
 
         for (let y = 0; y < this.gridSize.y; y++) {
             for (let x = 0; x < this.gridSize.x; x++) {
-                this.grid[y][x].classList.add(Css.playerColor(this.gamestate.gameGrid[y][x]));
+                this.grid[y][x].classList.add(Css.playerColor(this.gameState.gameGrid[y][x]));
             }
         }
     }
 
-    public currentState(): GameState { return this.gamestate; }
+    public currentState(): GameState { return this.gameState; }
 
     private static cellEnter(this: HTMLElement, ev: MouseEvent): void {
         const cell: IGridCell = this as any;
-        if (cell.gridOwner === undefined || cell.gridOwner.cbHover === null)
+        if (cell.gridOwner === undefined)
             return;
-        cell.gridOwner.cbHover(cell.pos);
+        cell.gridOwner.cbHover.invoke(cell.gridOwner, cell.pos);
     }
 
     private static cellExit(this: HTMLElement, ev: MouseEvent): void {
         const cell: IGridCell = this as any;
-        if (cell === undefined || cell.gridOwner.cbHover === null)
+        if (cell.gridOwner === undefined || !cell.gridOwner.cbHover.isRegistered())
             return;
+        //cell.gridOwner.cbClear.invoke(cell.gridOwner);
         cell.gridOwner.clearHover();
     }
 
     private static wheelRotate(this: HTMLElement, ev: WheelEvent): void {
         const cell: IGridCell = this as any;
-        if (cell.gridOwner === undefined || cell.gridOwner.cbWheel === null)
+        if (cell.gridOwner === undefined)
             return;
-        cell.gridOwner.cbWheel(ev.wheelDelta > 0 ? 1 : -1);
+        cell.gridOwner.cbWheel.invoke(cell.gridOwner, ev.wheelDelta > 0 ? 1 : -1);
     }
 
     private static leftClick(this: HTMLElement, ev: MouseEvent): void {
         const cell: IGridCell = this as any;
-        if (cell === undefined || cell.gridOwner.cbClick === null)
+        if (cell === undefined)
             return;
-        cell.gridOwner.cbClick(cell.pos);
+        cell.gridOwner.cbClick.invoke(cell.gridOwner, cell.pos);
     }
 
     private static rightClick(this: HTMLElement, ev: PointerEvent): boolean {
         const cell: IGridCell = this as any;
-        if (cell.gridOwner === undefined || cell.gridOwner.cbClear === null)
+        if (cell.gridOwner === undefined)
             return;
-        cell.gridOwner.cbClear();
+        cell.gridOwner.cbClear.invoke(cell.gridOwner);
         return false;
     }
 
