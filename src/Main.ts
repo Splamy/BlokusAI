@@ -2,19 +2,21 @@
 /// <reference path="Util.ts"/>
 /// <reference path="PlayerId.ts"/>
 
-let previewVariant: number = 0;
-let previewShape: Shape = null;
 let gameState: GameState = null;
 let viewGrid: ViewGrid = null;
+let gameGrid: GameGrid = null;
+let players: [IPlayer, IPlayer] = [null, null];
 
 window.onload = () => {
+    Css.GenerateCustomStyle(0, 240);
     Shape.initialize();
     viewGrid = new ViewGrid();
-    viewGrid.hoverset = hoverSimple;
 
     const selectorDiv = document.getElementById("selector1");
     const selector = new ShapeSelector(PlayerId.p1);
     selectorDiv.appendChild(selector.generate());
+
+    gameGrid = new GameGrid(viewGrid, selector);
 
     newGameFunc();
 };
@@ -29,6 +31,19 @@ function newGameFunc(): void {
     gameState = GameState.start();
     reloadGlobalGrid();
     viewGrid.display(gameState);
+
+    for (let i = 0; i < 2; i++) {
+        const brain = document.getElementById("newGame_player" + i) as HTMLInputElement;
+        players[i] = selectionToClass(brain.value);
+    }
+}
+
+function selectionToClass(selection: string): IPlayer {
+    switch (selection) {
+        case "0": return new Human(viewGrid, gameGrid);
+        //case 1: return new RandomAI(viewGrid, viewGrid);
+        //case 2: return new EasyAI(viewGrid, viewGrid);
+    }
 }
 
 function reloadGlobalGrid(): void {
@@ -38,16 +53,4 @@ function reloadGlobalGrid(): void {
         game.removeChild(game.firstChild);
     }
     game.appendChild(grid);
-}
-
-function hoverSimple(this: ViewGrid, pos: Pos): Pos[] {
-    if (previewShape === null)
-        return null;
-    if (previewVariant < 0 || previewVariant >= previewShape.Variants.length)
-        previewVariant = ((previewVariant % previewShape.Variants.length) +
-            previewShape.Variants.length) % previewShape.Variants.length;
-
-    const newPrev = Shape.at(pos, previewShape.Variants[previewVariant]);
-    this.clearHover();
-    this.setHover(newPrev, gameState.turn);
 }

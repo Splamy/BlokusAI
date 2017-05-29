@@ -119,7 +119,8 @@ button {
 }
 
 /* Functionality css tools */
-
+/*background: linear-gradient(to bottom right, hsl(0, 100%, 78%) 0%,hsl(0, 100%, 65%) 50%,hsl(0, 23%, 33%) 51%,hsl(0, 9%, 16%) 100%);*/
+/*
 .player1 {
     background: linear-gradient(to bottom right, #ff9090 0%,#ff4c00 50%,#664040 51%,#2c2525 100%);
 }
@@ -129,11 +130,11 @@ button {
 
 
 .player2 {
-    background: linear-gradient(to bottom right, #ff9090 0%,#ff4c00 50%,#664040 51%,#2c2525 100%);
+    background: linear-gradient(to bottom right, #9beeee 0%,#5050ff 50%,#005090 51%,#2c2525 100%);
 }
 .player2::before {
-    background: crimson;
-}
+    background: blue;
+}*/
 
 
 .player1, .player2 {

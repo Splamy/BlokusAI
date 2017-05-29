@@ -2,8 +2,7 @@
 
 class GameState {
     public readonly turn: PlayerId;
-    public readonly player1: boolean[];
-    public readonly player2: boolean[];
+    public readonly players: [boolean[], boolean[]];
     public readonly gameGrid: PlayerId[][];
 
     public static start(): GameState {
@@ -11,12 +10,11 @@ class GameState {
         const shapesAvail: boolean[] = new Array(RuleSet.ShapeCount);
         for (var i = 0; i < RuleSet.ShapeCount; i++)
             shapesAvail[i] = true;
-        return new GameState(shapesAvail, shapesAvail, grid, PlayerId.p1);
+        return new GameState([shapesAvail, shapesAvail], grid, PlayerId.p1);
     }
 
-    private constructor(p1: boolean[], p2: boolean[], grid: PlayerId[][], turn: PlayerId) {
-        this.player1 = p1;
-        this.player2 = p2;
+    private constructor(p: [boolean[], boolean[]], grid: PlayerId[][], turn: PlayerId) {
+        this.players = p;
         this.gameGrid = grid;
         this.turn = turn;
     }
@@ -35,26 +33,25 @@ class GameState {
         if (!this.isFree(posArr))
             return false;
         if (player !== PlayerId.none) {
-            const checkPlayer = player === PlayerId.p1 ? this.player1 : this.player2;
             // check is user has used the shape already
-            if (!checkPlayer[shape.Type])
+            if (!this.players[player][shape.Type])
                 return false;
         }
         // TODO check if is valid rulewise
         return true;
     }
 
-    public place(posArr: Pos[], shape: ShapeType, player: PlayerId): GameState {
-        if (player === PlayerId.none) { throw new Error("invalid player"); }
+    public place(posArr: Pos[], shape: ShapeType): GameState {
+        const player = this.turn;
         const grid = ViewGrid.cloneGrid(this.gameGrid);
         for (let i = 0; i < posArr.length; i++) {
             let pos = posArr[i];
             grid[pos.y][pos.x] = player;
         }
-        let p = [null, this.player1, this.player2];
-        p[player] = p[player].slice(0);
-        p[player][shape] = false;
+        const nextShapes = this.players.slice(0) as [boolean[], boolean[]];
+        nextShapes[player] = nextShapes[player].slice(0);
+        nextShapes[player][shape] = false;
         const nextTurn = this.turn === PlayerId.p1 ? PlayerId.p2 : PlayerId.p1;
-        return new GameState(p[PlayerId.p1], p[PlayerId.p2], grid, nextTurn);
+        return new GameState(nextShapes, grid, nextTurn);
     }
 }

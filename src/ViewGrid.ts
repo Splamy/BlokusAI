@@ -8,10 +8,11 @@ interface IGridCell {
 
 interface IView {
     display(gamestate: GameState): void;
+    currentState(): GameState;
 }
 
-class GameGrid /*implements IView*/ {
-    // TODO
+interface IAction {
+    placeCallback: ((pos: Pos, shape: Shape, variant: number) => void);
 }
 
 class ViewGrid implements IView {
@@ -20,7 +21,10 @@ class ViewGrid implements IView {
     private table: HTMLElement = null;
     private grid: HTMLElement[][] = null;
     private hoverPreview: Pos[] = null;
-    public hoverset: ((this: ViewGrid, pos: Pos) => void) = null;
+    public cbHover: (this: ViewGrid, pos: Pos) => void = null;
+    public cbWheel: (this: ViewGrid, varDiff: number) => void = null;
+    public cbClear: (this: ViewGrid) => void = null;
+    public cbClick: (this: ViewGrid, pos: Pos) => void = null;
 
     public generate(width: number, height: number = width): HTMLElement {
         if (this.table !== null
@@ -30,6 +34,7 @@ class ViewGrid implements IView {
         this.gridSize = new Pos(width, height);
         this.grid = [];
         this.table = document.createElement("div");
+
         this.table.classList.add("divTableBody");
 
         for (let y = 0; y < height; y++) {
@@ -43,6 +48,7 @@ class ViewGrid implements IView {
                 cell.onmouseleave = ViewGrid.cellExit;
                 cell.onmousewheel = ViewGrid.wheelRotate;
                 cell.oncontextmenu = ViewGrid.rightClick;
+                cell.onclick = ViewGrid.leftClick;
                 cell.classList.add("divTableCell");
                 const anycell: IGridCell = <any>cell;
                 anycell.pos = new Pos(x, y);
@@ -84,40 +90,51 @@ class ViewGrid implements IView {
     }
 
     public display(gamestate: GameState): void {
+        this.clearHover();
         this.gamestate = gamestate;
-        // TODO generate
-        // TODO refresh available shapes
+
+        for (let y = 0; y < this.gridSize.y; y++) {
+            for (let x = 0; x < this.gridSize.x; x++) {
+                this.grid[y][x].classList.add(Css.playerColor(this.gamestate.gameGrid[y][x]));
+            }
+        }
     }
+
+    public currentState(): GameState { return this.gamestate; }
 
     private static cellEnter(this: HTMLElement, ev: MouseEvent): void {
         const cell: IGridCell = this as any;
-        if (cell.gridOwner === undefined || cell.gridOwner.hoverset === null)
+        if (cell.gridOwner === undefined || cell.gridOwner.cbHover === null)
             return;
-        cell.gridOwner.hoverset(cell.pos);
+        cell.gridOwner.cbHover(cell.pos);
     }
 
     private static cellExit(this: HTMLElement, ev: MouseEvent): void {
         const cell: IGridCell = this as any;
-        if (cell === undefined || cell.gridOwner.hoverset === null)
+        if (cell === undefined || cell.gridOwner.cbHover === null)
             return;
         cell.gridOwner.clearHover();
     }
 
     private static wheelRotate(this: HTMLElement, ev: WheelEvent): void {
         const cell: IGridCell = this as any;
-        if (cell.gridOwner === undefined || cell.gridOwner.hoverset === null)
+        if (cell.gridOwner === undefined || cell.gridOwner.cbWheel === null)
             return;
-        previewVariant += ev.wheelDelta > 0 ? 1 : -1;
-        cell.gridOwner.hoverset(cell.pos);
+        cell.gridOwner.cbWheel(ev.wheelDelta > 0 ? 1 : -1);
+    }
+
+    private static leftClick(this: HTMLElement, ev: MouseEvent): void {
+        const cell: IGridCell = this as any;
+        if (cell === undefined || cell.gridOwner.cbClick === null)
+            return;
+        cell.gridOwner.cbClick(cell.pos);
     }
 
     private static rightClick(this: HTMLElement, ev: PointerEvent): boolean {
         const cell: IGridCell = this as any;
-        if (cell.gridOwner === undefined || cell.gridOwner.hoverset === null)
+        if (cell.gridOwner === undefined || cell.gridOwner.cbClear === null)
             return;
-        previewShape = null;
-        cell.gridOwner.clearHover();
-        Util.enableScroll();
+        cell.gridOwner.cbClear();
         return false;
     }
 

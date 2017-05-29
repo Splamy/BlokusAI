@@ -1,4 +1,5 @@
 interface IShapeSelector {
+    selector: ShapeSelector;
     shapeId: number;
 }
 
@@ -6,6 +7,7 @@ class ShapeSelector {
     private selectorBox: HTMLElement;
     private shapes: HTMLElement[];
     private player: PlayerId;
+    public shapeSelected: (shape: Shape) => void = null;
 
     constructor(player: PlayerId) {
         this.player = player;
@@ -23,6 +25,7 @@ class ShapeSelector {
             shapeGrid.setHover(Shape.at(Pos.Zero, Shape.AllShapes[i].Form), this.player);
             const anyShapeGridDiv: IShapeSelector = shapeGridDiv as any;
             anyShapeGridDiv.shapeId = i;
+            anyShapeGridDiv.selector = this;
             this.shapes[i] = shapeGridDiv;
             this.selectorBox.appendChild(shapeGridDiv);
             shapeGridDiv.onclick = ShapeSelector.ShapeClick;
@@ -33,16 +36,14 @@ class ShapeSelector {
     }
 
     private static ShapeClick(this: HTMLElement, ev: MouseEvent): void {
-        const shapeSelector = (<any>this) as IShapeSelector;
+        const shapeSelector: IShapeSelector = this as any;
         if (shapeSelector === undefined)
             return;
-        const selectedShape = Shape.AllShapes[shapeSelector.shapeId];
-        if (previewShape === selectedShape) {
-            previewShape = null;
-            Util.enableScroll();
-            return;
+        const cb = shapeSelector.selector.shapeSelected;
+        if (cb !== null) {
+            const selectedShape = Shape.AllShapes[shapeSelector.shapeId];
+            cb(selectedShape);
         }
-        previewShape = selectedShape;
         Util.disableScroll();
     }
 }
