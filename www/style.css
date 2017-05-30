@@ -99,11 +99,15 @@ button {
 }
 .divTableCell {
     border: 1px solid #999999;
+    border-width: 1px 0px 0px 1px;
     display: table-cell;
     padding: 10px 10px;
 }
 .divTableBody {
+    border: 1px solid #999999;
+    border-width: 0px 1px 1px 0px;
     display: table-row-group;
+    /*border-collapse: collapse;*/
 }
 
 /* Moar style */
@@ -115,26 +119,8 @@ button {
 }
 
 .gridelem {
-    padding: 3px;
+    margin: 3px;
 }
-
-/* Functionality css tools */
-/*background: linear-gradient(to bottom right, hsl(0, 100%, 78%) 0%,hsl(0, 100%, 65%) 50%,hsl(0, 23%, 33%) 51%,hsl(0, 9%, 16%) 100%);*/
-/*
-.player1 {
-    background: linear-gradient(to bottom right, #ff9090 0%,#ff4c00 50%,#664040 51%,#2c2525 100%);
-}
-.player1::before {
-    background: crimson;
-}
-
-
-.player2 {
-    background: linear-gradient(to bottom right, #9beeee 0%,#5050ff 50%,#005090 51%,#2c2525 100%);
-}
-.player2::before {
-    background: blue;
-}*/
 
 .divTableCell::before {
     content: "";
