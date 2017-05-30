@@ -1,6 +1,6 @@
 /// <reference path="Shape.ts"/>
 /// <reference path="Util.ts"/>
-/// <reference path="PlayerId.ts"/>
+/// <reference path="Enums/PlayerId.ts"/>
 
 let viewGrid: ViewGrid = null;
 let players: [IPlayer, IPlayer] = [null, null];
@@ -27,7 +27,10 @@ function placeCallback(pos: Pos, shape: Shape, variant: number): void {
     const state = viewGrid.currentState();
     const posArr = Shape.at(pos, shape.Variants[variant]);
     const newState = state.place(posArr, shape.Type);
+    // update our grahical view
     viewGrid.display(newState);
+    // notify other player about turn
+    players[newState.turn].display(newState);
 }
 
 function newGameFunc(): void {
@@ -44,6 +47,8 @@ function newGameFunc(): void {
         players[i] = selectionToClass(brain.value, p1Selector);
         players[i].placeCallback.register(null, placeCallback);
     }
+
+    players[PlayerId.p1].display(gameState);
 }
 
 function selectionToClass(selection: string, selector?: ShapeSelector): IPlayer {

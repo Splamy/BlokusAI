@@ -1,4 +1,4 @@
-/// <reference path="PlayerId.ts"/>
+/// <reference path="Enums/PlayerId.ts"/>
 
 class GameState {
     public readonly turn: PlayerId;
@@ -51,7 +51,6 @@ class GameState {
         const nextShapes = this.players.slice(0) as [boolean[], boolean[]];
         nextShapes[player] = nextShapes[player].slice(0);
         nextShapes[player][shape] = false;
-        const nextTurn = this.turn === PlayerId.p1 ? PlayerId.p2 : PlayerId.p1;
-        return new GameState(nextShapes, grid, nextTurn);
+        return new GameState(nextShapes, grid, Util.otherPlayer(player));
     }
 }

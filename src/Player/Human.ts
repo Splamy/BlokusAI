@@ -1,7 +1,5 @@
-/// <reference path="ShapeType.ts"/>
-/// <reference path="RuleSet.ts"/>
-
-interface IPlayer extends IView, IAction { }
+/// <reference path="../Enums/ShapeType.ts"/>
+/// <reference path="../RuleSet.ts"/>
 
 class Human implements IPlayer {
     public readonly placeCallback = new Ev<(pos: Pos, shape: Shape, variant: number) => void>();
@@ -64,15 +62,4 @@ class Human implements IPlayer {
 
     display(gameState: GameState): void { this.view.display(gameState); }
     currentState(): GameState { return this.view.currentState(); }
-}
-
-class RandomAi implements IPlayer {
-    private gameState: GameState;
-    public readonly placeCallback = new Ev<(pos: Pos, shape: Shape, variant: number) => void>();
-
-    display(gameState: GameState): void {
-        this.gameState = gameState;
-        this.placeCallback.invoke(null, null, 0);
-    }
-    currentState(): GameState { return this.gameState; }
 }

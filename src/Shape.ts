@@ -1,4 +1,4 @@
-/// <reference path="ShapeType.ts"/>
+/// <reference path="Enums/ShapeType.ts"/>
 /// <reference path="RuleSet.ts"/>
 /// <reference path="ViewGrid.ts"/>
 

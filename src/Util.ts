@@ -1,4 +1,15 @@
 class Util {
+    public static rndInt(min: number = 0, max: number = 2147483648): number {
+        if(min > max)
+            throw new Error("min must be less then max");
+        return Math.floor(Math.random() * (max - min)) + min;
+    }
+
+    public static otherPlayer(player: PlayerId) {
+        if (player === PlayerId.none)
+            throw new Error("Cannon switch none player");
+        return player === PlayerId.p1 ? PlayerId.p2 : PlayerId.p1;
+    }
 
     // left: 37, up: 38, right: 39, down: 40,
     // spacebar: 32, pageup: 33, pagedown: 34, end: 35, home: 36
