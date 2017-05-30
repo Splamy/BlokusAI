@@ -139,6 +139,10 @@ class ViewGrid implements IView {
         return false;
     }
 
+    public static getCornerMap(grid: PlayerId[][]): any {
+        
+    }
+
     // apparently rotates clockwise
     public static RotateGrid<T>(grid: T[][]): T[][] {
         const ret: T[][] = [];

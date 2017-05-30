@@ -142,6 +142,7 @@ button {
 }
 
 .player1::before, .player2::before{
+/*.divTableCell::before {*/
     content: " ";
     position: absolute;
     top: 15%;

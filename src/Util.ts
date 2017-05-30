@@ -1,8 +1,8 @@
 class Util {
     public static rndInt(min: number = 0, max: number = 2147483648): number {
-        if(min > max)
+        if (min > max)
             throw new Error("min must be less then max");
-        return Math.floor(Math.random() * (max - min)) + min;
+        return Math.floor(Math.random() * (max - min + 1) + min);;
     }
 
     public static otherPlayer(player: PlayerId) {
