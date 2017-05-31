@@ -1,16 +1,18 @@
+type EvCall<T1, T2, T3> =
+    ((a: T1) => void) |
+    ((a: T1, b: T2) => void) |
+    ((a: T1, b: T2, c: T3) => void);
+
 /**
  * Provides a comfortable way to register and invoke callbacks.
  */
-class Ev<T1 = undefined, T2 = undefined, T3 = undefined> {
+class Ev<T1 = never, T2 = never, T3 = never> {
 
-    private cbList: Array<[object | null, Function]>;
+    private cbList: Array<[object | null, EvCall<T1, T2, T3>]>;
 
     constructor() { this.cbList = []; }
 
-    public register(thisObj: object | null, cb:
-        ((a: T1) => void) |
-        ((a: T1, b: T2) => void) |
-        ((a: T1, b: T2, c: T3) => void)): void {
+    public register(thisObj: object | null, cb: EvCall<T1, T2, T3>): void {
         this.cbList.push([thisObj, cb]);
     }
 
