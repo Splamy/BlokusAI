@@ -9,6 +9,11 @@ class GameState {
         return new GameState([shapesAvail, shapesAvail], grid, PlayerId.p1);
     }
 
+    private static isValidPlace(pos: Pos): boolean {
+        return pos.x >= 0 && pos.y >= 0
+            && pos.x < RuleSet.GridSize && pos.y < RuleSet.GridSize;
+    }
+
     public readonly turn: PlayerId;
     public readonly players: [boolean[], boolean[]];
     public readonly gameGrid: PlayerId[][];
@@ -20,8 +25,9 @@ class GameState {
     }
 
     public isFree(posArr: Pos[]): boolean {
-        for (const pos of posArr) { // TODO const ???
-            if (this.gameGrid[pos.y][pos.x] !== PlayerId.none)
+        for (const pos of posArr) {
+            if (!GameState.isValidPlace(pos)
+                || this.gameGrid[pos.y][pos.x] !== PlayerId.none)
                 return false;
         }
         return true;
@@ -44,6 +50,10 @@ class GameState {
         const player = this.turn;
         const grid = ViewGrid.cloneGrid(this.gameGrid);
         for (const pos of posArr) {
+            if (!GameState.isValidPlace(pos)) {
+                console.log("INVALID PLACED SHAPE");
+                continue;
+            }
             grid[pos.y][pos.x] = player;
         }
         const nextShapes = this.players.slice(0) as [boolean[], boolean[]];

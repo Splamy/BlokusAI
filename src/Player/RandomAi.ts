@@ -11,8 +11,8 @@ class RandomAi implements IPlayer {
         const shape = Shape.AllShapes[rnd];
         const variant = Util.rndInt(0, shape.Variants.length);
         const pos = new Pos(
-            Util.rndInt(0, RuleSet.GridSize - shape.Variants[variant][0].length),
-            Util.rndInt(0, RuleSet.GridSize - shape.Variants[variant].length));
+            Util.rndInt(0, RuleSet.GridSize - shape.Variants[variant][0].length + 1),
+            Util.rndInt(0, RuleSet.GridSize - shape.Variants[variant].length + 1));
         this.placeCallback.invoke(pos, shape, variant);
     }
     public currentState(): GameState { return this.gameState; }

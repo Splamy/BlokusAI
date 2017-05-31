@@ -174,9 +174,9 @@ class ViewGrid implements IView {
 
     public clearHover(clean: boolean = false): void {
         if (clean) {
-            for (let y = 0; y < this.gridSize.y; y++) {
-                for (let x = 0; x < this.gridSize.x; x++) {
-                    Css.clearPlayerColor(this.grid[y][x].classList);
+            for (const line of this.grid) {
+                for (const cell of line) {
+                    Css.clearPlayerColor(cell.classList);
                 }
             }
         } else if (this.hoverPreview !== null) {
@@ -204,7 +204,7 @@ class ViewGrid implements IView {
     }
 
     public display(gameState: GameState): void {
-        this.clearHover();
+        this.clearHover(true);
         this.gameState = gameState;
 
         for (let y = 0; y < this.gridSize.y; y++) {
