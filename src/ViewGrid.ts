@@ -12,135 +12,12 @@ interface IView {
 }
 
 interface IAction {
-    placeCallback: Ev<(pos: Pos, shape: Shape, variant: number) => void>;
+    placeCallback: Ev<Pos, Shape, number>;
 }
 
 class ViewGrid implements IView {
-    private gridSize: Pos = Pos.Zero;
-    private gameState: GameState = null;
-    private table: HTMLElement = null;
-    private grid: HTMLElement[][] = null;
-    private hoverPreview: Pos[] = null;
-    public readonly cbHover = new Ev<(grid: ViewGrid, pos: Pos) => void>();
-    public readonly cbWheel = new Ev<(grid: ViewGrid, varDiff: number) => void>();
-    public readonly cbClear = new Ev<(grid: ViewGrid) => void>();
-    public readonly cbClick = new Ev<(grid: ViewGrid, pos: Pos) => void>();
-
-    public generate(width: number, height: number = width): HTMLElement {
-        if (this.table !== null
-            && width === this.gridSize.x && height === this.gridSize.y)
-            return this.table;
-
-        this.gridSize = new Pos(width, height);
-        this.grid = [];
-        this.table = document.createElement("div");
-
-        this.table.classList.add("divTableBody");
-
-        for (let y = 0; y < height; y++) {
-            this.grid[y] = [];
-            const row = document.createElement("div");
-            row.classList.add("divTableRow");
-
-            for (let x = 0; x < width; x++) {
-                const cell = document.createElement("div");
-                cell.onmouseenter = ViewGrid.cellEnter;
-                cell.onmouseleave = ViewGrid.cellExit;
-                cell.onmousewheel = ViewGrid.wheelRotate;
-                cell.oncontextmenu = ViewGrid.rightClick;
-                cell.onclick = ViewGrid.leftClick;
-                cell.classList.add("divTableCell");
-                const anycell: IGridCell = <any>cell;
-                anycell.pos = new Pos(x, y);
-                anycell.gridOwner = this;
-                this.grid[y][x] = cell;
-                row.appendChild(cell);
-            }
-            this.table.appendChild(row);
-        }
-
-        return this.table;
-    }
-
-    public clearHover(): void {
-        if (this.hoverPreview !== null) {
-            for (let i = 0; i < this.hoverPreview.length; i++) {
-                var element = this.hoverPreview[i];
-                Css.clearPlayerColor(this.grid[element.y][element.x].classList);
-            }
-            this.hoverPreview = null;
-        }
-    }
-
-    public setHover(newHover: Pos[], player: PlayerId): void {
-        if (this.hoverPreview === null) {
-            this.hoverPreview = [];
-        }
-        for (let i = 0; i < newHover.length; i++) {
-            var pos = newHover[i];
-            if (pos.x < 0 || pos.x >= this.gridSize.x
-                || pos.y < 0 || pos.y >= this.gridSize.y)
-                continue;
-            if (this.gameState === null ||
-                this.gameState.gameGrid[pos.y][pos.x] === PlayerId.none) {
-                this.grid[pos.y][pos.x].classList.add(Css.playerColor(player));
-                this.hoverPreview.push(pos);
-            }
-        }
-    }
-
-    public display(gameState: GameState): void {
-        this.clearHover();
-        this.gameState = gameState;
-
-        for (let y = 0; y < this.gridSize.y; y++) {
-            for (let x = 0; x < this.gridSize.x; x++) {
-                this.grid[y][x].classList.add(Css.playerColor(this.gameState.gameGrid[y][x]));
-            }
-        }
-    }
-
-    public currentState(): GameState { return this.gameState; }
-
-    private static cellEnter(this: HTMLElement, ev: MouseEvent): void {
-        const cell: IGridCell = this as any;
-        if (cell.gridOwner === undefined)
-            return;
-        cell.gridOwner.cbHover.invoke(cell.gridOwner, cell.pos);
-    }
-
-    private static cellExit(this: HTMLElement, ev: MouseEvent): void {
-        const cell: IGridCell = this as any;
-        if (cell.gridOwner === undefined || !cell.gridOwner.cbHover.isRegistered())
-            return;
-        //cell.gridOwner.cbClear.invoke(cell.gridOwner);
-        cell.gridOwner.clearHover();
-    }
-
-    private static wheelRotate(this: HTMLElement, ev: WheelEvent): void {
-        const cell: IGridCell = this as any;
-        if (cell.gridOwner === undefined)
-            return;
-        cell.gridOwner.cbWheel.invoke(cell.gridOwner, ev.wheelDelta > 0 ? 1 : -1);
-    }
-
-    private static leftClick(this: HTMLElement, ev: MouseEvent): void {
-        const cell: IGridCell = this as any;
-        if (cell === undefined)
-            return;
-        cell.gridOwner.cbClick.invoke(cell.gridOwner, cell.pos);
-    }
-
-    private static rightClick(this: HTMLElement, ev: PointerEvent): boolean {
-        const cell: IGridCell = this as any;
-        if (cell.gridOwner === undefined)
-            return;
-        cell.gridOwner.cbClear.invoke(cell.gridOwner);
-        return false;
-    }
-
     public static getCornerMap(grid: PlayerId[][]): any {
-        
+        // TODO
     }
 
     // apparently rotates clockwise
@@ -167,10 +44,10 @@ class ViewGrid implements IView {
     }
 
     public static AreEqual<T>(grid1: T[][], grid2: T[][]): boolean {
-        if (grid1.length != grid2.length)
+        if (grid1.length !== grid2.length)
             return false;
         for (let y = 0; y < grid1.length; y++) {
-            if (grid1[y].length != grid2[y].length)
+            if (grid1[y].length !== grid2[y].length)
                 return false;
             for (let x = 0; x < grid1[y].length; x++) {
                 if (grid1[y][x] !== grid2[y][x])
@@ -182,9 +59,9 @@ class ViewGrid implements IView {
 
     public static gridAsString(grid: boolean[][]): string {
         let result: string = "\n";
-        for (let y = 0; y < grid.length; y++) {
-            for (let x = 0; x < grid[y].length; x++) {
-                result += grid[y][x] ? "X" : "_";
+        for (const line of grid) {
+            for (const cell of line) {
+                result += cell ? "X" : "_";
             }
             result += "\n";
         }
@@ -192,9 +69,9 @@ class ViewGrid implements IView {
     }
 
     public static generateGrid<T>(val: T, width: number, heigth: number = width): T[][] {
-        const ret: T[][] = new Array(heigth);
+        const ret: T[][] = new Array<T[]>(heigth);
         for (let y = 0; y < heigth; y++) {
-            ret[y] = new Array(width);
+            ret[y] = new Array<T>(width);
             for (let x = 0; x < width; x++)
                 ret[y][x] = val;
         }
@@ -208,4 +85,135 @@ class ViewGrid implements IView {
         }
         return ret;
     }
+
+    private static cellEnter(this: HTMLElement, ev: MouseEvent): void {
+        const cell: IGridCell = this as any;
+        if (cell.gridOwner === undefined)
+            return;
+        cell.gridOwner.cbHover.invoke(cell.gridOwner, cell.pos);
+    }
+
+    private static cellExit(this: HTMLElement, ev: MouseEvent): void {
+        const cell: IGridCell = this as any;
+        if (cell.gridOwner === undefined || !cell.gridOwner.cbHover.isRegistered())
+            return;
+        // cell.gridOwner.cbClear.invoke(cell.gridOwner);
+        cell.gridOwner.clearHover();
+    }
+
+    private static wheelRotate(this: HTMLElement, ev: WheelEvent): void {
+        const cell: IGridCell = this as any;
+        if (cell.gridOwner === undefined)
+            return;
+        cell.gridOwner.cbWheel.invoke(cell.gridOwner, ev.wheelDelta > 0 ? 1 : -1);
+    }
+
+    private static leftClick(this: HTMLElement, ev: MouseEvent): void {
+        const cell: IGridCell = this as any;
+        if (cell === undefined)
+            return;
+        cell.gridOwner.cbClick.invoke(cell.gridOwner, cell.pos);
+    }
+
+    private static rightClick(this: HTMLElement, ev: PointerEvent): boolean {
+        const cell: IGridCell = this as any;
+        if (cell.gridOwner === undefined)
+            return true;
+        cell.gridOwner.cbClear.invoke(cell.gridOwner);
+        return false;
+    }
+
+    public readonly cbHover = new Ev<ViewGrid, Pos>();
+    public readonly cbWheel = new Ev<ViewGrid, number>();
+    public readonly cbClear = new Ev<ViewGrid>();
+    public readonly cbClick = new Ev<ViewGrid, Pos>();
+    private gridSize: Pos = Pos.Zero;
+    private gameState: GameState | null = null;
+    private table: HTMLElement = document.createElement("div");
+    private grid: HTMLElement[][] = [];
+    private hoverPreview: Pos[] | null = null;
+
+    constructor() {
+        this.table.classList.add("divTableBody");
+        this.grid = [];
+    }
+
+    public generate(width: number, height: number = width): HTMLElement {
+        if (this.table !== null
+            && width === this.gridSize.x && height === this.gridSize.y)
+            return this.table;
+
+        this.gridSize = new Pos(width, height);
+        Util.clearChildren(this.table);
+        Util.clearArray(this.grid);
+
+        for (let y = 0; y < height; y++) {
+            this.grid[y] = [];
+            const row = document.createElement("div");
+            row.classList.add("divTableRow");
+
+            for (let x = 0; x < width; x++) {
+                const cell = document.createElement("div");
+                cell.onmouseenter = ViewGrid.cellEnter;
+                cell.onmouseleave = ViewGrid.cellExit;
+                cell.onmousewheel = ViewGrid.wheelRotate;
+                cell.oncontextmenu = ViewGrid.rightClick;
+                cell.onclick = ViewGrid.leftClick;
+                cell.classList.add("divTableCell");
+                const anycell: IGridCell = cell as any;
+                anycell.pos = new Pos(x, y);
+                anycell.gridOwner = this;
+                this.grid[y][x] = cell;
+                row.appendChild(cell);
+            }
+            this.table.appendChild(row);
+        }
+
+        return this.table;
+    }
+
+    public clearHover(clean: boolean = false): void {
+        if (clean) {
+            for (let y = 0; y < this.gridSize.y; y++) {
+                for (let x = 0; x < this.gridSize.x; x++) {
+                    Css.clearPlayerColor(this.grid[y][x].classList);
+                }
+            }
+        } else if (this.hoverPreview !== null) {
+            for (const pos of this.hoverPreview) {
+                Css.clearPlayerColor(this.grid[pos.y][pos.x].classList);
+            }
+            this.hoverPreview = null;
+        }
+    }
+
+    public setHover(newHover: Pos[], player: PlayerId): void {
+        if (this.hoverPreview === null) {
+            this.hoverPreview = [];
+        }
+        for (const pos of newHover) {
+            if (pos.x < 0 || pos.x >= this.gridSize.x
+                || pos.y < 0 || pos.y >= this.gridSize.y)
+                continue;
+            if (this.gameState === null ||
+                this.gameState.gameGrid[pos.y][pos.x] === PlayerId.none) {
+                this.grid[pos.y][pos.x].classList.add(Css.playerColor(player));
+                this.hoverPreview.push(pos);
+            }
+        }
+    }
+
+    public display(gameState: GameState): void {
+        this.clearHover();
+        this.gameState = gameState;
+
+        for (let y = 0; y < this.gridSize.y; y++) {
+            for (let x = 0; x < this.gridSize.x; x++) {
+                this.grid[y][x].classList.add(Css.playerColor(this.gameState.gameGrid[y][x]));
+            }
+        }
+    }
+
+    // TODO: maby look for better unwrap check
+    public currentState(): GameState { return this.gameState!; }
 }

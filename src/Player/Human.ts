@@ -2,11 +2,11 @@
 /// <reference path="../RuleSet.ts"/>
 
 class Human implements IPlayer {
-    public readonly placeCallback = new Ev<(pos: Pos, shape: Shape, variant: number) => void>();
+    public readonly placeCallback = new Ev<Pos, Shape, number>();
     public previewVariant: number = 0;
-    public previewShape: Shape = null;
-    private lastPos: Pos = Pos.Zero;
+    public previewShape: Shape | null = null;
     protected view: ViewGrid;
+    private lastPos: Pos = Pos.Zero;
 
     constructor(view: ViewGrid, s1: ShapeSelector) {
         this.view = view;
@@ -17,10 +17,13 @@ class Human implements IPlayer {
         s1.shapeSelected.register(this, this.setPreviewShape);
     }
 
+    public display(gameState: GameState): void { this.view.display(gameState); }
+    public currentState(): GameState { return this.view.currentState(); }
+
     public hoverAction(grid: ViewGrid, pos: Pos): void {
         this.lastPos = pos;
         if (this.previewShape === null)
-            return null;
+            return;
         this.normalizeVariant();
 
         const newPrev = Shape.at(pos, this.previewShape.Variants[this.previewVariant]);
@@ -31,7 +34,7 @@ class Human implements IPlayer {
 
     public clickAction(grid: ViewGrid, pos: Pos): void {
         if (this.previewShape === null)
-            return null;
+            return;
         this.normalizeVariant();
 
         if (this.placeCallback.isRegistered()) {
@@ -55,11 +58,10 @@ class Human implements IPlayer {
     }
 
     private normalizeVariant(): void {
+        if (this.previewShape === null)
+            return;
         if (this.previewVariant < 0 || this.previewVariant >= this.previewShape.Variants.length)
             this.previewVariant = ((this.previewVariant % this.previewShape.Variants.length) +
                 this.previewShape.Variants.length) % this.previewShape.Variants.length;
     }
-
-    display(gameState: GameState): void { this.view.display(gameState); }
-    currentState(): GameState { return this.view.currentState(); }
 }

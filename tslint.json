@@ -1,0 +1,12 @@
+// tslint.json
+{
+    "extends": "tslint:recommended",
+    "rules": {
+        "curly": false,
+        //"new-parens": true,
+        "no-arg": true,
+        "no-bitwise": true,
+        "no-conditional-assignment": true,
+        "no-reference": false
+    }
+}

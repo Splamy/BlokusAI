@@ -3,63 +3,6 @@
 /// <reference path="ViewGrid.ts"/>
 
 class Shape {
-    public readonly Type: ShapeType;
-    // Inner array index [y][] is line
-    // Outer array index [][x] is row
-    public readonly Form: boolean[][];
-    public readonly Variants: boolean[][][];
-
-    constructor(type: ShapeType, form: boolean[][]) {
-        this.Type = type;
-        this.Form = form;
-        this.Variants = [];
-        this.generateVariations();
-    }
-
-    private generateVariations() {
-        let curVariant = this.Form;
-        for (let i = 0; i < 2; i++) {
-            for (let j = 0; j < 4; j++) {
-                let duplicate: boolean = false;
-                for (let k = 0; k < this.Variants.length; k++) {
-                    if (ViewGrid.AreEqual(curVariant, this.Variants[k]))
-                        duplicate = true;
-                    if (duplicate)
-                        break;
-                }
-
-                if (!duplicate)
-                    this.Variants.push(curVariant)
-
-                curVariant = ViewGrid.RotateGrid(curVariant);
-            }
-            if (i == 0)
-                curVariant = ViewGrid.FlipGrid(this.Form);
-        }
-    }
-
-    public static at(pos: Pos, shape: boolean[][], grip: Pos = Pos.Zero): Pos[] {
-        const shapeArr: Pos[] = [];
-        for (let y = 0; y < shape.length; y++) {
-            var row = shape[y];
-            for (let x = 0; x < row.length; x++) {
-                if (row[x]) {
-                    shapeArr.push(new Pos(pos.x + x - grip.x, pos.y + y - grip.y));
-                }
-            }
-        }
-        return shapeArr;
-    }
-
-    public static readonly AllShapes: Shape[] = new Array(RuleSet.ShapeCount);
-
-    public static initialize(): void {
-        for (let i = 0; i < RuleSet.ShapeCount; i++) {
-            const shape = Shape[ShapeType[i]];
-            this.AllShapes[shape.Type] = shape;
-        }
-    }
-
     public static readonly I1 = new Shape(ShapeType.I1,
         [[true]]);
 
@@ -145,4 +88,60 @@ class Shape {
     public static readonly O = new Shape(ShapeType.O,
         [[true, true],
         [true, true]]);
+
+    public static readonly AllShapes: Shape[] = new Array(RuleSet.ShapeCount);
+    public static initialize(): void {
+        for (let i = 0; i < RuleSet.ShapeCount; i++) {
+            const shape: Shape = Shape[ShapeType[i]];
+            this.AllShapes[shape.Type] = shape;
+        }
+    }
+
+    public static at(pos: Pos, shape: boolean[][], grip: Pos = Pos.Zero): Pos[] {
+        const shapeArr: Pos[] = [];
+        for (let y = 0; y < shape.length; y++) {
+            const row = shape[y];
+            for (let x = 0; x < row.length; x++) {
+                if (row[x]) {
+                    shapeArr.push(new Pos(pos.x + x - grip.x, pos.y + y - grip.y));
+                }
+            }
+        }
+        return shapeArr;
+    }
+
+    public readonly Type: ShapeType;
+    // Inner array index [y][] is line
+    // Outer array index [][x] is row
+    public readonly Form: boolean[][];
+    public readonly Variants: boolean[][][];
+
+    constructor(type: ShapeType, form: boolean[][]) {
+        this.Type = type;
+        this.Form = form;
+        this.Variants = [];
+        this.generateVariations();
+    }
+
+    private generateVariations() {
+        let curVariant = this.Form;
+        for (let i = 0; i < 2; i++) {
+            for (let j = 0; j < 4; j++) {
+                let duplicate: boolean = false;
+                for (const variant of this.Variants) {
+                    if (ViewGrid.AreEqual(curVariant, variant))
+                        duplicate = true;
+                    if (duplicate)
+                        break;
+                }
+
+                if (!duplicate)
+                    this.Variants.push(curVariant);
+
+                curVariant = ViewGrid.RotateGrid(curVariant);
+            }
+            if (i === 0)
+                curVariant = ViewGrid.FlipGrid(this.Form);
+        }
+    }
 }

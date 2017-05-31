@@ -4,10 +4,22 @@ interface IShapeSelector {
 }
 
 class ShapeSelector {
+    private static ShapeClick(this: HTMLElement, ev: MouseEvent): void {
+        const shapeSelector: IShapeSelector = this as any;
+        if (shapeSelector === undefined)
+            return;
+        const cb = shapeSelector.selector.shapeSelected;
+        if (cb.isRegistered()) {
+            const selectedShape = Shape.AllShapes[shapeSelector.shapeId];
+            cb.invoke(selectedShape);
+        }
+        Util.disableScroll();
+    }
+
+    public readonly shapeSelected = new Ev<Shape>();
     private selectorBox: HTMLElement;
     private shapes: HTMLElement[];
     private player: PlayerId;
-    public readonly shapeSelected = new Ev<(shape: Shape) => void>();
 
     constructor(player: PlayerId) {
         this.player = player;
@@ -16,7 +28,7 @@ class ShapeSelector {
     public generate(): HTMLElement {
         this.shapes = [];
         this.selectorBox = document.createElement("div");
-        this.selectorBox.classList.add("grid")
+        this.selectorBox.classList.add("grid");
 
         for (let i = 0; i < RuleSet.ShapeCount; i++) {
             const shape = Shape.AllShapes[i];
@@ -33,17 +45,5 @@ class ShapeSelector {
         }
 
         return this.selectorBox;
-    }
-
-    private static ShapeClick(this: HTMLElement, ev: MouseEvent): void {
-        const shapeSelector: IShapeSelector = this as any;
-        if (shapeSelector === undefined)
-            return;
-        const cb = shapeSelector.selector.shapeSelected;
-        if (cb.isRegistered()) {
-            const selectedShape = Shape.AllShapes[shapeSelector.shapeId];
-            cb.invoke(selectedShape);
-        }
-        Util.disableScroll();
     }
 }

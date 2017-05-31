@@ -1,11 +1,14 @@
 {
     "compilerOptions": {
         "target": "es5",
-        //"module": "commonjs",
+        "module": "amd",
         "sourceMap": true,
         "watch": false,
         "outDir": "www/js",
         "rootDir": "src",
-        "outFile": "www/js/game.js"
+        "outFile": "www/js/game.js",
+        "removeComments": true,
+        "noImplicitAny": true,
+        "strictNullChecks": true
     }
 }

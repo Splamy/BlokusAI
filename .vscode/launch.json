@@ -7,27 +7,10 @@
         {
             "type": "chrome",
             "request": "launch",
-            //"port": 9222,
             "name": "Launch Chrome",
-            //"url": "http://localhost:9222/greeter.html",
-            //"webRoot": "${workspaceRoot}/www",
             "file": "${workspaceRoot}/www/index.html",
-            "sourceMaps": true
-        },
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "Launch Program",
-            "program": "${file}",
-            "outFiles": []
-        },
-        {
-            "type": "node",
-            "request": "attach",
-            "name": "Attach to Port",
-            "address": "localhost",
-            "port": 5858,
-            "outFiles": []
+            "sourceMaps": true,
+            "runtimeArgs": ["--disable-infobars --disable-session-crashed-bubble"]
         }
     ]
 }
