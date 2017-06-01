@@ -24,8 +24,8 @@ class GameState {
         this.turn = turn;
     }
 
-    public isFree(posArr: Pos[]): boolean {
-        for (const pos of posArr) {
+    public isFree(placement: Placement): boolean {
+        for (const pos of placement.getPosArr()) {
             if (!GameState.isValidPlace(pos)
                 || this.gameGrid[pos.y][pos.x] !== PlayerId.none)
                 return false;
@@ -33,23 +33,20 @@ class GameState {
         return true;
     }
 
-    public canPlace(pos: Pos, shape: Shape, variant: number, player: PlayerId): boolean {
-        const posArr: Pos[] = Shape.at(pos, shape.Variants[variant]);
-        if (!this.isFree(posArr))
+    public canPlace(placement: Placement): boolean {
+        if (!this.isFree(placement))
             return false;
-        if (player !== PlayerId.none) {
-            // check is user has used the shape already
-            if (!this.players[player][shape.Type])
-                return false;
-        }
+        // check is user has used the shape already
+        if (!this.players[this.turn][placement.shape.Type])
+            return false;
         // TODO check if is valid rulewise
         return true;
     }
 
-    public place(posArr: Pos[], shape: ShapeType): GameState {
+    public place(placement: Placement): GameState {
         const player = this.turn;
         const grid = ViewGrid.cloneGrid(this.gameGrid);
-        for (const pos of posArr) {
+        for (const pos of placement.getPosArr()) {
             if (!GameState.isValidPlace(pos)) {
                 console.log("INVALID PLACED SHAPE");
                 continue;
@@ -58,7 +55,7 @@ class GameState {
         }
         const nextShapes = this.players.slice(0) as [boolean[], boolean[]];
         nextShapes[player] = nextShapes[player].slice(0);
-        nextShapes[player][shape] = false;
+        nextShapes[player][placement.shape.Type] = false;
         return new GameState(nextShapes, grid, Util.otherPlayer(player));
     }
 }

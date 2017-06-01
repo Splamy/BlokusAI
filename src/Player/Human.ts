@@ -2,7 +2,7 @@
 /// <reference path="../RuleSet.ts"/>
 
 class Human implements IPlayer {
-    public readonly placeCallback = new Ev<Pos, Shape, number>();
+    public readonly placeCallback = new Ev<Placement>();
     public previewVariant: number = 0;
     public previewShape: Shape | null = null;
     protected view: ViewGrid;
@@ -40,7 +40,11 @@ class Human implements IPlayer {
         this.normalizeVariant();
 
         if (this.placeCallback.isRegistered()) {
-            this.placeCallback.invoke(pos, this.previewShape, this.previewVariant);
+            const gameState = this.currentState();
+            const placement = new Placement(pos, this.previewShape, this.previewVariant);
+            if (!gameState.canPlace(placement))
+                return;
+            this.placeCallback.invoke(placement);
             this.clearAction(grid);
         }
     }

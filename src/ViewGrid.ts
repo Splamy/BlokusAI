@@ -12,7 +12,7 @@ interface IView {
 }
 
 interface IAction {
-    placeCallback: Ev<Pos, Shape, number>;
+    placeCallback: Ev<Placement>;
 }
 
 class ViewGrid implements IView {

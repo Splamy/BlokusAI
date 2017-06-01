@@ -45,10 +45,9 @@ function autoPlayLoop(): void {
         autoTimer.stop();
 }
 
-function placeCallback(pos: Pos, shape: Shape, variant: number): void {
+function placeCallback(placement: Placement): void {
     const state = viewGrid.currentState();
-    const posArr = Shape.at(pos, shape.Variants[variant]);
-    const newState = state.place(posArr, shape.Type);
+    const newState = state.place(placement);
     // update our grahical view
     viewGrid.clearHover();
     viewGrid.display(newState);
@@ -69,7 +68,7 @@ function newGameFunc(): void {
     viewGrid.cbClick.clear();
     viewGrid.cbHover.clear();
     viewGrid.cbWheel.clear();
-    
+
     for (let i = 0; i < 2; i++) {
         players[i].placeCallback.clear();
         const brain = document.getElementById("newGame_player" + i) as HTMLInputElement;
