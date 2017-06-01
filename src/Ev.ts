@@ -23,4 +23,6 @@ class Ev<T1 = never, T2 = never, T3 = never> {
     }
 
     public isRegistered(): boolean { return this.cbList.length > 0; }
+
+    public clear(): void { Util.clearArray(this.cbList); }
 }

@@ -7,7 +7,7 @@
 
 let viewGrid: ViewGrid = new ViewGrid();
 let players: [IPlayer, IPlayer] = [Dummy.Instance, Dummy.Instance];
-let p1Selector: ShapeSelector = new ShapeSelector(PlayerId.p1);
+let selectors: [ShapeSelector | null, ShapeSelector | null] = [null, null];
 let isDisplayCallback: boolean = false;
 let aiProcessedDisplay: boolean = false;
 let autoTimer: Timer = new Timer(autoPlayLoop, 1);
@@ -19,10 +19,14 @@ window.onload = () => {
     Shape.initialize();
     // create view grid to display the game
 
-    const selectorDiv = document.getElementById("selector1");
-    if (selectorDiv === null)
-        throw new Error("html site missing element");
-    selectorDiv.appendChild(p1Selector.generate());
+    for (let i = 0; i < 2; i++) {
+        const selectorDiv = document.getElementById("selector" + i);
+        if (selectorDiv === null)
+            throw new Error("html site missing element");
+        const selector = new ShapeSelector(i);
+        selectors[i] = selector;
+        selectorDiv.appendChild(selector.generate());
+    }
 
     // newGameFunc();
 };
@@ -61,15 +65,23 @@ function newGameFunc(): void {
         = document.getElementById("newGame_size") as HTMLInputElement;
     RuleSet.GridSize = parseInt(sizeSelector.value, 10);
 
+    viewGrid.cbClear.clear();
+    viewGrid.cbClick.clear();
+    viewGrid.cbHover.clear();
+    viewGrid.cbWheel.clear();
+    
+    for (let i = 0; i < 2; i++) {
+        players[i].placeCallback.clear();
+        const brain = document.getElementById("newGame_player" + i) as HTMLInputElement;
+        const selector = selectors[i]!;
+        selector.shapeSelected.clear();
+        players[i] = selectionToClass(brain.value, selector);
+        players[i].placeCallback.register(null, placeCallback);
+    }
+
     const gameState = GameState.start();
     reloadGlobalGrid();
     viewGrid.display(gameState);
-
-    for (let i = 0; i < 2; i++) {
-        const brain = document.getElementById("newGame_player" + i) as HTMLInputElement;
-        players[i] = selectionToClass(brain.value, p1Selector);
-        players[i].placeCallback.register(null, placeCallback);
-    }
 
     // players[PlayerId.p1].display(gameState);
     autoTimer.start();

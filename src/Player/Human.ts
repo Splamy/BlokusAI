@@ -7,6 +7,7 @@ class Human implements IPlayer {
     public previewShape: Shape | null = null;
     protected view: ViewGrid;
     private lastPos: Pos = Pos.Zero;
+    private selector: ShapeSelector;
 
     constructor(view: ViewGrid, s1: ShapeSelector) {
         this.view = view;
@@ -14,6 +15,7 @@ class Human implements IPlayer {
         viewGrid.cbClick.register(this, this.clickAction);
         viewGrid.cbWheel.register(this, this.wheelAction);
         viewGrid.cbClear.register(this, this.clearAction);
+        this.selector = s1;
         s1.shapeSelected.register(this, this.setPreviewShape);
     }
 
@@ -54,6 +56,9 @@ class Human implements IPlayer {
     }
 
     private setPreviewShape(shape: Shape): void {
+        const currentState = this.currentState();
+        if (currentState.turn !== this.selector.player)
+            return;
         this.previewShape = shape;
     }
 

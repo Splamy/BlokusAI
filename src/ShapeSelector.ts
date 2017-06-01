@@ -17,18 +17,24 @@ class ShapeSelector {
     }
 
     public readonly shapeSelected = new Ev<Shape>();
-    private selectorBox: HTMLElement;
-    private shapes: HTMLElement[];
-    private player: PlayerId;
+    public player: PlayerId;
+    private selectorBox: HTMLElement | null = null;
+    private shapes: HTMLElement[] = [];
 
     constructor(player: PlayerId) {
         this.player = player;
     }
 
-    public generate(): HTMLElement {
-        this.shapes = [];
-        this.selectorBox = document.createElement("div");
-        this.selectorBox.classList.add("grid");
+    public generate(force: boolean = false): HTMLElement {
+        if (!force && this.selectorBox !== null) {
+            return this.selectorBox;
+        } else if (this.selectorBox === null) {
+            this.selectorBox = document.createElement("div")
+            this.selectorBox.classList.add("grid");
+        } else {
+            Util.clearArray(this.shapes);
+            Util.clearChildren(this.selectorBox);
+        }
 
         for (let i = 0; i < RuleSet.ShapeCount; i++) {
             const shape = Shape.AllShapes[i];
