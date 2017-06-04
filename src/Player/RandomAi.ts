@@ -7,8 +7,7 @@ class RandomAi implements IPlayer {
 
     public display(gameState: GameState): void {
         this.gameState = gameState;
-        const rnd = Util.rndInt(0, RuleSet.ShapeCount);
-        const shape = Shape.AllShapes[rnd];
+        const shape = Util.pickRnd(Shape.AllShapes);
         const variant = Util.rndInt(0, shape.Variants.length);
         const pos = new Pos(
             Util.rndInt(0, RuleSet.GridSize - shape.Variants[variant][0].length + 1),

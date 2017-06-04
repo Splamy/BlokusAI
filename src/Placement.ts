@@ -1,7 +1,10 @@
 class Placement {
     private posArr: Pos[] | null = null;
 
-    constructor(public pos: Pos, public shape: Shape, public variant: number) { }
+    constructor(
+        public readonly pos: Pos,
+        public readonly shape: Shape,
+        public readonly variant: number) { }
 
     public getPosArr(): Pos[] {
         if (this.posArr === null)

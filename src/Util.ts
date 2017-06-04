@@ -5,6 +5,10 @@ class Util {
         return Math.floor(Math.random() * (max - min) + min);
     }
 
+    public static pickRnd<T>(arr: T[]): T {
+        return arr[Util.rndInt(0, arr.length)];
+    }
+
     public static otherPlayer(player: PlayerId) {
         if (player === PlayerId.none)
             throw new Error("Cannon switch none player");

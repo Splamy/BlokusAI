@@ -4,6 +4,7 @@
 /// <reference path="ShapeSelector.ts"/>
 /// <reference path="Enums/PlayerId.ts"/>
 /// <reference path="Player/IPlayer.ts"/>
+/// <reference path="Player/Dummy.ts"/>
 
 let viewGrid: ViewGrid = new ViewGrid();
 let players: [IPlayer, IPlayer] = [Dummy.Instance, Dummy.Instance];
@@ -15,9 +16,6 @@ let autoTimer: Timer = new Timer(autoPlayLoop, 1);
 window.onload = () => {
     // generate color sheme for player 1 and 2
     Css.GenerateCustomStyle(0, 240);
-    // precalculate data for all shapes
-    Shape.initialize();
-    // create view grid to display the game
 
     for (let i = 0; i < 2; i++) {
         const selectorDiv = document.getElementById("selector" + i);
