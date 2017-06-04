@@ -115,19 +115,6 @@ class Shape {
 
     public static readonly ShapeCount: number = Shape.AllShapes.length;
 
-    public static at(pos: Pos, shape: boolean[][], grip: Pos = Pos.Zero): Pos[] {
-        const shapeArr: Pos[] = [];
-        for (let y = 0; y < shape.length; y++) {
-            const row = shape[y];
-            for (let x = 0; x < row.length; x++) {
-                if (row[x]) {
-                    shapeArr.push(new Pos(pos.x + x - grip.x, pos.y + y - grip.y));
-                }
-            }
-        }
-        return shapeArr;
-    }
-
     private static getCornerMap(grid: boolean[][]): Corner[] {
         const corners: Corner[] = [];
 
@@ -178,41 +165,50 @@ class Shape {
     public readonly Type: ShapeType;
     // Inner array index [y][] is line
     // Outer array index [][x] is row
-    public readonly Form: boolean[][];
-    public readonly Variants: boolean[][][];
-    public readonly Corners: Corner[][];
 
-    //public readonly Variants: Array<{ Form: boolean[][], Corners: Corner[][] }>;
+    public readonly Variants: { readonly Form: boolean[][], readonly Corners: Corner[] }[];
 
     constructor(type: ShapeType, form: boolean[][]) {
         this.Type = type;
-        this.Form = form;
         this.Variants = [];
-        this.Corners = [];
-        this.generateVariations();
+        this.generateVariations(form);
     }
 
-    private generateVariations() {
-        let curVariant = this.Form;
+    public at(pos: Pos, variant: number, grip: Pos = Pos.Zero): Pos[] {
+        const shape = this.Variants[variant].Form;
+        const shapeArr: Pos[] = [];
+        for (let y = 0; y < shape.length; y++) {
+            const row = shape[y];
+            for (let x = 0; x < row.length; x++) {
+                if (row[x]) {
+                    shapeArr.push(new Pos(pos.x + x - grip.x, pos.y + y - grip.y));
+                }
+            }
+        }
+        return shapeArr;
+    }
+
+    private generateVariations(baseForm: boolean[][]) {
+        let curVariant = baseForm;
         for (let i = 0; i < 2; i++) {
             for (let j = 0; j < 4; j++) {
                 let duplicate: boolean = false;
                 for (const variant of this.Variants) {
-                    if (ViewGrid.AreEqual(curVariant, variant))
+                    if (ViewGrid.AreEqual(curVariant, variant.Form))
                         duplicate = true;
                     if (duplicate)
                         break;
                 }
 
                 if (!duplicate) {
-                    this.Variants.push(curVariant);
-                    this.Corners.push(Shape.getCornerMap(curVariant));
+                    const corners = Shape.getCornerMap(curVariant);
+                    this.Variants.push({ Form: curVariant, Corners: corners });
                 }
 
                 curVariant = ViewGrid.RotateGrid(curVariant);
             }
             if (i === 0)
-                curVariant = ViewGrid.FlipGrid(this.Form);
+                curVariant = ViewGrid.FlipGrid(baseForm);
         }
     }
 }

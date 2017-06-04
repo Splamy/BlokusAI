@@ -14,19 +14,13 @@ class GameState {
             && pos.x < RuleSet.GridSize && pos.y < RuleSet.GridSize;
     }
 
-    public readonly turn: PlayerId;
-    public readonly availableShapes: [boolean[], boolean[]];
-    public readonly gameGrid: PlayerId[][];
-    private cornerMap: [Corner[], Corner[]] | null;
-    private placeOptions: Placement[] | null;
+    private cornerMap?: [Corner[], Corner[]];
+    private placeOptions?: Placement[];
 
-    private constructor(p: [boolean[], boolean[]], grid: PlayerId[][], turn: PlayerId) {
-        this.availableShapes = p;
-        this.gameGrid = grid;
-        this.turn = turn;
-        this.cornerMap = null;
-        this.placeOptions = null;
-    }
+    private constructor(
+        public readonly availableShapes: [boolean[], boolean[]],
+        public readonly gameGrid: PlayerId[][],
+        public readonly turn: PlayerId) { }
 
     public isFree(placement: Placement): boolean {
         for (const pos of placement.getPosArr()) {
@@ -63,7 +57,7 @@ class GameState {
     }
 
     public getCornerMap(): [Corner[], Corner[]] {
-        if (this.cornerMap !== null)
+        if (this.cornerMap !== undefined)
             return this.cornerMap;
 
         this.cornerMap = [[], []];
@@ -107,7 +101,7 @@ class GameState {
     }
 
     public getPlaceOption(): Placement[] {
-        if (this.placeOptions !== null)
+        if (this.placeOptions !== undefined)
             return this.placeOptions;
 
         this.placeOptions = [];
@@ -118,9 +112,8 @@ class GameState {
             if (!availShapesTurn[i])
                 continue;
             const shape = Shape.AllShapes[i];
-            for (let j = 0; j < shape.Variants.length; j++) {
-                const variant = shape.Variants[j];
-                const corners = shape.Corners[j];
+            for (const variant of shape.Variants) {
+                // TODO
             }
         }
 

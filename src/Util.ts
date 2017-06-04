@@ -16,7 +16,7 @@ class Util {
     }
 
     public static clearChildren(element: HTMLElement): void {
-        while (element.firstChild) {
+        while (element.firstChild !== null) { // tslint:disable-line no-null-keyword
             element.removeChild(element.firstChild);
         }
     }
@@ -25,6 +25,7 @@ class Util {
         arr.length = 0;
     }
 
+/* tslint:disable */
     public static disableScroll(): void {
         if (window.addEventListener) // older FF
             window.addEventListener("DOMMouseScroll", Util.preventDefault, false);
@@ -36,9 +37,9 @@ class Util {
     public static enableScroll(): void {
         if (window.removeEventListener)
             window.removeEventListener("DOMMouseScroll", Util.preventDefault, false);
-        window.onmousewheel = document.onmousewheel = null!;
-        window.onwheel = null!;
-        window.ontouchmove = null!;
+        window.onmousewheel = document.onmousewheel = undefined!;
+        window.onwheel = undefined!;
+        window.ontouchmove = undefined!;
     }
 
     private static preventDefault(e: any): void {
@@ -47,4 +48,5 @@ class Util {
             e.preventDefault();
         e.returnValue = false;
     }
+/* tslint:enable */
 }

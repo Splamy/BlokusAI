@@ -4,19 +4,19 @@
 class Human implements IPlayer {
     public readonly placeCallback = new Ev<Placement>();
     public previewVariant: number = 0;
-    public previewShape: Shape | null = null;
+    public previewShape?: Shape;
     protected view: ViewGrid;
     private lastPos: Pos = Pos.Zero;
     private selector: ShapeSelector;
 
     constructor(view: ViewGrid, s1: ShapeSelector) {
         this.view = view;
-        viewGrid.cbHover.register(this, this.hoverAction);
-        viewGrid.cbClick.register(this, this.clickAction);
-        viewGrid.cbWheel.register(this, this.wheelAction);
-        viewGrid.cbClear.register(this, this.clearAction);
         this.selector = s1;
-        s1.shapeSelected.register(this, this.setPreviewShape);
+        view.cbHover.register(this, this.hoverAction); // tslint:disable-line no-unbound-method
+        view.cbClick.register(this, this.clickAction); // tslint:disable-line no-unbound-method
+        view.cbWheel.register(this, this.wheelAction); // tslint:disable-line no-unbound-method
+        view.cbClear.register(this, this.clearAction); // tslint:disable-line no-unbound-method
+        s1.shapeSelected.register(this, this.setPreviewShape); // tslint:disable-line no-unbound-method
     }
 
     public display(gameState: GameState): void { this.view.display(gameState); }
@@ -24,18 +24,18 @@ class Human implements IPlayer {
 
     public hoverAction(grid: ViewGrid, pos: Pos): void {
         this.lastPos = pos;
-        if (this.previewShape === null)
+        if (this.previewShape === undefined)
             return;
         this.normalizeVariant();
 
-        const newPrev = Shape.at(pos, this.previewShape.Variants[this.previewVariant]);
+        const newPrev = this.previewShape.at(pos, this.previewVariant);
         grid.clearHover();
         const gameState = grid.currentState();
         grid.setHover(newPrev, gameState.turn);
     }
 
     public clickAction(grid: ViewGrid, pos: Pos): void {
-        if (this.previewShape === null)
+        if (this.previewShape === undefined)
             return;
         this.normalizeVariant();
 
@@ -55,7 +55,7 @@ class Human implements IPlayer {
     }
 
     public clearAction(grid: ViewGrid): void {
-        this.previewShape = null;
+        this.previewShape = undefined;
         Util.enableScroll();
     }
 
@@ -67,7 +67,7 @@ class Human implements IPlayer {
     }
 
     private normalizeVariant(): void {
-        if (this.previewShape === null)
+        if (this.previewShape === undefined)
             return;
         if (this.previewVariant < 0 || this.previewVariant >= this.previewShape.Variants.length)
             this.previewVariant = ((this.previewVariant % this.previewShape.Variants.length) +

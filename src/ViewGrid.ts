@@ -3,7 +3,7 @@
 
 interface IGridCell {
     pos: Pos;
-    gridOwner: ViewGrid;
+    gridOwner?: ViewGrid;
 }
 
 interface IView {
@@ -106,7 +106,7 @@ class ViewGrid implements IView {
 
     private static leftClick(this: HTMLElement, ev: MouseEvent): void {
         const cell: IGridCell = this as any;
-        if (cell === undefined)
+        if (cell.gridOwner === undefined)
             return;
         cell.gridOwner.cbClick.invoke(cell.gridOwner, cell.pos);
     }
@@ -124,10 +124,10 @@ class ViewGrid implements IView {
     public readonly cbClear = new Ev<ViewGrid>();
     public readonly cbClick = new Ev<ViewGrid, Pos>();
     private gridSize: Pos = Pos.Zero;
-    private gameState: GameState | null = null;
+    private gameState?: GameState;
     private table: HTMLElement = document.createElement("div");
     private grid: HTMLElement[][] = [];
-    private hoverPreview: Pos[] | null = null;
+    private hoverPreview?: Pos[];
 
     constructor() {
         this.table.classList.add("divTableBody");
@@ -135,7 +135,7 @@ class ViewGrid implements IView {
     }
 
     public generate(width: number, height: number = width): HTMLElement {
-        if (this.table !== null
+        if (this.table !== undefined
             && width === this.gridSize.x && height === this.gridSize.y)
             return this.table;
 
@@ -175,23 +175,23 @@ class ViewGrid implements IView {
                     Css.clearPlayerColor(cell.classList);
                 }
             }
-        } else if (this.hoverPreview !== null) {
+        } else if (this.hoverPreview !== undefined) {
             for (const pos of this.hoverPreview) {
                 Css.clearPlayerColor(this.grid[pos.y][pos.x].classList);
             }
-            this.hoverPreview = null;
+            this.hoverPreview = undefined;
         }
     }
 
     public setHover(newHover: Pos[], player: PlayerId): void {
-        if (this.hoverPreview === null) {
+        if (this.hoverPreview === undefined) {
             this.hoverPreview = [];
         }
         for (const pos of newHover) {
             if (pos.x < 0 || pos.x >= this.gridSize.x
                 || pos.y < 0 || pos.y >= this.gridSize.y)
                 continue;
-            if (this.gameState === null ||
+            if (this.gameState === undefined ||
                 this.gameState.gameGrid[pos.y][pos.x] === PlayerId.none) {
                 this.grid[pos.y][pos.x].classList.add(Css.playerColor(player));
                 this.hoverPreview.push(pos);

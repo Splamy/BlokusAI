@@ -1,5 +1,5 @@
 class Placement {
-    private posArr: Pos[] | null = null;
+    private posArr?: Pos[];
 
     constructor(
         public readonly pos: Pos,
@@ -7,8 +7,8 @@ class Placement {
         public readonly variant: number) { }
 
     public getPosArr(): Pos[] {
-        if (this.posArr === null)
-            this.posArr = Shape.at(this.pos, this.shape.Variants[this.variant]);
+        if (this.posArr === undefined)
+            this.posArr = this.shape.at(this.pos, this.variant);
         return this.posArr;
     }
 }

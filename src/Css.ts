@@ -1,6 +1,6 @@
 class Css {
     public static playerColor(player: PlayerId): string {
-        return Css.playerCssPrefix + (player + 1);
+        return Css.playerCssPrefix + String(player + 1);
     }
 
     public static clearPlayerColor(classList: DOMTokenList): void {
@@ -15,7 +15,7 @@ class Css {
     }
 
     public static GenerateCustomStyle(hue1: number, hue2: number) {
-        if (Css.styleElem === null) {
+        if (Css.styleElem === undefined) {
             Css.styleElem = document.createElement("style");
             Css.styleElem.type = "text/css";
             document.getElementsByTagName("head")[0].appendChild(Css.styleElem);
@@ -29,5 +29,5 @@ class Css {
     }
 
     private static readonly playerCssPrefix: string = "player";
-    private static styleElem: HTMLStyleElement | null = null;
+    private static styleElem?: HTMLStyleElement;
 }

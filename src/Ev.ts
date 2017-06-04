@@ -8,7 +8,7 @@ type EvCall<T1, T2, T3> =
  */
 class Ev<T1 = never, T2 = never, T3 = never> {
 
-    private cbList: Array<[object | null, EvCall<T1, T2, T3>]>;
+    private cbList: [object | null, EvCall<T1, T2, T3>][];
 
     constructor() { this.cbList = []; }
 
