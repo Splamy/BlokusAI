@@ -1,6 +1,7 @@
 /// <reference path="Enums/ShapeType.ts"/>
 /// <reference path="RuleSet.ts"/>
 /// <reference path="ViewGrid.ts"/>
+/// <reference path="Enums/CornerDir.ts"/>
 
 class Shape {
     public static readonly I1 = new Shape(ShapeType.I1,

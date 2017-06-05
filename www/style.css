@@ -1,144 +1,145 @@
-
-html, body {
-    width: 100%;
-    height: 100%;
-    margin: 0;
+html,
+body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
 }
-
 html {
-    font-family: verdana, tahoma, arial, sans-serif;
-    color: #000000;
-    background: #E0E0E0;
+  font-family: verdana, tahoma, arial, sans-serif;
+  color: #000000;
+  background: #E0E0E0;
 }
-
 .mycard {
-    margin: 0.3rem;
-    border: 0.3rem solid #FFFFFF;
-    padding: 0.5rem;
-    background: #F0F0F0;
+  margin: 0.3rem;
+  border: 0.3rem solid #FFFFFF;
+  padding: 0.5rem;
+  background: #F0F0F0;
 }
-
 #desc {
-    padding: 0.25rem 0.5rem;
+  padding: 0.25rem 0.5rem;
 }
-
-
 #game {
-    display: table;
-    width: 100%;
-    height: auto;
+  display: table;
+  width: 100%;
+  height: auto;
 }
-
-
-input, select, button {
-    box-sizing: border-box;
-    width: 100%;
-    outline: none;
-    box-shadow: none;
-    transition-duration: 0.2s;
-    font-size: 1rem;
-}
-
-input:focus, select:focus, button:focus {
-    box-shadow: 0 0 0.5rem 0.25rem rgba(0, 0, 0, 0.4);
-}
-
-input, select {
-    margin: 0.25rem 0 1rem 0;
-    padding: 0.25rem;
-    background: #FFFFFF;
-    border: 0.15rem solid #404040;
-    border-radius: 0;
-}
-
+input,
+select,
 button {
-    margin: 0.75rem 0 0 0;
-    padding: 0.75rem 1.5rem;
-    background: #404040;
-    color: white;
-    border: none;
-    border-radius: 0;
-    cursor: pointer;
+  box-sizing: border-box;
+  width: 100%;
+  outline: none;
+  box-shadow: none;
+  transition-duration: 0.2s;
+  font-size: 1rem;
 }
-
+input:focus,
+select:focus,
+button:focus {
+  box-shadow: 0 0 0.5rem 0.25rem rgba(0, 0, 0, 0.4);
+}
+input,
+select {
+  margin: 0.25rem 0 1rem 0;
+  padding: 0.25rem;
+  background: #FFFFFF;
+  border: 0.15rem solid #404040;
+  border-radius: 0;
+}
+button {
+  margin: 0.75rem 0 0 0;
+  padding: 0.75rem 1.5rem;
+  background: #404040;
+  color: white;
+  border: none;
+  border-radius: 0;
+  cursor: pointer;
+}
 @media (min-width: 641px) {
-    body {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .mycard {
-        margin: 0.75rem 1rem 1rem 0.75rem;
-        border: 0.75rem solid #FFFFFF;
-        box-shadow: 0.75rem 0.75rem 0.75rem rgba(0, 0, 0, 0.25);
-    }
-
-    #ctrl {
-        flex: 1 0 16rem;
-        max-width: 24rem;
-    }
-
-    #desc {
-        flex: 1 0 14rem;
-        max-width: 36rem;
-    }
-
-    #game {
-        display: table;
-        width: 600px;
-        height: 600px;
-    }
-}
-
-/* own stuff */
-
-.divTableRow {
-    display: table-row;
-}
-.divTableCell {
-    border: 1px solid #999999;
-    border-width: 1px 0px 0px 1px;
-    display: table-cell;
-    padding: 10px 10px;
-}
-.divTableBody {
-    border: 1px solid #999999;
-    border-width: 0px 1px 1px 0px;
-    display: table-row-group;
-    /*border-collapse: collapse;*/
-}
-
-/* Moar style */
-
-.grid {
+  body {
     display: flex;
     flex-wrap: wrap;
-    align-items: flex-start;
+    align-items: center;
+    justify-content: center;
+  }
+  .mycard {
+    margin: 0.75rem 1rem 1rem 0.75rem;
+    border: 0.75rem solid #FFFFFF;
+    box-shadow: 0.75rem 0.75rem 0.75rem rgba(0, 0, 0, 0.25);
+  }
+  #ctrl {
+    flex: 1 0 16rem;
+    max-width: 24rem;
+  }
+  #desc {
+    flex: 1 0 14rem;
+    max-width: 36rem;
+  }
+  #game {
+    display: table;
+    width: 600px;
+    height: 600px;
+  }
 }
-
+/* own stuff */
+.divTableRow {
+  display: table-row;
+}
+.divTableCell {
+  border: 1px solid #999999;
+  border-width: 1px 0px 0px 1px;
+  display: table-cell;
+  padding: 10px 10px;
+}
+.divTableBody {
+  border: 1px solid #999999;
+  border-width: 0px 1px 1px 0px;
+  display: table-row-group;
+  /*border-collapse: collapse;*/
+}
+/* Moar style */
+.grid {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
 .gridelem {
-    margin: 3px;
+  margin: 3px;
 }
-
 .divTableCell::before {
-    content: "";
-    position: relative;
-    top: 15%;
-    left: 15%;
-    right: 15%;
-    bottom: 15%;
+  content: "";
+  position: relative;
+  top: 15%;
+  left: 15%;
+  right: 15%;
+  bottom: 15%;
 }
-
-.player1, .player2 {
-    position: relative;
+.player1,
+.player2 {
+  position: relative;
 }
-
-.player1::before, .player2::before {
-    position: absolute;
+.player1::before,
+.player2::before {
+  position: absolute;
 }
-
 .hide {
-    display: none;
+  display: none;
+}
+.edge {
+  width: 10px;
+  height: 0px;
+  border-bottom: 2px solid purple;
+  position: absolute;
+}
+.edgeTopLeft {
+  transform: translateY(0px) translateX(-5px) rotate(45deg) translateY(0px) translateX(-20px);
+}
+.edgeTopRight {
+  transform: translateY(0px) translateX(15px) rotate(135deg) translateY(0px) translateX(-20px);
+}
+.edgeBotLeft {
+  transform: translateY(20px) translateX(-5px) rotate(315deg) translateY(0px) translateX(-20px);
+}
+.edgeBotRight {
+  transform: translateY(20px) translateX(15px) rotate(225deg) translateY(0px) translateX(-20px);
 }

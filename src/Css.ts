@@ -1,11 +1,9 @@
 class Css {
-    public static playerColor(player: PlayerId): string {
-        return Css.playerCssPrefix + String(player as number + 1);
-    }
-
-    public static clearPlayerColor(classList: DOMTokenList): void {
+    public static applyPlayerColor(classList: DOMTokenList, player: PlayerId): void {
         classList.remove(Css.playerColor(PlayerId.p1));
         classList.remove(Css.playerColor(PlayerId.p2));
+        if (player !== PlayerId.none)
+            classList.add(Css.playerColor(player));
     }
 
     public static generateColorScheme(hue: number): string {
@@ -30,4 +28,8 @@ class Css {
 
     private static readonly playerCssPrefix: string = "player";
     private static styleElem?: HTMLStyleElement;
+
+    private static playerColor(player: PlayerId): string {
+        return Css.playerCssPrefix + String(player as number + 1);
+    }
 }

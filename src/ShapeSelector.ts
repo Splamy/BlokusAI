@@ -52,4 +52,13 @@ class ShapeSelector {
 
         return this.selectorBox;
     }
+
+    public display(gameState: GameState): void {
+        const availShapes = gameState.availableShapes[this.player];
+        for (let i = 0; i < Shape.ShapeCount; i++) {
+            this.shapes[i].classList.remove("hide");
+            if (!availShapes[i])
+                this.shapes[i].classList.add("hide");
+        }
+    }
 }

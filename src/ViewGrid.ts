@@ -172,12 +172,12 @@ class ViewGrid implements IView {
         if (clean) {
             for (const line of this.grid) {
                 for (const cell of line) {
-                    Css.clearPlayerColor(cell.classList);
+                    Css.applyPlayerColor(cell.classList, PlayerId.none);
                 }
             }
         } else if (this.hoverPreview !== undefined) {
             for (const pos of this.hoverPreview) {
-                Css.clearPlayerColor(this.grid[pos.y][pos.x].classList);
+                Css.applyPlayerColor(this.grid[pos.y][pos.x].classList, PlayerId.none);
             }
             this.hoverPreview = undefined;
         }
@@ -193,7 +193,7 @@ class ViewGrid implements IView {
                 continue;
             if (this.gameState === undefined ||
                 this.gameState.gameGrid[pos.y][pos.x] === PlayerId.none) {
-                this.grid[pos.y][pos.x].classList.add(Css.playerColor(player));
+                Css.applyPlayerColor(this.grid[pos.y][pos.x].classList, player);
                 this.hoverPreview.push(pos);
             }
         }
@@ -205,8 +205,22 @@ class ViewGrid implements IView {
 
         for (let y = 0; y < this.gridSize.y; y++) {
             for (let x = 0; x < this.gridSize.x; x++) {
-                this.grid[y][x].classList.add(Css.playerColor(this.gameState.gameGrid[y][x]));
+                Css.applyPlayerColor(this.grid[y][x].classList, this.gameState.gameGrid[y][x]);
             }
+        }
+    }
+
+    public debugDisplayCorner(corner: Corner[]): void {
+        for (const line of this.grid) {
+            for (const cell of line) {
+                Util.clearChildren(cell);
+            }
+        }
+        for (const cor of corner) {
+            const div = document.createElement("div");
+            div.classList.add("edge");
+            div.classList.add("edge" + CornerDir[cor.dir]);
+            this.grid[cor.pos.y][cor.pos.x].appendChild(div);
         }
     }
 

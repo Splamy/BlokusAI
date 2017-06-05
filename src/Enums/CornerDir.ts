@@ -1,4 +1,4 @@
-const enum CornerDir {
+enum CornerDir {
     TopLeft,
     TopRight,
     BotLeft,

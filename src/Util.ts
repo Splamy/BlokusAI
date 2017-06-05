@@ -23,8 +23,18 @@ class Util {
         }
     }
 
-    public static clearArray(arr: object[]): void {
+    public static clearArray(arr: { length: number }): void {
         arr.length = 0;
+    }
+
+    public static getElementByIdSafe(elementId: string): HTMLElement {
+        return Util.safeElement(document.getElementById(elementId));
+    }
+
+    public static safeElement<T>(elem: T | null): T {
+        if (elem === null) // tslint:disable-line no-null-keyword
+            throw new Error("Missing html element");
+        return elem;
     }
 
     /* tslint:disable */

@@ -14,5 +14,4 @@ class Corner {
         const off = Corner.offset[this.dir];
         return new Pos(this.pos.x - sub.x + off.x, this.pos.y - sub.y + off.y);
     }
-
 }

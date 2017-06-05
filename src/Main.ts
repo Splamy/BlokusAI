@@ -12,17 +12,19 @@ class Main {
         Css.GenerateCustomStyle(0, 240);
 
         for (let i = 0; i < 2; i++) {
-            const selectorDiv = document.getElementById("selector" + String(i));
-            if (selectorDiv === null) // tslint:disable-line no-null-keyword
-                throw new Error("html site missing element");
+            const selectorDiv = Util.getElementByIdSafe("selector" + String(i));
             const selector = new ShapeSelector(i);
             Main.selectors[i] = selector;
             selectorDiv.appendChild(selector.generate());
         }
+
+        Main.gameDiv = Util.getElementByIdSafe("game");
+        Main.gameTimelineDiv = Util.getElementByIdSafe("gameTimeline") as HTMLInputElement;
+        Main.gameTimelineDiv.oninput = Main.changeHistory;
     }
     public static newGameFunc(): void {
         const sizeSelector
-            = document.getElementById("newGame_size") as HTMLInputElement;
+            = Util.getElementByIdSafe("newGame_size") as HTMLInputElement;
         RuleSet.GridSize = parseInt(sizeSelector.value, 10);
 
         Main.viewGrid.cbClear.clear();
@@ -32,7 +34,7 @@ class Main {
 
         for (let i = 0; i < 2; i++) {
             Main.players[i].placeCallback.clear();
-            const brain = document.getElementById("newGame_player" + String(i)) as HTMLInputElement;
+            const brain = Util.getElementByIdSafe("newGame_player" + String(i)) as HTMLInputElement;
             const selector = Main.selectors[i]!;
             selector.shapeSelected.clear();
             Main.players[i] = Main.selectionToClass(brain.value, selector);
@@ -49,6 +51,8 @@ class Main {
         Main.autoTimer.start();
     }
 
+    private static readonly debugView = true;
+
     private static readonly viewGrid: ViewGrid = new ViewGrid();
     private static readonly players: [IPlayer, IPlayer] = [Dummy.Instance, Dummy.Instance];
     private static readonly selectors: [ShapeSelector | undefined, ShapeSelector | undefined] = [undefined, undefined];
@@ -56,6 +60,9 @@ class Main {
     private static aiProcessedDisplay: boolean = false;
     private static readonly autoTimer: Timer = new Timer(Main.autoPlayLoop, 1);
     private static readonly gameHistory: GameState[] = [];
+
+    private static gameDiv: HTMLElement;
+    private static gameTimelineDiv: HTMLInputElement;
 
     private static autoPlayLoop(): void {
         const gameState = Main.viewGrid.currentState();
@@ -72,15 +79,35 @@ class Main {
     private static placeCallback(placement?: Placement): void {
         const state = Main.viewGrid.currentState();
         const newState = state.place(placement);
+
+        // doing histoy features
+        const nextHistId = parseInt(Main.gameTimelineDiv.value, 10) + 1;
+        Main.gameHistory.length = nextHistId;
         Main.gameHistory.push(newState);
+        Main.gameTimelineDiv.max = String(nextHistId);
+        Main.gameTimelineDiv.value = String(nextHistId);
+
         // update our grahical view
-        Main.viewGrid.clearHover();
-        Main.viewGrid.display(newState);
+        Main.updateView(newState);
+
         // notify other player about turn
         if (Main.isDisplayCallback) {
             Main.aiProcessedDisplay = true;
         } else {
             Main.autoTimer.start();
+        }
+    }
+
+    private static updateView(gameState: GameState) {
+        Main.viewGrid.clearHover();
+        Main.viewGrid.display(gameState);
+        for (let i = 0; i < 2; i++) {
+            Main.selectors[i]!.display(gameState);
+        }
+
+        if (Main.debugView) {
+            const debugCorMap = gameState.getCornerMap();
+            Main.viewGrid.debugDisplayCorner([...debugCorMap[0], ...debugCorMap[1]]);
         }
     }
 
@@ -95,13 +122,17 @@ class Main {
             default: throw new Error("unhandled player type");
         }
     }
+
     private static reloadGlobalGrid(): void {
         const grid = Main.viewGrid.generate(RuleSet.GridSize);
-        const game = document.getElementById("game");
-        if (game === null) // tslint:disable-line no-null-keyword
-            throw new Error("html site missing element");
-        Util.clearChildren(game);
-        game.appendChild(grid);
+        Util.clearChildren(Main.gameDiv);
+        Main.gameDiv.appendChild(grid);
+    }
+
+    private static changeHistory(): void {
+        const histId = parseInt(Main.gameTimelineDiv.value, 10);
+        const histState = Main.gameHistory[histId];
+        Main.updateView(histState);
     }
 }
 
