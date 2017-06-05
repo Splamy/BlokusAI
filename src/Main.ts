@@ -22,6 +22,7 @@ class Main {
         Main.gameTimelineDiv = Util.getElementByIdSafe("gameTimeline") as HTMLInputElement;
         Main.gameTimelineDiv.oninput = Main.changeHistory;
     }
+
     public static newGameFunc(): void {
         const sizeSelector
             = Util.getElementByIdSafe("newGame_size") as HTMLInputElement;
@@ -45,7 +46,7 @@ class Main {
         const gameState = GameState.start();
         Main.gameHistory.push(gameState);
         Main.reloadGlobalGrid();
-        Main.viewGrid.display(gameState);
+        Main.updateView(gameState);
 
         // players[PlayerId.p1].display(gameState);
         Main.autoTimer.start();

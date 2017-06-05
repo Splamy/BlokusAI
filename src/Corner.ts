@@ -1,7 +1,7 @@
 /// <reference path="Pos.ts"/>
 
 class Corner {
-    private static offset = [new Pos(-1, -1), new Pos(1, -1), new Pos(-1, 1), new Pos(1, 1)];
+    private static offset = [new Pos(-1, -1), new Pos(1, -1), new Pos(1, 1), new Pos(-1, 1)];
     public constructor(
         public readonly pos: Pos,
         public readonly dir: CornerDir) { }
