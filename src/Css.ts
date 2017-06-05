@@ -1,6 +1,6 @@
 class Css {
     public static playerColor(player: PlayerId): string {
-        return Css.playerCssPrefix + String(player + 1);
+        return Css.playerCssPrefix + String(player as number + 1);
     }
 
     public static clearPlayerColor(classList: DOMTokenList): void {

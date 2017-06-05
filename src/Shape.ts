@@ -166,7 +166,11 @@ class Shape {
     // Inner array index [y][] is line
     // Outer array index [][x] is row
 
-    public readonly Variants: { readonly Form: boolean[][], readonly Corners: Corner[] }[];
+    public readonly Variants: {
+        readonly Corners: Corner[],
+        readonly Form: boolean[][],
+        readonly Size: Pos,
+    }[];
 
     constructor(type: ShapeType, form: boolean[][]) {
         this.Type = type;
@@ -202,7 +206,11 @@ class Shape {
 
                 if (!duplicate) {
                     const corners = Shape.getCornerMap(curVariant);
-                    this.Variants.push({ Form: curVariant, Corners: corners });
+                    this.Variants.push({
+                        Corners: corners,
+                        Form: curVariant,
+                        Size: new Pos(curVariant[0].length, curVariant.length),
+                    });
                 }
 
                 curVariant = ViewGrid.RotateGrid(curVariant);

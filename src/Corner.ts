@@ -3,10 +3,7 @@ class Corner {
         public readonly pos: Pos,
         public readonly dir: CornerDir) { }
 
-    public diagMatch(other: Corner): boolean {
-        return (this.dir === CornerDir.TopLeft
-            || this.dir === CornerDir.BotRight)
-            === (other.dir === CornerDir.TopLeft
-            || other.dir === CornerDir.BotRight);
+    public diagMatch(other: CornerDir): boolean {
+        return (other as number + 2) % 4 === this.dir;
     }
 }

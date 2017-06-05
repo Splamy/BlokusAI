@@ -6,8 +6,6 @@
 /// <reference path="Player/IPlayer.ts"/>
 /// <reference path="Player/Dummy.ts"/>
 
-function newGame(this: HTMLElement, ev: Event): void { Main.newGameFunc(); }
-
 class Main {
     public static init(): void {
         // generate color sheme for player 1 and 2
@@ -38,7 +36,7 @@ class Main {
             const selector = Main.selectors[i]!;
             selector.shapeSelected.clear();
             Main.players[i] = Main.selectionToClass(brain.value, selector);
-            Main.players[i].placeCallback.register(null, Main.placeCallback);  // tslint:disable-line no-null-keyword
+            Main.players[i].placeCallback.register(null, Main.placeCallback); // tslint:disable-line no-null-keyword
         }
 
         const gameState = GameState.start();
@@ -104,3 +102,4 @@ class Main {
 }
 
 window.onload = Main.init;
+function newGame(this: HTMLElement, ev: Event): void { Main.newGameFunc(); }

@@ -107,16 +107,57 @@ class GameState {
         this.placeOptions = [];
 
         const availShapesTurn = this.availableShapes[this.turn];
-        const curCornerMap = this.getCornerMap();
-        for (let i = 0; i < Shape.AllShapes.length; i++) {
+        const curCornerMap = this.getCornerMap()[this.turn];
+        // check if this is the first turn or player can't place anymore
+        if (curCornerMap.length === 0) {
+            if (availShapesTurn.every((x) => x))
+                return this.getEmptyPlaceOptions(this.turn);
+            else
+                return [];
+        }
+        for (let i = 0; i < Shape.AllShapes.length; i++) { // go over all available shapes
             if (!availShapesTurn[i])
                 continue;
             const shape = Shape.AllShapes[i];
-            for (const variant of shape.Variants) {
-                // TODO
+            for (const corner of curCornerMap) { // go over all corner on the map
+                for (let varNum = 0; varNum < shape.Variants.length; varNum++) { // go over all variants of that shape
+                    const variant = shape.Variants[varNum];
+                    for (const varCorner of variant.Corners) { // go over all corner of that variant
+                        if (corner !== varCorner)
+                            continue;
+                        const tryPlace = new Placement(corner.pos.sub(varCorner.pos), shape, varNum);
+                        if (this.canPlace(tryPlace)) {
+                            this.placeOptions.push(tryPlace);
+                        }
+                    }
+                }
             }
         }
 
         return this.placeOptions;
+    }
+
+    private getEmptyPlaceOptions(player: PlayerId): Placement[] {
+        const emptyPlacement: Placement[] = [];
+        const startPos = (player === PlayerId.p1)
+            ? new Pos(5, 5)
+            : new Pos(this.gameGrid[0].length - 5, this.gameGrid.length - 5);
+
+        for (const shape of Shape.AllShapes) { // go over all available shapes
+            for (let varNum = 0; varNum < shape.Variants.length; varNum++) { // go over all variants of that shape
+                const variant = shape.Variants[varNum];
+                for (let y = 0; y < variant.Size.y; y++) {
+                    for (let x = 0; x < variant.Size.x; x++) {
+                        if (variant.Form[y][x]) {
+                            const tryPlace = new Placement(startPos.subi(x, y), shape, varNum);
+                            if (this.canPlace(tryPlace))
+                                emptyPlacement.push(tryPlace);
+                        }
+                    }
+                }
+            }
+        }
+
+        return emptyPlacement;
     }
 }

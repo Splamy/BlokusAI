@@ -125,18 +125,18 @@ class ViewGrid implements IView {
     public readonly cbClick = new Ev<ViewGrid, Pos>();
     private gridSize: Pos = Pos.Zero;
     private gameState?: GameState;
-    private table: HTMLElement = document.createElement("div");
-    private grid: HTMLElement[][] = [];
+    private readonly table: HTMLElement;
+    private readonly grid: HTMLElement[][];
     private hoverPreview?: Pos[];
 
     constructor() {
+        this.table = document.createElement("div");
         this.table.classList.add("divTableBody");
         this.grid = [];
     }
 
     public generate(width: number, height: number = width): HTMLElement {
-        if (this.table !== undefined
-            && width === this.gridSize.x && height === this.gridSize.y)
+        if (width === this.gridSize.x && height === this.gridSize.y)
             return this.table;
 
         this.gridSize = new Pos(width, height);
