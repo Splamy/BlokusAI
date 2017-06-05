@@ -41,19 +41,21 @@ class GameState {
         return true;
     }
 
-    public place(placement: Placement): GameState {
-        const player = this.turn;
+    public place(placement?: Placement): GameState {
+        if (placement === undefined)
+            return new GameState(this.availableShapes, this.gameGrid, Util.otherPlayer(this.turn));
+
         const grid = ViewGrid.cloneGrid(this.gameGrid);
         for (const pos of placement.getPosArr()) {
             if (!GameState.isValidPlace(pos)) {
                 throw new Error("INVALID PLACED SHAPE");
             }
-            grid[pos.y][pos.x] = player;
+            grid[pos.y][pos.x] = this.turn;
         }
         const nextShapes = this.availableShapes.slice(0) as [boolean[], boolean[]];
-        nextShapes[player] = nextShapes[player].slice(0);
-        nextShapes[player][placement.shape.Type] = false;
-        return new GameState(nextShapes, grid, Util.otherPlayer(player));
+        nextShapes[this.turn] = nextShapes[this.turn].slice(0);
+        nextShapes[this.turn][placement.shape.Type] = false;
+        return new GameState(nextShapes, grid, Util.otherPlayer(this.turn));
     }
 
     public getCornerMap(): [Corner[], Corner[]] {
@@ -123,9 +125,9 @@ class GameState {
                 for (let varNum = 0; varNum < shape.Variants.length; varNum++) { // go over all variants of that shape
                     const variant = shape.Variants[varNum];
                     for (const varCorner of variant.Corners) { // go over all corner of that variant
-                        if (corner !== varCorner)
+                        if (!corner.diagMatch(varCorner.dir))
                             continue;
-                        const tryPlace = new Placement(corner.pos.sub(varCorner.pos), shape, varNum);
+                        const tryPlace = new Placement(corner.toPlace(varCorner.pos), shape, varNum);
                         if (this.canPlace(tryPlace)) {
                             this.placeOptions.push(tryPlace);
                         }

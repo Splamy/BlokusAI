@@ -5,7 +5,9 @@ class Util {
         return Math.floor(Math.random() * (max - min) + min);
     }
 
-    public static pickRnd<T>(arr: T[]): T {
+    public static pickRnd<T>(arr: T[]): T | undefined {
+        if (arr.length === 0)
+            return undefined;
         return arr[Util.rndInt(0, arr.length)];
     }
 
@@ -25,7 +27,7 @@ class Util {
         arr.length = 0;
     }
 
-/* tslint:disable */
+    /* tslint:disable */
     public static disableScroll(): void {
         if (window.addEventListener) // older FF
             window.addEventListener("DOMMouseScroll", Util.preventDefault, false);
@@ -48,5 +50,5 @@ class Util {
             e.preventDefault();
         e.returnValue = false;
     }
-/* tslint:enable */
+    /* tslint:enable */
 }

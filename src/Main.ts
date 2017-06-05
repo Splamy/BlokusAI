@@ -39,7 +39,9 @@ class Main {
             Main.players[i].placeCallback.register(null, Main.placeCallback); // tslint:disable-line no-null-keyword
         }
 
+        Util.clearArray(Main.gameHistory);
         const gameState = GameState.start();
+        Main.gameHistory.push(gameState);
         Main.reloadGlobalGrid();
         Main.viewGrid.display(gameState);
 
@@ -53,6 +55,7 @@ class Main {
     private static isDisplayCallback: boolean = false;
     private static aiProcessedDisplay: boolean = false;
     private static readonly autoTimer: Timer = new Timer(Main.autoPlayLoop, 1);
+    private static readonly gameHistory: GameState[] = [];
 
     private static autoPlayLoop(): void {
         const gameState = Main.viewGrid.currentState();
@@ -66,9 +69,10 @@ class Main {
             Main.autoTimer.stop();
     }
 
-    private static placeCallback(placement: Placement): void {
+    private static placeCallback(placement?: Placement): void {
         const state = Main.viewGrid.currentState();
         const newState = state.place(placement);
+        Main.gameHistory.push(newState);
         // update our grahical view
         Main.viewGrid.clearHover();
         Main.viewGrid.display(newState);
