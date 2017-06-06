@@ -152,7 +152,7 @@ class ViewGrid implements IView {
                 const cell = document.createElement("div");
                 cell.onmouseenter = ViewGrid.cellEnter;
                 cell.onmouseleave = ViewGrid.cellExit;
-                cell.onmousewheel = ViewGrid.wheelRotate;
+                cell.onwheel = ViewGrid.wheelRotate;
                 cell.oncontextmenu = ViewGrid.rightClick;
                 cell.onclick = ViewGrid.leftClick;
                 cell.classList.add("divTableCell");
