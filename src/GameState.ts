@@ -22,22 +22,63 @@ class GameState {
         public readonly gameGrid: PlayerId[][],
         public readonly turn: PlayerId) { }
 
-    public isFree(placement: Placement): boolean {
+    public isFreeNoTouch(placement: Placement): boolean {
+        const m = RuleSet.GridSize - 1;
         for (const pos of placement.getPosArr()) {
             if (!GameState.isValidPlace(pos)
-                || this.gameGrid[pos.y][pos.x] !== PlayerId.none)
+                || this.gameGrid[pos.y][pos.x] !== PlayerId.none
+                || (pos.x > 0 && this.gameGrid[pos.y][pos.x - 1] === this.turn)
+                || (pos.y > 0 && this.gameGrid[pos.y - 1][pos.x] === this.turn)
+                || (pos.x < m && this.gameGrid[pos.y][pos.x + 1] === this.turn)
+                || (pos.y < m && this.gameGrid[pos.y + 1][pos.x] === this.turn))
                 return false;
         }
         return true;
     }
 
-    public canPlace(placement: Placement): boolean {
-        if (!this.isFree(placement))
-            return false;
+    public canPlace(placement: Placement, checkCorner: boolean = false): boolean {
+        const availShapesTurn = this.availableShapes[this.turn];
         // check is user has used the shape already
-        if (!this.availableShapes[this.turn][placement.shape.Type])
+        if (!availShapesTurn[placement.shape.Type])
             return false;
-        // TODO check if is valid rulewise
+
+        // check if the place itself is free and is not touching other own shapes
+        if (!this.isFreeNoTouch(placement))
+            return false;
+
+        // optionally check if shape is touching at least one corner
+        if (checkCorner) {
+            let isValid: boolean = false;
+            const curCornerMap = this.getCornerMap()[this.turn];
+            // check if corners are available
+            if (curCornerMap.length === 0) {
+                // might be first turn or was player's last :P
+                if (availShapesTurn.every((x) => x)) {
+                    const startPos = this.getStartingPos();
+                    for (const pos of placement.getPosArr()) {
+                        if (pos.equals(startPos)) {
+                            isValid = true;
+                            break;
+                        }
+                    }
+                }
+            } else {
+                // see if it corners another field
+                cornerLoop: for (const corner of curCornerMap) {
+                    for (const varCorner of placement.shape.Variants[placement.variant].Corners) {
+                        if (corner.diagMatch(varCorner.dir)
+                            && varCorner.toPlace(Pos.Zero).add(placement.pos).equals(corner.pos)
+                            && this.gameGrid[corner.pos.y][corner.pos.x] === this.turn) {
+                            isValid = true;
+                            break cornerLoop;
+                        }
+                    }
+                }
+            }
+            if (!isValid)
+                return false;
+        }
+
         return true;
     }
 
@@ -113,7 +154,7 @@ class GameState {
         // check if this is the first turn or player can't place anymore
         if (curCornerMap.length === 0) {
             if (availShapesTurn.every((x) => x))
-                return this.getEmptyPlaceOptions(this.turn);
+                return this.getEmptyPlaceOptions();
             else
                 return [];
         }
@@ -139,11 +180,9 @@ class GameState {
         return this.placeOptions;
     }
 
-    private getEmptyPlaceOptions(player: PlayerId): Placement[] {
+    private getEmptyPlaceOptions(): Placement[] {
         const emptyPlacement: Placement[] = [];
-        const startPos = (player === PlayerId.p1)
-            ? new Pos(5, 5)
-            : new Pos(this.gameGrid[0].length - 5, this.gameGrid.length - 5);
+        const startPos = this.getStartingPos();
 
         for (const shape of Shape.AllShapes) { // go over all available shapes
             for (let varNum = 0; varNum < shape.Variants.length; varNum++) { // go over all variants of that shape
@@ -161,5 +200,11 @@ class GameState {
         }
 
         return emptyPlacement;
+    }
+
+    private getStartingPos(): Pos {
+        return (this.turn === PlayerId.p1)
+            ? new Pos(4, 4)
+            : new Pos(this.gameGrid[0].length - 5, this.gameGrid.length - 5);
     }
 }

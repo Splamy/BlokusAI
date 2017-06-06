@@ -114,14 +114,6 @@ button {
   right: 15%;
   bottom: 15%;
 }
-.player1,
-.player2 {
-  position: relative;
-}
-.player1::before,
-.player2::before {
-  position: absolute;
-}
 .hide {
   display: none;
 }

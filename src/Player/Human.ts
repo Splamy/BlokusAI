@@ -6,7 +6,7 @@ class Human implements IPlayer {
     public previewVariant: number = 0;
     public previewShape?: Shape;
     protected view: ViewGrid;
-    private lastPos: Pos = Pos.Zero;
+    private lastPos?: Placement;
     private selector: ShapeSelector;
 
     constructor(view: ViewGrid, s1: ShapeSelector) {
@@ -23,15 +23,15 @@ class Human implements IPlayer {
     public currentState(): GameState { return this.view.currentState(); }
 
     public hoverAction(grid: ViewGrid, pos: Pos): void {
-        this.lastPos = pos;
         if (this.previewShape === undefined)
             return;
         this.normalizeVariant();
 
-        const newPrev = this.previewShape.at(pos, this.previewVariant);
         grid.clearHover();
         const gameState = grid.currentState();
-        grid.setHover(newPrev, gameState.turn);
+        this.lastPos = new Placement(pos, this.previewShape, this.previewVariant);
+        const hoverColor = gameState.canPlace(this.lastPos, true) ? gameState.turn : PlayerId.hover;
+        grid.setHover(this.lastPos.getPosArr(), hoverColor);
     }
 
     public clickAction(grid: ViewGrid, pos: Pos): void {
@@ -41,20 +41,24 @@ class Human implements IPlayer {
 
         if (this.placeCallback.isRegistered()) {
             const gameState = this.currentState();
-            const placement = new Placement(pos, this.previewShape, this.previewVariant);
-            if (!gameState.canPlace(placement))
+            if (this.lastPos === undefined)
+                this.lastPos = new Placement(pos, this.previewShape, this.previewVariant);
+            if (!gameState.canPlace(this.lastPos, true))
                 return;
-            this.placeCallback.invoke(placement);
+            this.placeCallback.invoke(this.lastPos);
             this.clearAction(grid);
         }
     }
 
     public wheelAction(grid: ViewGrid, varDiff: number): void {
-        this.previewVariant += varDiff;
-        this.hoverAction(grid, this.lastPos);
+        if (this.lastPos !== undefined) {
+            this.previewVariant += varDiff;
+            this.hoverAction(grid, this.lastPos.pos);
+        }
     }
 
     public clearAction(grid: ViewGrid): void {
+        this.lastPos = undefined;
         this.previewShape = undefined;
         Util.enableScroll();
     }

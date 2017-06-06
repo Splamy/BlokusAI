@@ -168,16 +168,11 @@ class ViewGrid implements IView {
         return this.table;
     }
 
-    public clearHover(clean: boolean = false): void {
-        if (clean) {
-            for (const line of this.grid) {
-                for (const cell of line) {
-                    Css.applyPlayerColor(cell.classList, PlayerId.none);
-                }
-            }
-        } else if (this.hoverPreview !== undefined) {
+    public clearHover(): void {
+        if (this.hoverPreview !== undefined && this.gameState !== undefined) {
             for (const pos of this.hoverPreview) {
-                Css.applyPlayerColor(this.grid[pos.y][pos.x].classList, PlayerId.none);
+                const gameStateGrid = this.gameState.gameGrid;
+                Css.applyPlayerColor(this.grid[pos.y][pos.x].classList, gameStateGrid[pos.y][pos.x]);
             }
             this.hoverPreview = undefined;
         }
@@ -191,16 +186,12 @@ class ViewGrid implements IView {
             if (pos.x < 0 || pos.x >= this.gridSize.x
                 || pos.y < 0 || pos.y >= this.gridSize.y)
                 continue;
-            if (this.gameState === undefined ||
-                this.gameState.gameGrid[pos.y][pos.x] === PlayerId.none) {
-                Css.applyPlayerColor(this.grid[pos.y][pos.x].classList, player);
-                this.hoverPreview.push(pos);
-            }
+            Css.applyPlayerColor(this.grid[pos.y][pos.x].classList, player);
+            this.hoverPreview.push(pos);
         }
     }
 
     public display(gameState: GameState): void {
-        this.clearHover(true);
         this.gameState = gameState;
 
         for (let y = 0; y < this.gridSize.y; y++) {

@@ -52,7 +52,7 @@ class Main {
         Main.autoTimer.start();
     }
 
-    private static readonly debugView = true;
+    private static readonly debugView: boolean = true;
 
     private static readonly viewGrid: ViewGrid = new ViewGrid();
     private static readonly players: [IPlayer, IPlayer] = [Dummy.Instance, Dummy.Instance];
