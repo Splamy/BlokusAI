@@ -163,10 +163,20 @@ class Shape {
         return corners;
     }
 
+    private static getPieceCount(grid: boolean[][]): number {
+        let count: number = 0;
+        for (const line of grid) {
+            for (const cell of line) {
+                count++;
+            }
+        }
+        return count;
+    }
+
     public readonly Type: ShapeType;
+    public readonly Value: number;
     // Inner array index [y][] is line
     // Outer array index [][x] is row
-
     public readonly Variants: {
         readonly Corners: Corner[],
         readonly Form: boolean[][],
@@ -177,6 +187,7 @@ class Shape {
         this.Type = type;
         this.Variants = [];
         this.generateVariations(form);
+        this.Value = Shape.getPieceCount(form);
     }
 
     public at(pos: Pos, variant: number, grip: Pos = Pos.Zero): Pos[] {

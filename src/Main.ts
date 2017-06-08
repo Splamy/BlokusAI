@@ -119,7 +119,7 @@ class Main {
                     throw new Error("selector must be passed for human player");
                 return new Human(Main.viewGrid, selector);
             case "1": return new RandomAi();
-            // case 2: return new EasyAI(viewGrid, viewGrid);
+            case "2": return new EasyAi();
             default: throw new Error("unhandled player type");
         }
     }
