@@ -21,6 +21,7 @@ class EasyAi implements IPlayer {
 
             const nextScore =
                 nextCorner[gameState.turn].length * EasyAi.weightOpenCorner
+                - nextCorner[Util.otherPlayer(gameState.turn)].length * EasyAi.weightOpenCorner
                 + nextPieceCnt * EasyAi.weightPiece;
             if (nextScore > score) {
                 score = nextScore;

@@ -11,7 +11,7 @@ class Util {
         return arr[Util.rndInt(0, arr.length)];
     }
 
-    public static otherPlayer(player: PlayerId) {
+    public static otherPlayer(player: PlayerId): PlayerId.p1 | PlayerId.p2 {
         if (player === PlayerId.none)
             throw new Error("Cannon switch none player");
         return player === PlayerId.p1 ? PlayerId.p2 : PlayerId.p1;
