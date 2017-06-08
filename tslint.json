@@ -2,8 +2,15 @@
 {
     "extends": "tslint:recommended",
     "rules": {
+        "no-console": [ false ],
         "curly": false,
-        //"new-parens": true,
+        "new-parens": true,
+        "arrow-return-shorthand": true,
+        "no-unnecessary-callback-wrapper": true,
+        "no-unnecessary-initializer": true,
+        "no-boolean-literal-compare": true,
+        "no-angle-bracket-type-assertion": true,
+        "no-trailing-whitespace": true,
         "no-arg": true,
         "no-bitwise": true,
         "no-conditional-assignment": true,
@@ -33,6 +40,8 @@
         "strict-boolean-expressions": true, // TI
         "strict-type-predicates": true, // TI
         "array-type": [ true, "array" ],
-        "unified-signatures": true
+        "unified-signatures": true,
+        "prefer-switch": true,
+        "prefer-function-over-method": true
     }
 }

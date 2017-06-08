@@ -167,7 +167,8 @@ class Shape {
         let count: number = 0;
         for (const line of grid) {
             for (const cell of line) {
-                count++;
+                if (cell)
+                    count++;
             }
         }
         return count;

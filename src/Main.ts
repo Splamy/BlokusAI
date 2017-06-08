@@ -61,6 +61,7 @@ class Main {
     private static aiProcessedDisplay: boolean = false;
     private static readonly autoTimer: Timer = new Timer(Main.autoPlayLoop, 1);
     private static readonly gameHistory: GameState[] = [];
+    private static emptyTurns: number = 0;
 
     private static gameDiv: HTMLElement;
     private static gameTimelineDiv: HTMLInputElement;
@@ -73,13 +74,30 @@ class Main {
         Main.isDisplayCallback = false;
         const aiProcDisp = Main.aiProcessedDisplay;
         Main.aiProcessedDisplay = false;
-        if (!aiProcDisp)
-            Main.autoTimer.stop();
+        if (!aiProcDisp) {
+            // item was not placed by an AI, check if human can still place
+            const placeOptions = gameState.getPlaceOption();
+            // if human can still play stop timer and let him play
+            if (placeOptions.length > 0)
+                Main.autoTimer.stop();
+            else
+                Main.placeCallback(undefined);
+        }
+
+        if (Main.emptyTurns >= 2) {
+            Main.finalizeGame();
+        }
     }
 
     private static placeCallback(placement?: Placement): void {
         const state = Main.viewGrid.currentState();
         const newState = state.place(placement);
+
+        // check for empty moves to recognize end of game
+        if (placement === undefined)
+            Main.emptyTurns++;
+        else
+            Main.emptyTurns = 0;
 
         // doing histoy features
         const nextHistId = parseInt(Main.gameTimelineDiv.value, 10) + 1;
@@ -134,6 +152,11 @@ class Main {
         const histId = parseInt(Main.gameTimelineDiv.value, 10);
         const histState = Main.gameHistory[histId];
         Main.updateView(histState);
+    }
+
+    /** Call this method when the game is over. */
+    private static finalizeGame(): void {
+        Main.autoTimer.stop();
     }
 }
 

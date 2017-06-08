@@ -1,5 +1,5 @@
 class EasyAi implements IPlayer {
-    private static readonly weightPiece: number = 1;
+    private static readonly weightPiece: number = 3;
     private static readonly weightOpenCorner: number = 1;
 
     public readonly placeCallback = new Ev<Placement, never, never>();
@@ -8,8 +8,7 @@ class EasyAi implements IPlayer {
     public display(gameState: GameState): void {
         this.gameState = gameState;
         console.log("Thinking!");
-        const curPlacedPieces = gameState.availableShapes[gameState.turn].reduce(
-            (sum, sava, ix) => sava ? sum + Shape.AllShapes[ix].Value : sum, 0);
+        const curPlacedQbits = gameState.getPlacedQbits()[gameState.turn];
 
         const options = gameState.getPlaceOption();
         let best: Placement | undefined;
@@ -17,7 +16,7 @@ class EasyAi implements IPlayer {
         for (const opt of options) {
             const nextState = gameState.place(opt);
             const nextCorner = nextState.getCornerMap();
-            const nextPieceCnt = curPlacedPieces + opt.shape.Value;
+            const nextPieceCnt = curPlacedQbits + opt.shape.Value;
 
             const nextScore =
                 nextCorner[gameState.turn].length * EasyAi.weightOpenCorner

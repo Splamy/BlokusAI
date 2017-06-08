@@ -143,6 +143,14 @@ class GameState {
         return this.cornerMap;
     }
 
+    public getPlacedQbits(): [number, number] {
+        const p1Placed = this.availableShapes[PlayerId.p1].reduce(
+            (sum, sava, ix) => sava ? sum + Shape.AllShapes[ix].Value : sum, 0);
+        const p2Placed = this.availableShapes[PlayerId.p2].reduce(
+            (sum, sava, ix) => sava ? sum + Shape.AllShapes[ix].Value : sum, 0);
+        return [p1Placed, p2Placed];
+    }
+
     public getPlaceOption(): Placement[] {
         if (this.placeOptions !== undefined)
             return this.placeOptions;
