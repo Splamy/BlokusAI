@@ -20,7 +20,6 @@ class Human implements IPlayer {
     }
 
     public display(gameState: GameState): void { this.view.display(gameState); }
-    public currentState(): GameState { return this.view.currentState(); }
 
     public hoverAction(grid: ViewGrid, pos: Pos): void {
         if (this.previewShape === undefined)
@@ -40,7 +39,7 @@ class Human implements IPlayer {
         this.normalizeVariant();
 
         if (this.placeCallback.isRegistered()) {
-            const gameState = this.currentState();
+            const gameState = grid.currentState();
             if (this.lastPos === undefined)
                 this.lastPos = new Placement(pos, this.previewShape, this.previewVariant);
             if (!gameState.canPlace(this.lastPos, true))
@@ -64,7 +63,7 @@ class Human implements IPlayer {
     }
 
     private setPreviewShape(shape: Shape): void {
-        const currentState = this.currentState();
+        const currentState = this.view.currentState();
         if (currentState.turn !== this.selector.player)
             return;
         this.previewShape = shape;

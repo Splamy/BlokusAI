@@ -6,16 +6,11 @@ interface IGridCell {
     gridOwner?: ViewGrid;
 }
 
-interface IView {
-    display(gameState: GameState): void;
-    currentState(): GameState;
-}
+interface IView { display(gameState: GameState): void; }
+interface IAction { placeCallback: Ev<Placement>; }
+interface IState { currentState(): GameState; }
 
-interface IAction {
-    placeCallback: Ev<Placement>;
-}
-
-class ViewGrid implements IView {
+class ViewGrid implements IView, IState {
     // apparently rotates clockwise
     public static RotateGrid<T>(grid: T[][]): T[][] {
         const ret: T[][] = [];

@@ -3,10 +3,8 @@ class EasyAi implements IPlayer {
     private static readonly weightOpenCorner: number = 1;
 
     public readonly placeCallback = new Ev<Placement, never, never>();
-    private gameState: GameState;
 
     public display(gameState: GameState): void {
-        this.gameState = gameState;
         console.log("Thinking!");
         const curPlacedQbits = gameState.getPlacedQbits()[gameState.turn];
 
@@ -30,5 +28,4 @@ class EasyAi implements IPlayer {
         console.log("Done :P");
         this.placeCallback.invoke(best);
     }
-    public currentState(): GameState { return this.gameState; }
 }

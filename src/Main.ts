@@ -27,6 +27,7 @@ class Main {
         const sizeSelector
             = Util.getElementByIdSafe("newGame_size") as HTMLInputElement;
         RuleSet.GridSize = parseInt(sizeSelector.value, 10);
+        Main.emptyTurns = 0;
 
         Main.viewGrid.cbClear.clear();
         Main.viewGrid.cbClick.clear();
@@ -53,7 +54,6 @@ class Main {
         Main.reloadGlobalGrid();
         Main.updateView(gameState);
 
-        // players[PlayerId.p1].display(gameState);
         Main.autoTimer.start();
     }
 
@@ -130,7 +130,7 @@ class Main {
         }
 
         if (Main.debugView) {
-            const debugCorMap = gameState.getCornerMap();
+            const debugCorMap = gameState.getCornerMap(true);
             Main.viewGrid.debugDisplayCorner([...debugCorMap[0], ...debugCorMap[1]]);
         }
     }

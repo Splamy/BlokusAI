@@ -67,7 +67,7 @@ class GameState {
                 cornerLoop: for (const corner of curCornerMap) {
                     for (const varCorner of placement.shape.Variants[placement.variant].Corners) {
                         if (corner.diagMatch(varCorner.dir)
-                            && varCorner.toPlace(Pos.Zero).add(placement.pos).equals(corner.pos)
+                            && varCorner.toPlaceAdd(placement.pos).equals(corner.pos)
                             && this.gameGrid[corner.pos.y][corner.pos.x] === this.turn) {
                             isValid = true;
                             break cornerLoop;
@@ -99,7 +99,7 @@ class GameState {
         return new GameState(nextShapes, grid, Util.otherPlayer(this.turn));
     }
 
-    public getCornerMap(): [Corner[], Corner[]] {
+    public getCornerMap(deadCellElim: boolean = false): [Corner[], Corner[]] {
         if (this.cornerMap !== undefined)
             return this.cornerMap;
 
@@ -139,7 +139,21 @@ class GameState {
                 }
             }
         }
-
+        if (deadCellElim) {
+            const m = RuleSet.GridSize - 1;
+            for (const pId of Player.Ids) {
+                const swapArr: Corner[] = [];
+                for (const cor of this.cornerMap[pId]) {
+                    const pos = cor.toPlace();
+                    if ((pos.x <= 0 || this.gameGrid[pos.y][pos.x - 1] !== pId)
+                        && (pos.y <= 0 || this.gameGrid[pos.y - 1][pos.x] !== pId)
+                        && (pos.x >= m || this.gameGrid[pos.y][pos.x + 1] !== pId)
+                        && (pos.y >= m || this.gameGrid[pos.y + 1][pos.x] !== pId))
+                        swapArr.push(cor);
+                }
+                this.cornerMap[pId] = swapArr;
+            }
+        }
         return this.cornerMap;
     }
 
@@ -176,7 +190,7 @@ class GameState {
                     for (const varCorner of variant.Corners) { // go over all corner of that variant
                         if (!corner.diagMatch(varCorner.dir))
                             continue;
-                        const tryPlace = new Placement(corner.toPlace(varCorner.pos), shape, varNum);
+                        const tryPlace = new Placement(corner.toPlaceSub(varCorner.pos), shape, varNum);
                         if (this.canPlace(tryPlace)) {
                             this.placeOptions.push(tryPlace);
                         }
