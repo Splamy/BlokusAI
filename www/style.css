@@ -151,14 +151,22 @@ button {
   position: absolute;
 }
 .edgeTopLeft {
-  transform: translateY(0px) translateX(-5px) rotate(45deg) translateY(0px) translateX(-20px);
+  left: 0%;
+  top: 0%;
+  transform: translateY(-5px) translateX(-10px) rotate(45deg);
 }
 .edgeTopRight {
-  transform: translateY(0px) translateX(15px) rotate(135deg) translateY(0px) translateX(-20px);
+  left: 100%;
+  top: 0%;
+  transform: translateY(-5px) translateX(0) rotate(135deg);
 }
 .edgeBotLeft {
-  transform: translateY(20px) translateX(-5px) rotate(315deg) translateY(0px) translateX(-20px);
+  left: 0%;
+  top: 100%;
+  transform: translateY(5px) translateX(-10px) rotate(315deg);
 }
 .edgeBotRight {
-  transform: translateY(20px) translateX(15px) rotate(225deg) translateY(0px) translateX(-20px);
+  left: 100%;
+  top: 100%;
+  transform: translateY(5px) translateX(0) rotate(225deg);
 }

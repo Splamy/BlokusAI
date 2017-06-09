@@ -171,9 +171,7 @@ button {
 
 /* DEBUGLINES */
 
-@boxsize: 20px;
 @edgelen: 10px;
-@padoff: 15px;
 
 .edge {
     width: @edgelen;
@@ -183,26 +181,30 @@ button {
 }
 
 .edgeTopLeft {
+    left: 0%;
+    top: 0%;
     transform:
-        translateY(00px) translateX(-@edgelen / 2)
-        rotate(45deg)
-        translateY(0px) translateX(-(@edgelen / 2 + @padoff));
+        translateY(-@edgelen / 2) translateX(-@edgelen)
+        rotate(45deg);
 }
 .edgeTopRight {
+    left: 100%;
+    top: 0%;
     transform:
-        translateY(00px) translateX(@boxsize - @edgelen / 2)
-        rotate(135deg)
-        translateY(0px) translateX(-(@edgelen / 2 + @padoff));
+        translateY(-@edgelen / 2) translateX(0)
+        rotate(135deg);
 }
 .edgeBotLeft {
+    left: 0%;
+    top: 100%;
     transform:
-        translateY(@boxsize) translateX(-@edgelen / 2)
-        rotate(315deg)
-        translateY(0px) translateX(-(@edgelen / 2 + @padoff));
+        translateY(@edgelen / 2) translateX(-@edgelen)
+        rotate(315deg);
 }
 .edgeBotRight {
+    left: 100%;
+    top: 100%;
     transform:
-        translateY(@boxsize) translateX(@boxsize - @edgelen / 2)
-        rotate(225deg)
-        translateY(0px) translateX(-(@edgelen / 2 + @padoff));
+        translateY(@edgelen / 2) translateX(0)
+        rotate(225deg);
 }
