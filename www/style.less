@@ -96,6 +96,9 @@ button {
 .splitInner {
     position: relative;
     width: 50%;
+    border: 4px solid #662300;
+    background: #966F33;
+    //position: absolute;
 }
 
 .splitInner > * {
@@ -117,34 +120,22 @@ button {
     padding-top: 100%;
 }
 
-/* own stuff */
+/* TABLE */
 
 .divTableRow {
     display: table-row;
 }
 .divTableCell {
-    border: 1px solid #999999;
+    border: 1px solid #461F00;
     border-width: 1px 0px 0px 1px;
     display: table-cell;
     padding: 10px 10px;
 }
 .divTableBody {
-    border: 1px solid #999999;
+    border: 1px solid #461F00;
     border-width: 0px 1px 1px 0px;
     display: table;
     /*border-collapse: collapse;*/
-}
-
-/* Moar style */
-
-.grid {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: flex-start;
-}
-
-.gridelem {
-    margin: 3px;
 }
 
 .divTableCell::before {
@@ -156,9 +147,29 @@ button {
     bottom: 15%;
 }
 
+/* SLECETOR */
+
+.grid {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    padding: 5px;
+}
+
+.gridelem {
+    margin: 2px;
+    border: none;
+}
+
+.gridelem * {
+    border: none;
+}
+
 .hide {
     display: none;
 }
+
+/* DEBUGLINES */
 
 @boxsize: 20px;
 @edgelen: 10px;
