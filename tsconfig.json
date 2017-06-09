@@ -9,6 +9,12 @@
         "outFile": "www/js/game.js",
         "removeComments": true,
         "noImplicitAny": true,
-        "strictNullChecks": true
+        "strictNullChecks": true,
+        "alwaysStrict": true,
+        "noFallthroughCasesInSwitch": true,
+        "noImplicitReturns": true,
+        "noImplicitThis": true,
+        "noUnusedLocals": true
+        //"noUnusedParameters": true
     }
 }

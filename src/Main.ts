@@ -42,9 +42,13 @@ class Main {
             Main.players[i].placeCallback.register(null, Main.placeCallback); // tslint:disable-line no-null-keyword
         }
 
+        // history
         Util.clearArray(Main.gameHistory);
         const gameState = GameState.start();
         Main.gameHistory.push(gameState);
+        Main.gameTimelineDiv.max = "0";
+        Main.gameTimelineDiv.value = "0";
+
         Main.reloadGlobalGrid();
         Main.updateView(gameState);
 
@@ -146,6 +150,7 @@ class Main {
         const grid = Main.viewGrid.generate(RuleSet.GridSize);
         Util.clearChildren(Main.gameDiv);
         Main.gameDiv.appendChild(grid);
+        grid.classList.add("gameGrid");
     }
 
     private static changeHistory(): void {

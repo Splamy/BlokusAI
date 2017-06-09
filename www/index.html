@@ -1,29 +1,25 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Blokus</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <script src="js/game.js"> </script>
-    <link rel = "stylesheet" type = "text/css" href = "style.css">
+    <script src="js/game.js">
+
+    </script>
+    <link rel="stylesheet" type="text/css" href="style.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 </head>
+
 <body>
-    <div class="mycard">
-        <div id="selector0">
-            <!-- SELECTOR TABLE -->
+    <div class="splitContainer">
+        <div id="selector0" class="splitOuter"> </div>
+        <div class="splitInner">
+            <div id="game"> </div>
         </div>
-        <!--<div class="edge edgeTopLeft"></div>
-        <div class="edge edgeTopRight"></div>
-        <div class="edge edgeBotLeft"></div>
-        <div class="edge edgeBotRight"></div>-->
-        <div id="game" class="mycard">
-            <!-- GAME TABLE -->
-        </div>
-        <input id="gameTimeline" type="range" min="0" max="0" value="0" /><br/>
-        <div id="selector1">
-            <!-- SELECTOR TABLE -->
-        </div>
+        <div id="selector1" class="splitOuter"> </div>
     </div>
+    <input id="gameTimeline" type="range" min="0" max="0" value="0" /><br/>
     <form id="ctrl" onsubmit="newGame(); return false;" class="mycard">
         <label>Size:</label><br/>
         <input id="newGame_size" type="number" min="10" max="24" value="14" required /><br/>
@@ -45,4 +41,5 @@
         TODO: Basic Description
     </div>
 </body>
+
 </html>

@@ -3,6 +3,10 @@ body {
   width: 100%;
   height: 100%;
   margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
 }
 html {
   font-family: verdana, tahoma, arial, sans-serif;
@@ -10,18 +14,14 @@ html {
   background: #E0E0E0;
 }
 .mycard {
-  margin: 0.3rem;
-  border: 0.3rem solid #FFFFFF;
-  padding: 0.5rem;
-  background: #F0F0F0;
+  margin: 0.75rem 1rem 1rem 0.75rem;
+  border: 0.75rem solid #FFFFFF;
+  box-shadow: 0.75rem 0.75rem 0.75rem rgba(0, 0, 0, 0.25);
 }
 #desc {
   padding: 0.25rem 0.5rem;
-}
-#game {
-  display: table;
-  width: 100%;
-  height: auto;
+  flex: 1 0 14rem;
+  max-width: 36rem;
 }
 input,
 select,
@@ -37,6 +37,10 @@ input:focus,
 select:focus,
 button:focus {
   box-shadow: 0 0 0.5rem 0.25rem rgba(0, 0, 0, 0.4);
+}
+#ctrl {
+  flex: 1 0 16rem;
+  max-width: 24rem;
 }
 input,
 select {
@@ -55,31 +59,46 @@ button {
   border-radius: 0;
   cursor: pointer;
 }
-@media (min-width: 641px) {
-  body {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: center;
-  }
-  .mycard {
-    margin: 0.75rem 1rem 1rem 0.75rem;
-    border: 0.75rem solid #FFFFFF;
-    box-shadow: 0.75rem 0.75rem 0.75rem rgba(0, 0, 0, 0.25);
-  }
-  #ctrl {
-    flex: 1 0 16rem;
-    max-width: 24rem;
-  }
-  #desc {
-    flex: 1 0 14rem;
-    max-width: 36rem;
-  }
-  #game {
-    display: table;
-    width: 600px;
-    height: 600px;
-  }
+/* 3 split layout */
+.dummy {
+  background-color: red;
+  height: 30px;
+  width: 90px;
+  margin: 1px;
+}
+.splitContainer {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.splitOuter {
+  display: flex;
+  width: auto;
+  max-width: 25%;
+  flex-wrap: wrap;
+  box-shadow: inset 0px 0px 10px #000000;
+  margin: 3px;
+}
+.splitInner {
+  position: relative;
+  width: 50%;
+}
+.splitInner > * {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+}
+.gameGrid {
+  width: 100%;
+  height: 100%;
+}
+.splitInner:before {
+  content: "";
+  display: block;
+  padding-top: 100%;
 }
 /* own stuff */
 .divTableRow {
@@ -94,7 +113,7 @@ button {
 .divTableBody {
   border: 1px solid #999999;
   border-width: 0px 1px 1px 0px;
-  display: table-row-group;
+  display: table;
   /*border-collapse: collapse;*/
 }
 /* Moar style */
