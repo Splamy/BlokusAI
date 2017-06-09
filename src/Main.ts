@@ -36,6 +36,7 @@ class Main {
         for (let i = 0; i < 2; i++) {
             Main.players[i].placeCallback.clear();
             const brain = Util.getElementByIdSafe("newGame_player" + String(i)) as HTMLInputElement;
+            brain.classList.remove("win");
             const selector = Main.selectors[i]!;
             selector.shapeSelected.clear();
             Main.players[i] = Main.selectionToClass(brain.value, selector);
@@ -162,6 +163,12 @@ class Main {
     /** Call this method when the game is over. */
     private static finalizeGame(): void {
         Main.autoTimer.stop();
+
+        const gameState = Main.viewGrid.currentState();
+        const qbits = gameState.getPlacedQbits();
+        const winPlayer = qbits[PlayerId.p1] > qbits[PlayerId.p2] ? PlayerId.p1 : PlayerId.p2;
+        const brain = Util.getElementByIdSafe("newGame_player" + String(winPlayer)) as HTMLInputElement;
+        brain.classList.add("win");
     }
 }
 

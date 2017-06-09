@@ -115,6 +115,8 @@ class Shape {
     ];
 
     public static readonly ShapeCount: number = Shape.AllShapes.length;
+    public static readonly QbitMax: number = Shape.AllShapes.reduce(
+            (sum, sava) => sum + sava.Value, 0);
 
     private static getCornerMap(grid: boolean[][]): Corner[] {
         const corners: Corner[] = [];

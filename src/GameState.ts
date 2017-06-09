@@ -144,9 +144,9 @@ class GameState {
     }
 
     public getPlacedQbits(): [number, number] {
-        const p1Placed = this.availableShapes[PlayerId.p1].reduce(
+        const p1Placed = Shape.QbitMax - this.availableShapes[PlayerId.p1].reduce(
             (sum, sava, ix) => sava ? sum + Shape.AllShapes[ix].Value : sum, 0);
-        const p2Placed = this.availableShapes[PlayerId.p2].reduce(
+        const p2Placed = Shape.QbitMax - this.availableShapes[PlayerId.p2].reduce(
             (sum, sava, ix) => sava ? sum + Shape.AllShapes[ix].Value : sum, 0);
         return [p1Placed, p2Placed];
     }

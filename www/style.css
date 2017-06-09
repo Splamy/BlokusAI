@@ -11,12 +11,13 @@ body {
 html {
   font-family: verdana, tahoma, arial, sans-serif;
   color: #000000;
-  background: #E0E0E0;
+  background: #335B96;
 }
 .mycard {
   margin: 0.75rem 1rem 1rem 0.75rem;
   border: 0.75rem solid #FFFFFF;
   box-shadow: 0.75rem 0.75rem 0.75rem rgba(0, 0, 0, 0.25);
+  background-color: #E1E1E1;
 }
 #desc {
   padding: 0.25rem 0.5rem;
@@ -71,6 +72,7 @@ button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  margin: 5px;
 }
 .splitOuter {
   display: flex;
@@ -140,9 +142,6 @@ button {
 .gridelem * {
   border: none;
 }
-.hide {
-  display: none;
-}
 /* DEBUGLINES */
 .edge {
   width: 10px;
@@ -169,4 +168,11 @@ button {
   left: 100%;
   top: 100%;
   transform: translateY(5px) translateX(0) rotate(225deg);
+}
+/* utils */
+.hide {
+  display: none;
+}
+.win {
+  border-color: green;
 }

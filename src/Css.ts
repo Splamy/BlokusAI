@@ -1,8 +1,9 @@
 class Css {
     public static applyPlayerColor(classList: DOMTokenList, player: PlayerId): void {
-        classList.remove(Css.playerColor(PlayerId.p1));
-        classList.remove(Css.playerColor(PlayerId.p2));
-        classList.remove(Css.playerColor(PlayerId.hover));
+        classList.remove(
+            Css.playerColor(PlayerId.p1),
+            Css.playerColor(PlayerId.p2),
+            Css.playerColor(PlayerId.hover));
         if (player !== PlayerId.none)
             classList.add(Css.playerColor(player));
     }
