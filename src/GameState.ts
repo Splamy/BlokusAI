@@ -67,7 +67,7 @@ class GameState {
                 cornerLoop: for (const corner of curCornerMap) {
                     for (const varCorner of placement.shape.Variants[placement.variant].Corners) {
                         if (corner.diagMatch(varCorner.dir)
-                            && varCorner.toPlaceAdd(placement.pos).equals(corner.pos)
+                            && varCorner.target.addeq(placement.pos, corner.pos)
                             && this.gameGrid[corner.pos.y][corner.pos.x] === this.turn) {
                             isValid = true;
                             break cornerLoop;
@@ -140,13 +140,11 @@ class GameState {
             }
         }
         if (deadCornerElim) {
-            // const hashSet = [];
-
             const m = RuleSet.GridSize - 1;
             for (const pId of Player.Ids) {
                 const swapArr: Corner[] = [];
                 for (const cor of this.cornerMap[pId]) {
-                    const pos = cor.toPlace();
+                    const pos = cor.target;
                     if ((pos.x <= 0 || this.gameGrid[pos.y][pos.x - 1] !== pId)
                         && (pos.y <= 0 || this.gameGrid[pos.y - 1][pos.x] !== pId)
                         && (pos.x >= m || this.gameGrid[pos.y][pos.x + 1] !== pId)
@@ -194,7 +192,7 @@ class GameState {
                     for (const varCorner of variant.Corners) { // go over all corner of that variant
                         if (!corner.diagMatch(varCorner.dir))
                             continue;
-                        const tryPlace = new Placement(corner.toPlaceSub(varCorner.pos), shape, varNum);
+                        const tryPlace = new Placement(corner.target.sub(varCorner.pos), shape, varNum);
                         if (this.canPlace(tryPlace)) {
                             this.placeOptions.push(tryPlace);
                         }

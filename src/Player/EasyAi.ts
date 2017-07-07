@@ -11,7 +11,7 @@ class EasyAi implements IPlayer {
             const cornerList = cornerMap[pId];
             const posQueue = new DualQueue<Pos>();
             for (const corner of cornerList) {
-                posQueue.push(corner.toPlace());
+                posQueue.push(corner.target);
             }
             const grid = ViewGrid.cloneGrid(gameState.gameGrid);
             let dist = 0;

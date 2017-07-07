@@ -7,4 +7,5 @@ class Pos implements IEquatable<Pos> {
     public sub(pos: Pos): Pos { return new Pos(this.x - pos.x, this.y - pos.y); }
     public subi(x: number, y: number): Pos { return new Pos(this.x - x, this.y - y); }
     public equals(pos: Pos): boolean { return this.x === pos.x && this.y === pos.y; }
+    public addeq(pos: Pos, eq: Pos): boolean { return this.x + pos.x === eq.x && this.y + pos.y === eq.y; }
 }
