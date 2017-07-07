@@ -99,7 +99,7 @@ class GameState {
         return new GameState(nextShapes, grid, Util.otherPlayer(this.turn));
     }
 
-    public getCornerMap(deadCellElim: boolean = false): [Corner[], Corner[]] {
+    public getCornerMap(deadCellElim: boolean = true): [Corner[], Corner[]] {
         if (this.cornerMap !== undefined)
             return this.cornerMap;
 
