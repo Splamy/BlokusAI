@@ -1,4 +1,5 @@
 /// <reference path="Enums/PlayerId.ts"/>
+/// <reference path="PosHash.ts"/>
 
 class GameState {
     public static start(): GameState {
@@ -99,7 +100,7 @@ class GameState {
         return new GameState(nextShapes, grid, Util.otherPlayer(this.turn));
     }
 
-    public getCornerMap(deadCornerElim: boolean = true): [Corner[], Corner[]] {
+    public getCornerMap(): [Corner[], Corner[]] {
         if (this.cornerMap !== undefined)
             return this.cornerMap;
 
@@ -139,20 +140,22 @@ class GameState {
                 }
             }
         }
-        if (deadCornerElim) {
-            const m = RuleSet.GridSize - 1;
-            for (const pId of Player.Ids) {
-                const swapArr: Corner[] = [];
-                for (const cor of this.cornerMap[pId]) {
-                    const pos = cor.target;
-                    if ((pos.x <= 0 || this.gameGrid[pos.y][pos.x - 1] !== pId)
-                        && (pos.y <= 0 || this.gameGrid[pos.y - 1][pos.x] !== pId)
-                        && (pos.x >= m || this.gameGrid[pos.y][pos.x + 1] !== pId)
-                        && (pos.y >= m || this.gameGrid[pos.y + 1][pos.x] !== pId))
-                        swapArr.push(cor);
-                }
-                this.cornerMap[pId] = swapArr;
+
+        // Dead corner elimination
+        const m = RuleSet.GridSize - 1;
+        for (const pId of Player.Ids) {
+            const posHash = new PosHash();
+            const swapArr: Corner[] = [];
+            for (const cor of this.cornerMap[pId]) {
+                const pos = cor.target;
+                if (posHash.add(pos)
+                    && (pos.x <= 0 || this.gameGrid[pos.y][pos.x - 1] !== pId)
+                    && (pos.y <= 0 || this.gameGrid[pos.y - 1][pos.x] !== pId)
+                    && (pos.x >= m || this.gameGrid[pos.y][pos.x + 1] !== pId)
+                    && (pos.y >= m || this.gameGrid[pos.y + 1][pos.x] !== pId))
+                    swapArr.push(cor);
             }
+            this.cornerMap[pId] = swapArr;
         }
         return this.cornerMap;
     }

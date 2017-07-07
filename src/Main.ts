@@ -150,7 +150,7 @@ class Main {
         Main.selectorDiv[gameState.turn].classList.add("turn");
 
         if (Main.debugView) {
-            const debugCorMap = gameState.getCornerMap(true);
+            const debugCorMap = gameState.getCornerMap();
             Main.viewGrid.debugDisplayCorner([...debugCorMap[0], ...debugCorMap[1]]);
         }
     }
