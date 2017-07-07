@@ -1,6 +1,7 @@
 /// <reference path="Shape.ts"/>
 /// <reference path="Util.ts"/>
 /// <reference path="Timer.ts"/>
+/// <reference path="DataTable.ts"/>
 /// <reference path="ShapeSelector.ts"/>
 /// <reference path="Enums/PlayerId.ts"/>
 /// <reference path="Player/IPlayer.ts"/>
@@ -89,7 +90,7 @@ class Main {
                 Main.placeCallback(undefined);
         }
 
-        if (Main.emptyTurns >= 2) {
+        if (Main.isGameOver(gameState)) {
             Main.finalizeGame();
         }
     }
@@ -125,8 +126,22 @@ class Main {
     private static updateView(gameState: GameState) {
         Main.viewGrid.clearHover();
         Main.viewGrid.display(gameState);
-        for (let i = 0; i < 2; i++) {
-            Main.selectors[i]!.display(gameState);
+        for (const pId of Player.Ids) {
+            Main.selectors[pId]!.display(gameState);
+        }
+
+        const dataSet = DataTable.generateTable(gameState);
+        const qbits = Main.isGameOver(gameState) ? gameState.getPlacedQbits() : undefined;
+
+        for (const pId of Player.Ids) {
+            const brain = Util.getElementByIdSafe("newGame_player" + String(pId)) as HTMLInputElement;
+            brain.classList.remove("win", "lose");
+            if (qbits !== undefined) {
+                brain.classList.add(qbits[pId] > qbits[Util.otherPlayer(pId)] ? "win" : "lose");
+            }
+
+            const data = Util.getElementByIdSafe("data" + String(pId)) as HTMLDivElement;
+            data.innerHTML = dataSet[pId];
         }
 
         if (Main.debugView) {
@@ -164,11 +179,20 @@ class Main {
     private static finalizeGame(): void {
         Main.autoTimer.stop();
 
-        const gameState = Main.viewGrid.currentState();
-        const qbits = gameState.getPlacedQbits();
-        const winPlayer = qbits[PlayerId.p1] > qbits[PlayerId.p2] ? PlayerId.p1 : PlayerId.p2;
-        const brain = Util.getElementByIdSafe("newGame_player" + String(winPlayer)) as HTMLInputElement;
-        brain.classList.add("win");
+        // const gameState = Main.viewGrid.currentState();
+        // const qbits = gameState.getPlacedQbits();
+        // const winPlayer = qbits[PlayerId.p1] > qbits[PlayerId.p2] ? PlayerId.p1 : PlayerId.p2;
+        // const brain = Util.getElementByIdSafe("newGame_player" + String(winPlayer)) as HTMLInputElement;
+        // brain.classList.add("win");
+    }
+
+    private static isGameOver(gameState: GameState): boolean {
+        const options = gameState.getPlaceOption();
+        if (options.length !== 0)
+            return false;
+        const other = gameState.place(undefined);
+        const otherOptions = other.getPlaceOption();
+        return otherOptions.length === 0;
     }
 }
 

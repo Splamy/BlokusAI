@@ -13,11 +13,17 @@
 
 <body>
     <div class="splitContainer">
-        <div id="selector0" class="splitOuter"> </div>
-        <div class="splitInner">
-            <div id="game"> </div>
+        <div class="splitOuter">
+            <div id="data0" class="datablock shadeBox"></div>
+            <div id="selector0" class="shadeBox"></div>
         </div>
-        <div id="selector1" class="splitOuter"> </div>
+        <div class="splitInner">
+            <div id="game"></div>
+        </div>
+        <div class="splitOuter">
+            <div id="data1" class="datablock shadeBox"></div>
+            <div id="selector1" class="shadeBox"></div>
+        </div>
     </div>
     <input id="gameTimeline" type="range" min="0" max="0" value="0" /><br/>
     <form id="ctrl" onsubmit="newGame(); return false;" class="mycard">
@@ -38,7 +44,15 @@
         <button type="submit">new game</button>
     </form>
     <div id="desc" class="mycard">
-        TODO: Basic Description
+        TODO Description
+        <hr />
+        <p>This site was created for the seminar "Analysis and implementation of mathematical games" by <a href="http://staff.fim.uni-passau.de/~kreuzer/">Prof. Dr. Kreuzer</a>            at the <a href="http://www.uni-passau.de/">University Passau</a>.</p>
+        <p>Check out some other projects from this seminar:</p>
+        <ul>
+            <li><a href="https://mat2095.de/domineering/">Domineering</a></li>
+            <li><a href="https://hexxagon.de">Hexxagon</a></li>
+            <li><a href="https://theasuro.de/kamisado/">Kamisado</a></li>
+        </ul>
     </div>
 </body>
 

@@ -61,12 +61,6 @@ button {
   cursor: pointer;
 }
 /* 3 split layout */
-.dummy {
-  background-color: red;
-  height: 30px;
-  width: 90px;
-  margin: 1px;
-}
 .splitContainer {
   width: 100%;
   display: inline-flex;
@@ -74,12 +68,14 @@ button {
   justify-content: center;
   margin: 5px;
 }
+.shadeBox {
+  box-shadow: inset 0px 0px 10px #000000;
+}
 .splitOuter {
   display: flex;
   width: auto;
   max-width: 25%;
   flex-wrap: wrap;
-  box-shadow: inset 0px 0px 10px #000000;
   margin: 3px;
 }
 .splitInner {
@@ -142,6 +138,28 @@ button {
 .gridelem * {
   border: none;
 }
+/* DATA */
+.datablock {
+  display: block;
+  width: 100%;
+  padding: 3px;
+}
+.datablock > div {
+  display: flex;
+  width: 100%;
+}
+.datablock > div:nth-child(odd) {
+  background: #4072bc;
+}
+.datablock > div > label {
+  display: flex;
+  width: 75%;
+}
+.datablock > div > output {
+  display: flex;
+  width: 25%;
+  min-width: 0%;
+}
 /* DEBUGLINES */
 .edge {
   width: 10px;
@@ -175,4 +193,7 @@ button {
 }
 .win {
   border-color: green;
+}
+.lose {
+  border-color: red;
 }

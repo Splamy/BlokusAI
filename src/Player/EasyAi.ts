@@ -1,7 +1,49 @@
 /// <reference path="../DualQueue.ts"/>
 
 class EasyAi implements IPlayer {
+
     public static AiSteps = 2;
+
+    public static get_space(gameState: GameState): [number, number] {
+        const cornerMap = gameState.getCornerMap();
+        const res: [number, number] = [0, 0];
+        for (const pId of Player.Ids) {
+            const cornerList = cornerMap[pId];
+            const posQueue = new DualQueue<Pos>();
+            for (const corner of cornerList) {
+                posQueue.push(corner.toPlace());
+            }
+            const grid = ViewGrid.cloneGrid(gameState.gameGrid);
+            let dist = 0;
+            while (posQueue.swap()) {
+                for (let i = 0; i < posQueue.length; i++) { // tslint:disable-line prefer-for-of
+                    const pos = posQueue.dequeue();
+                    if (pos.x > 0 && grid[pos.y][pos.x - 1] === PlayerId.none) {
+                        grid[pos.y][pos.x - 1] = PlayerId.hover;
+                        posQueue.push(new Pos(pos.x - 1, pos.y));
+                    }
+                    if (pos.x < RuleSet.GridSize - 1 && grid[pos.y][pos.x + 1] === PlayerId.none) {
+                        grid[pos.y][pos.x + 1] = PlayerId.hover;
+                        posQueue.push(new Pos(pos.x + 1, pos.y));
+                    }
+                    if (pos.y > 0 && grid[pos.y - 1][pos.x] === PlayerId.none) {
+                        grid[pos.y - 1][pos.x] = PlayerId.hover;
+                        posQueue.push(new Pos(pos.x, pos.y - 1));
+                    }
+                    if (pos.y < RuleSet.GridSize - 1 && grid[pos.y + 1][pos.x] === PlayerId.none) {
+                        grid[pos.y + 1][pos.x] = PlayerId.hover;
+                        posQueue.push(new Pos(pos.x, pos.y + 1));
+                    }
+                }
+                dist++;
+            }
+
+            res[pId] = dist;
+        }
+
+        return res;
+    }
+
     private static readonly weightPiece: number = 3;
     private static readonly weightOpenCorner: number = 1;
     private static readonly weightTrueLength: number = 2;
@@ -40,46 +82,6 @@ class EasyAi implements IPlayer {
             }
         }
         return Math.sqrt((maxx - minx) * (maxy - miny));
-    }
-
-    private static get_space(gameState: GameState): [number, number] {
-        const cornerMap = gameState.getCornerMap();
-        const res: [number, number] = [0, 0];
-        for (const pId of Player.Ids) {
-            const cornerList = cornerMap[pId];
-            const posQueue = new DualQueue<Pos>();
-            for (const corner of cornerList) {
-                posQueue.push(corner.toPlace());
-            }
-            const grid = ViewGrid.cloneGrid(gameState.gameGrid);
-            let dist = 0;
-            while (posQueue.swap()) {
-                for (let i = 0; i < posQueue.length; i++) {
-                    const pos = posQueue.dequeue();
-                    if (pos.x > 0 && grid[pos.y][pos.x - 1] === PlayerId.none) {
-                        grid[pos.y][pos.x - 1] = PlayerId.hover;
-                        posQueue.push(new Pos(pos.x - 1, pos.y));
-                    }
-                    if (pos.x < RuleSet.GridSize - 1 && grid[pos.y][pos.x + 1] === PlayerId.none) {
-                        grid[pos.y][pos.x + 1] = PlayerId.hover;
-                        posQueue.push(new Pos(pos.x + 1, pos.y));
-                    }
-                    if (pos.y > 0 && grid[pos.y - 1][pos.x] === PlayerId.none) {
-                        grid[pos.y - 1][pos.x] = PlayerId.hover;
-                        posQueue.push(new Pos(pos.x, pos.y - 1));
-                    }
-                    if (pos.y < RuleSet.GridSize - 1 && grid[pos.y + 1][pos.x] === PlayerId.none) {
-                        grid[pos.y + 1][pos.x] = PlayerId.hover;
-                        posQueue.push(new Pos(pos.x, pos.y + 1));
-                    }
-                }
-                dist++;
-            }
-
-            res[pId] = dist;
-        }
-
-        return res;
     }
 
     private static minmax(gameState: GameState, depth: number): Placement | undefined {

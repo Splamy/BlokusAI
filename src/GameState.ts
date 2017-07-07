@@ -99,7 +99,7 @@ class GameState {
         return new GameState(nextShapes, grid, Util.otherPlayer(this.turn));
     }
 
-    public getCornerMap(deadCellElim: boolean = true): [Corner[], Corner[]] {
+    public getCornerMap(deadCornerElim: boolean = true): [Corner[], Corner[]] {
         if (this.cornerMap !== undefined)
             return this.cornerMap;
 
@@ -139,7 +139,9 @@ class GameState {
                 }
             }
         }
-        if (deadCellElim) {
+        if (deadCornerElim) {
+            // const hashSet = [];
+
             const m = RuleSet.GridSize - 1;
             for (const pId of Player.Ids) {
                 const swapArr: Corner[] = [];
@@ -169,17 +171,19 @@ class GameState {
         if (this.placeOptions !== undefined)
             return this.placeOptions;
 
-        this.placeOptions = [];
-
         const availShapesTurn = this.availableShapes[this.turn];
         const curCornerMap = this.getCornerMap()[this.turn];
         // check if this is the first turn or player can't place anymore
         if (curCornerMap.length === 0) {
             if (availShapesTurn.every((x) => x))
-                return this.getEmptyPlaceOptions();
+                this.placeOptions = this.getEmptyPlaceOptions();
             else
-                return [];
+                this.placeOptions = [];
+            return this.placeOptions;
         }
+
+        this.placeOptions = [];
+
         for (let i = 0; i < Shape.AllShapes.length; i++) { // go over all available shapes
             if (!availShapesTurn[i])
                 continue;
