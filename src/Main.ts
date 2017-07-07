@@ -12,11 +12,12 @@ class Main {
         // generate color sheme for player 1 and 2
         Css.GenerateCustomStyle(0, 240);
 
-        for (let i = 0; i < 2; i++) {
-            const selectorDiv = Util.getElementByIdSafe("selector" + String(i));
-            const selector = new ShapeSelector(i);
-            Main.selectors[i] = selector;
-            selectorDiv.appendChild(selector.generate());
+        Main.selectorDiv = [] as any;
+        for (const pId of Player.Ids) {
+            Main.selectorDiv[pId] = Util.getElementByIdSafe("selector" + String(pId));
+            const selector = new ShapeSelector(pId);
+            Main.selectors[pId] = selector;
+            Main.selectorDiv[pId].appendChild(selector.generate());
         }
 
         Main.gameDiv = Util.getElementByIdSafe("game");
@@ -70,6 +71,7 @@ class Main {
     private static emptyTurns: number = 0;
 
     private static gameDiv: HTMLElement;
+    private static selectorDiv: [HTMLElement, HTMLElement];
     private static gameTimelineDiv: HTMLInputElement;
 
     private static autoPlayLoop(): void {
@@ -134,15 +136,18 @@ class Main {
         const qbits = Main.isGameOver(gameState) ? gameState.getPlacedQbits() : undefined;
 
         for (const pId of Player.Ids) {
+            Main.selectorDiv[pId].classList.remove("turn");
+
             const brain = Util.getElementByIdSafe("newGame_player" + String(pId)) as HTMLInputElement;
             brain.classList.remove("win", "lose");
-            if (qbits !== undefined) {
+            if (qbits !== undefined)
                 brain.classList.add(qbits[pId] > qbits[Util.otherPlayer(pId)] ? "win" : "lose");
-            }
 
             const data = Util.getElementByIdSafe("data" + String(pId)) as HTMLDivElement;
             data.innerHTML = dataSet[pId];
         }
+
+        Main.selectorDiv[gameState.turn].classList.add("turn");
 
         if (Main.debugView) {
             const debugCorMap = gameState.getCornerMap(true);

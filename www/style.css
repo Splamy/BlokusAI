@@ -197,3 +197,19 @@ button {
 .lose {
   border-color: red;
 }
+@keyframes turnbreathe {
+  0% {
+    background: #335b96;
+  }
+  50% {
+    background: #4072bc;
+  }
+  100% {
+    background: #335b96;
+  }
+}
+.turn {
+  animation-name: turnbreathe;
+  animation-duration: 2s;
+  animation-iteration-count: infinite;
+}

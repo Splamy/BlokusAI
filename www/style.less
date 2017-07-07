@@ -238,3 +238,15 @@ button {
 .lose {
     border-color: red;
 }
+
+@keyframes turnbreathe {
+    0%   { background: lighten(#335B96, 0%); }
+    50% { background: lighten(#335B96, 10%); }
+    100% { background: lighten(#335B96, 0%); }
+}
+
+.turn {
+    animation-name: turnbreathe;
+    animation-duration: 2s;
+    animation-iteration-count:infinite;
+}
