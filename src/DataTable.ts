@@ -3,7 +3,7 @@ class DataTable {
         const ret: [string, string] = ["", ""];
         const qbits = gameState.getPlacedQbits();
         const corner = gameState.getCornerMap();
-        const space = EasyAi.get_space(gameState);
+        const space = EasyAi.getSpace(gameState);
         for (const pId of Player.Ids) {
             ret[pId] += DataTable.generateRow("Bits", String(qbits[pId]));
             ret[pId] += DataTable.generateRow("Edges", String(corner[pId].length));

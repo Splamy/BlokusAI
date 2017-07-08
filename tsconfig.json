@@ -6,15 +6,15 @@
         "watch": false,
         "outDir": "www/js",
         "rootDir": "src",
-        "outFile": "www/js/game.js",
-        "removeComments": true,
-        "noImplicitAny": true,
-        "strictNullChecks": true,
-        "alwaysStrict": true,
-        "noFallthroughCasesInSwitch": true,
-        "noImplicitReturns": true,
-        "noImplicitThis": true,
-        "noUnusedLocals": true
-        //"noUnusedParameters": true
+        "outFile": "www/js/game.js"
+        ,"removeComments": true
+        ,"noImplicitAny": true
+        ,"strictNullChecks": true
+        ,"alwaysStrict": true
+        ,"noFallthroughCasesInSwitch": true
+        ,"noImplicitReturns": true
+        ,"noImplicitThis": true
+        ,"noUnusedLocals": true
+        //,"noUnusedParameters": true
     }
 }

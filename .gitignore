@@ -5,3 +5,13 @@ js/
 
 # Dependency directories
 node_modules/
+
+# LaTeX
+*.aux
+*.log
+*.nav
+*.pdf
+*.snm
+*.synctex.gz
+*.toc
+*.out

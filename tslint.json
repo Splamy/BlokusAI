@@ -42,6 +42,7 @@
         "array-type": [ true, "array" ],
         "unified-signatures": true,
         "prefer-switch": true,
-        "prefer-function-over-method": true
+        "prefer-function-over-method": true,
+        "member-ordering": [ false ]
     }
 }

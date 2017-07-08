@@ -1,5 +1,5 @@
 class DualQueue<T> {
-    public length: number = 0;
+    public swaplength: number = 0;
     private readList: T[] = [];
     private writeList: T[] = [];
 
@@ -14,7 +14,7 @@ class DualQueue<T> {
         const tmp = this.readList;
         this.readList = this.writeList;
         this.writeList = tmp;
-        this.length = this.readList.length;
+        this.swaplength = this.readList.length;
         return true;
     }
 }

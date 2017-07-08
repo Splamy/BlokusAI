@@ -28,7 +28,7 @@ class Main {
     public static newGameFunc(): void {
         const sizeSelector
             = Util.getElementByIdSafe("newGame_size") as HTMLInputElement;
-        RuleSet.GridSize = parseInt(sizeSelector.value, 10);
+        RuleSet.setGridSize(parseInt(sizeSelector.value, 10));
         Main.emptyTurns = 0;
 
         Main.viewGrid.cbClear.clear();
@@ -93,7 +93,7 @@ class Main {
         }
 
         if (Main.isGameOver(gameState)) {
-            Main.finalizeGame();
+            Main.autoTimer.stop();
         }
     }
 
@@ -178,17 +178,6 @@ class Main {
         const histId = parseInt(Main.gameTimelineDiv.value, 10);
         const histState = Main.gameHistory[histId];
         Main.updateView(histState);
-    }
-
-    /** Call this method when the game is over. */
-    private static finalizeGame(): void {
-        Main.autoTimer.stop();
-
-        // const gameState = Main.viewGrid.currentState();
-        // const qbits = gameState.getPlacedQbits();
-        // const winPlayer = qbits[PlayerId.p1] > qbits[PlayerId.p2] ? PlayerId.p1 : PlayerId.p2;
-        // const brain = Util.getElementByIdSafe("newGame_player" + String(winPlayer)) as HTMLInputElement;
-        // brain.classList.add("win");
     }
 
     private static isGameOver(gameState: GameState): boolean {

@@ -15,6 +15,7 @@ class GameState {
             && pos.x < RuleSet.GridSize && pos.y < RuleSet.GridSize;
     }
 
+    private placedQbits?: [number, number];
     private cornerMap?: [Corner[], Corner[]];
     private placeOptions?: Placement[];
 
@@ -84,8 +85,12 @@ class GameState {
     }
 
     public place(placement?: Placement): GameState {
-        if (placement === undefined)
-            return new GameState(this.availableShapes, this.gameGrid, Util.otherPlayer(this.turn));
+        if (placement === undefined) {
+            const nextState = new GameState(this.availableShapes, this.gameGrid, Util.otherPlayer(this.turn));
+            nextState.placedQbits = this.placedQbits;
+            nextState.cornerMap = this.cornerMap;
+            return nextState;
+        }
 
         const grid = ViewGrid.cloneGrid(this.gameGrid);
         for (const pos of placement.getPosArr()) {
@@ -97,7 +102,10 @@ class GameState {
         const nextShapes = this.availableShapes.slice(0) as [boolean[], boolean[]];
         nextShapes[this.turn] = nextShapes[this.turn].slice(0);
         nextShapes[this.turn][placement.shape.Type] = false;
-        return new GameState(nextShapes, grid, Util.otherPlayer(this.turn));
+        const nextState = new GameState(nextShapes, grid, Util.otherPlayer(this.turn));
+        nextState.placedQbits = this.getPlacedQbits().slice() as [number, number];
+        nextState.placedQbits[this.turn] += placement.shape.Value;
+        return nextState;
     }
 
     public getCornerMap(): [Corner[], Corner[]] {
@@ -148,11 +156,11 @@ class GameState {
             const swapArr: Corner[] = [];
             for (const cor of this.cornerMap[pId]) {
                 const pos = cor.target;
-                if (posHash.add(pos)
-                    && (pos.x <= 0 || this.gameGrid[pos.y][pos.x - 1] !== pId)
+                if ((pos.x <= 0 || this.gameGrid[pos.y][pos.x - 1] !== pId)
                     && (pos.y <= 0 || this.gameGrid[pos.y - 1][pos.x] !== pId)
                     && (pos.x >= m || this.gameGrid[pos.y][pos.x + 1] !== pId)
-                    && (pos.y >= m || this.gameGrid[pos.y + 1][pos.x] !== pId))
+                    && (pos.y >= m || this.gameGrid[pos.y + 1][pos.x] !== pId)
+                    && posHash.add(pos))
                     swapArr.push(cor);
             }
             this.cornerMap[pId] = swapArr;
@@ -161,11 +169,15 @@ class GameState {
     }
 
     public getPlacedQbits(): [number, number] {
+        if (this.placedQbits !== undefined)
+            return this.placedQbits;
+
         const p1Placed = Shape.QbitMax - this.availableShapes[PlayerId.p1].reduce(
             (sum, sava, ix) => sava ? sum + Shape.AllShapes[ix].Value : sum, 0);
         const p2Placed = Shape.QbitMax - this.availableShapes[PlayerId.p2].reduce(
             (sum, sava, ix) => sava ? sum + Shape.AllShapes[ix].Value : sum, 0);
-        return [p1Placed, p2Placed];
+        this.placedQbits = [p1Placed, p2Placed];
+        return this.placedQbits;
     }
 
     public getPlaceOption(): Placement[] {
@@ -205,6 +217,47 @@ class GameState {
         }
 
         return this.placeOptions;
+    }
+
+    public hasOptions(): [boolean, boolean] {
+        const res: [boolean, boolean] = [false, false];
+
+        pLoop:
+        for (const pId of Player.Ids) {
+            const availShapesTurn = this.availableShapes[pId];
+            const curCornerMap = this.getCornerMap()[pId];
+
+            if (curCornerMap.length === 0) {
+                if (availShapesTurn.every((x) => x)) {
+                    res[pId] = true; // a bit hacky for very small (unusual) fields
+                    continue pLoop;
+                } else {
+                    res[pId] = false;
+                    continue pLoop;
+                }
+            }
+
+            for (let i = 0; i < Shape.AllShapes.length; i++) { // go over all available shapes
+                if (!availShapesTurn[i])
+                    continue;
+                const shape = Shape.AllShapes[i];
+                for (const corner of curCornerMap) { // go over all corner on the map
+                    for (let varNum = 0; varNum < shape.Variants.length; varNum++) { // go over all variants
+                        const variant = shape.Variants[varNum];
+                        for (const varCorner of variant.Corners) { // go over all corner of that variant
+                            if (!corner.diagMatch(varCorner.dir))
+                                continue;
+                            const tryPlace = new Placement(corner.target.sub(varCorner.pos), shape, varNum);
+                            if (this.canPlace(tryPlace)) {
+                                res[pId] = true;
+                                continue pLoop;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return res;
     }
 
     private getEmptyPlaceOptions(): Placement[] {
