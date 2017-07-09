@@ -102,6 +102,7 @@ class Main {
     private static placeCallback(placement?: Placement): void {
         const state = Main.viewGrid.currentState();
         const newState = state.place(placement);
+        newState.lastPlacement = placement;
 
         // doing histoy features
         const nextHistId = parseInt(Main.gameTimelineDiv.value, 10) + 1;

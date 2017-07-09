@@ -191,9 +191,12 @@ class ViewGrid implements IView, IState {
 
         for (let y = 0; y < this.gridSize.y; y++) {
             for (let x = 0; x < this.gridSize.x; x++) {
+                Css.applyPlayerSet(this.grid[y][x].classList, PlayerId.none);
                 Css.applyPlayerColor(this.grid[y][x].classList, this.gameState.gameGrid[y][x]);
             }
         }
+
+        // highlight starting positions
         for (const pId of Player.Ids) {
             const start = RuleSet.StartPos[pId];
             if (gameState.gameGrid[start.y][start.x] === PlayerId.none
@@ -201,6 +204,14 @@ class ViewGrid implements IView, IState {
                 Css.applyPlayerHighlight(this.grid[start.y][start.x].classList, pId);
             } else {
                 Css.applyPlayerHighlight(this.grid[start.y][start.x].classList, undefined);
+            }
+        }
+
+        // highlight last piece
+        if (gameState.lastPlacement !== undefined) {
+            const other = Util.otherPlayer(gameState.turn);
+            for (const pos of gameState.lastPlacement.getPosArr()) {
+                Css.applyPlayerSet(this.grid[pos.y][pos.x].classList, other);
             }
         }
     }

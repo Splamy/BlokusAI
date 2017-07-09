@@ -17,6 +17,15 @@ class Css {
             classList.add(Css.playerColor("start", player));
     }
 
+    public static applyPlayerSet(classList: DOMTokenList, player: PlayerId): void {
+        classList.remove(
+            Css.playerColor("set", PlayerId.p1),
+            Css.playerColor("set", PlayerId.p2),
+            Css.playerColor("set", PlayerId.hover));
+        if (player !== PlayerId.none)
+            classList.add(Css.playerColor("set", player));
+    }
+
     public static GenerateCustomStyle(hue1: number, hue2: number) {
         if (Css.styleElem === undefined) {
             Css.styleElem = document.createElement("style");
@@ -47,8 +56,10 @@ class Css {
 
     private static generateColorScheme(player: PlayerId, hue: number, sat = Css.defaultSat): string {
         const pname = Css.playerColor("", player);
+        const pnameset = Css.playerColor("set", player);
         const pnamestart = Css.playerColor("start", player);
         return `.${pname}::before { background: hsl(${hue}, ${sat[0]}%, 50%); position: absolute; } `
+            + `.${pnameset}::before { box-shadow: inset 0px 0px 5px 5px hsl(${hue}, ${sat[0]}%, 80%); } `
             + `.${pname} { background: linear-gradient(to bottom right, `
             + `hsl(${hue}, ${sat[1]}%, 78%) 0%, hsl(${hue}, ${sat[2]}%, 65%) 50%, `
             + `hsl(${hue}, ${sat[3]}%, 33%) 51%, hsl(${hue}, ${sat[4]}%, 16%) 100%); position: relative; }`

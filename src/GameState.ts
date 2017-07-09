@@ -18,6 +18,7 @@ class GameState {
     private placedQbits?: [number, number];
     private cornerMap?: [Corner[], Corner[]];
     private placeOptions?: Placement[];
+    public lastPlacement?: Placement;
 
     private constructor(
         public readonly availableShapes: [boolean[], boolean[]],
