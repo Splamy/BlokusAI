@@ -97,7 +97,7 @@ class Shape {
         Shape.I5,
         Shape.L4,
         Shape.L5,
-        /*Shape.V3,
+        Shape.V3,
         Shape.V5,
         Shape.T4,
         Shape.T5,
@@ -110,7 +110,7 @@ class Shape {
         Shape.P,
         Shape.X,
         Shape.F,
-        Shape.O,*/
+        Shape.O,
     ];
 
     public static readonly ShapeCount: number = Shape.AllShapes.length;

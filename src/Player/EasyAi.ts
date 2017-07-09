@@ -4,7 +4,8 @@
 
 class EasyAi implements IPlayer {
     private static AiSteps = 2;
-    private static AiStepsAdaptive = 100000;
+    private static AiStepsAdaptive = 10000;
+    private static readonly winVal = 10000;
     private static readonly weightPiece: number = 5;
     private static readonly weightOpenCorner: number = 2;
     private static readonly weightTrueLength: number = 1;
@@ -15,20 +16,22 @@ class EasyAi implements IPlayer {
         const other = Util.otherPlayer(player);
         const curPlacedQbits = gameState.getPlacedQbits();
         const hasOptions = gameState.hasOptions();
+        let endBonus = 0;
         if (!hasOptions[PlayerId.p1]) {
             if (!hasOptions[PlayerId.p2]) {
-                return curPlacedQbits[player] > curPlacedQbits[other] ? Number.MAX_VALUE : Number.MIN_VALUE;
+                endBonus = curPlacedQbits[player] > curPlacedQbits[other] ? EasyAi.winVal : -EasyAi.winVal;
             } else if (player === PlayerId.p1 && curPlacedQbits[PlayerId.p2] >= curPlacedQbits[PlayerId.p1]) {
-                return Number.MIN_VALUE;
+                endBonus = -EasyAi.winVal;
             }
         } else if (!hasOptions[PlayerId.p2] && curPlacedQbits[PlayerId.p1] >= curPlacedQbits[PlayerId.p2]) {
-            return Number.MIN_VALUE;
+            endBonus = -EasyAi.winVal;
         }
         const nextCorner = gameState.getCornerMap();
         const trueLength = EasyAi.getTrueLength(gameState, player);
         const space = EasyAi.getSpace(gameState);
 
-        return nextCorner[player].length / RuleSet.NormalizeOpenCorner * EasyAi.weightOpenCorner
+        return endBonus
+            + nextCorner[player].length / RuleSet.NormalizeOpenCorner * EasyAi.weightOpenCorner
             - nextCorner[other].length / RuleSet.NormalizeOpenCorner * EasyAi.weightOpenCorner
             + curPlacedQbits[player] / RuleSet.NormalizePiece * EasyAi.weightPiece
             + trueLength * EasyAi.weightTrueLength
@@ -86,10 +89,10 @@ class EasyAi implements IPlayer {
     }
 
     private static getTrueLength(gameState: GameState, player: PlayerId): number {
-        let minx = Number.MAX_VALUE;
-        let miny = Number.MAX_VALUE;
-        let maxx = Number.MIN_VALUE;
-        let maxy = Number.MIN_VALUE;
+        let minx = Number.POSITIVE_INFINITY;
+        let miny = Number.POSITIVE_INFINITY;
+        let maxx = Number.NEGATIVE_INFINITY;
+        let maxy = Number.NEGATIVE_INFINITY;
 
         for (let y = 0; y < gameState.gameGrid.length; y++) {
             const line = gameState.gameGrid[y];
@@ -129,7 +132,7 @@ class EasyAi implements IPlayer {
             return this.value(gameState, player);
         } else {
             const options = gameState.getPlaceOption();
-            let score: number = max ? Number.MIN_VALUE : Number.MAX_VALUE;
+            let score: number = max ? Number.NEGATIVE_INFINITY : Number.POSITIVE_INFINITY;
             for (const opt of options) {
                 const nextState = gameState.place(opt);
                 const nextScore = this.minmaxScored(nextState, depth - 1, !max, player);
@@ -185,20 +188,23 @@ class EasyAi implements IPlayer {
 
         // minmax calculations
         console.log("Working!");
-        EasyAi.minmaxAdaptiveRecusive(tree, gameState.turn);
-        let bestOption = tree.Children[0];
-        let bestValue = bestOption.Value!;
+
+        let bestOption: TreeData | undefined;
+        let bestValue = Number.NEGATIVE_INFINITY;
         for (const node of tree.Children) {
-            if (node.Value! > bestValue) {
-                bestValue = node.Value!;
+            const nodeVal = EasyAi.minmaxAdaptiveRecusive(node, gameState.turn);
+            if (nodeVal > bestValue) {
+                bestValue = nodeVal;
                 bestOption = node;
             }
         }
-        if (bestValue === Number.MAX_VALUE) {
+        if (bestValue > EasyAi.winVal / 2) {
             console.log("WIN (soon)!");
+        } else if (bestValue < -EasyAi.winVal / 2) {
+            console.log("LOSE (opt)!");
         }
 
-        return bestOption.Ply;
+        return bestOption!.Ply;
     }
 
     private static minmaxAdaptiveRecusive(node: TreeData, player: PlayerId): number {
@@ -206,14 +212,16 @@ class EasyAi implements IPlayer {
         if (node.Children === undefined) {
             bestValue = EasyAi.value(node.State, player);
             node.Value = bestValue;
+            node.State = undefined as any;
         } else if (node.Max) {
-            bestValue = Number.MIN_VALUE;
+            bestValue = Number.NEGATIVE_INFINITY;
             for (const child of node.Children) {
                 const val = EasyAi.minmaxAdaptiveRecusive(child, player);
                 bestValue = Math.max(bestValue, val);
             }
+            node.Children = undefined;
         } else {
-            bestValue = Number.MAX_VALUE;
+            bestValue = Number.POSITIVE_INFINITY;
             for (const child of node.Children) {
                 const val = EasyAi.minmaxAdaptiveRecusive(child, player);
                 bestValue = Math.min(bestValue, val);
@@ -230,8 +238,8 @@ class EasyAi implements IPlayer {
     public display(gameState: GameState): void {
         console.log("Thinking!");
         const best: Placement | undefined
-            = EasyAi.minmax(gameState, 2);
-        // = EasyAi.minmaxAdaptive(gameState);
+            //= EasyAi.minmax(gameState, 2);
+            = EasyAi.minmaxAdaptive(gameState);
         console.log("Done :P");
         this.placeCallback.invoke(best);
     }

@@ -11,7 +11,7 @@ class RuleSet {
         RuleSet.NormalizeOpenCorner = Shape.AllShapes.reduce(
             (sum, sava) => sum + sava.Variants[0].Corners.length, 0);
         RuleSet.NormalizePiece = Shape.AllShapes.reduce(
-            (max, sava) => Math.max(max, sava.Variants[0].Corners.length), Number.MIN_VALUE);
+            (max, sava) => Math.max(max, sava.Variants[0].Corners.length), Number.NEGATIVE_INFINITY);
     }
 
     public static NormalizeLongestSpace: number;
