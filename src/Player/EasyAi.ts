@@ -3,16 +3,23 @@
 /// <reference path="../GameState.ts"/>
 
 class EasyAi implements IPlayer {
-    private static AiSteps = 2;
     private static AiStepsAdaptive = 10000;
     private static readonly winVal = 10000;
-    private static readonly weightPiece: number = 5;
-    private static readonly weightOpenCorner: number = 2;
-    private static readonly weightTrueLength: number = 1;
-    private static readonly weightLongestSpace: number = 1;
-    private static readonly weightAccessSpace: number = 2;
+    private static readonly defWeightPiece: number = 5;
+    private static readonly defWeightOpenCorner: number = 2;
+    private static readonly defWeightTrueLength: number = 1;
+    private static readonly defWeightLongestSpace: number = 1;
+    private static readonly defWeightAccessSpace: number = 2;
 
-    public static value(gameState: GameState, player: PlayerId): number {
+    constructor(
+        private weightPiece: number = EasyAi.defWeightPiece,
+        private weightOpenCorner: number = EasyAi.defWeightOpenCorner,
+        private weightTrueLength: number = EasyAi.defWeightTrueLength,
+        private weightLongestSpace: number = EasyAi.defWeightLongestSpace,
+        private weightAccessSpace: number = EasyAi.defWeightAccessSpace) {
+    }
+
+    public value(gameState: GameState, player: PlayerId): number {
         const other = Util.otherPlayer(player);
         const curPlacedQbits = gameState.getPlacedQbits();
         const hasOptions = gameState.hasOptions();
@@ -32,14 +39,14 @@ class EasyAi implements IPlayer {
 
         // TODO change evaluation if opponent cant make any move anymore
         return endBonus
-            + nextCorner[player].length / RuleSet.NormalizeOpenCorner * EasyAi.weightOpenCorner
-            - nextCorner[other].length / RuleSet.NormalizeOpenCorner * EasyAi.weightOpenCorner
-            + curPlacedQbits[player] / RuleSet.NormalizePiece * EasyAi.weightPiece
-            + trueLength * EasyAi.weightTrueLength
-            - space[player].LongestSpace * EasyAi.weightLongestSpace
-            + space[other].LongestSpace * EasyAi.weightLongestSpace
-            + space[player].AccessSpace * EasyAi.weightAccessSpace
-            - space[other].AccessSpace * EasyAi.weightAccessSpace;
+            + nextCorner[player].length / RuleSet.NormalizeOpenCorner * this.weightOpenCorner
+            - nextCorner[other].length / RuleSet.NormalizeOpenCorner * this.weightOpenCorner
+            + curPlacedQbits[player] / RuleSet.NormalizePiece * this.weightPiece
+            + trueLength * this.weightTrueLength
+            - space[player].LongestSpace * this.weightLongestSpace
+            + space[other].LongestSpace * this.weightLongestSpace
+            + space[player].AccessSpace * this.weightAccessSpace
+            - space[other].AccessSpace * this.weightAccessSpace;
     }
 
     public static getSpace(gameState: GameState): [StateData, StateData] {
@@ -109,44 +116,7 @@ class EasyAi implements IPlayer {
         return ((maxx - minx) + (maxy - miny)) / RuleSet.NormalizeTrueLength;
     }
 
-    private static minmax(gameState: GameState, depth: number): Placement | undefined {
-        if (depth === 0) {
-            return undefined;
-        } else {
-            const options = gameState.getPlaceOption();
-            let best: Placement | undefined;
-            let score: number = -1;
-            for (const opt of options) {
-                const nextState = gameState.place(opt);
-                const nextScore = this.minmaxScored(nextState, depth - 1, false, gameState.turn);
-                if (nextScore > score) {
-                    score = nextScore;
-                    best = opt;
-                }
-            }
-            return best;
-        }
-    }
-
-    private static minmaxScored(gameState: GameState, depth: number, max: boolean, player: PlayerId): number {
-        if (depth === 0) {
-            return this.value(gameState, player);
-        } else {
-            const options = gameState.getPlaceOption();
-            let score: number = max ? Number.NEGATIVE_INFINITY : Number.POSITIVE_INFINITY;
-            for (const opt of options) {
-                const nextState = gameState.place(opt);
-                const nextScore = this.minmaxScored(nextState, depth - 1, !max, player);
-                if (max)
-                    score = Math.max(nextScore, score);
-                else
-                    score = Math.min(nextScore, score);
-            }
-            return score;
-        }
-    }
-
-    private static minmaxAdaptive(gameState: GameState): Placement | undefined {
+    private minmaxAdaptive(gameState: GameState): Placement | undefined {
 
         const dq = new DualQueue<TreeData>();
         const tree: TreeData = new TreeData(true, gameState);
@@ -193,7 +163,7 @@ class EasyAi implements IPlayer {
         let bestOption: TreeData | undefined;
         let bestValue = Number.NEGATIVE_INFINITY;
         if (Parallel.checkParallel()) {
-            Parallel.thinkEasyAi(tree, gameState.turn);
+            Parallel.thinkEasyAi(this, tree, gameState.turn);
             for (const node of tree.Children) {
                 if (node.Value! > bestValue) {
                     bestValue = node.Value!;
@@ -202,7 +172,7 @@ class EasyAi implements IPlayer {
             }
         } else {
             for (const node of tree.Children) {
-                const nodeVal = EasyAi.minmaxAdaptiveRecusive(node, gameState.turn);
+                const nodeVal = this.minmaxAdaptiveRecusive(node, gameState.turn);
                 if (nodeVal > bestValue) {
                     bestValue = nodeVal;
                     bestOption = node;
@@ -219,20 +189,20 @@ class EasyAi implements IPlayer {
         return bestOption!.Ply;
     }
 
-    public static minmaxAdaptiveRecusive(node: TreeData, player: PlayerId): number {
+    public minmaxAdaptiveRecusive(node: TreeData, player: PlayerId): number {
         let bestValue;
         if (node.Children === undefined) {
-            bestValue = EasyAi.value(node.State, player);
+            bestValue = this.value(node.State, player);
         } else if (node.Max) {
             bestValue = Number.NEGATIVE_INFINITY;
             for (const child of node.Children) {
-                const val = EasyAi.minmaxAdaptiveRecusive(child, player);
+                const val = this.minmaxAdaptiveRecusive(child, player);
                 bestValue = Math.max(bestValue, val);
             }
         } else {
             bestValue = Number.POSITIVE_INFINITY;
             for (const child of node.Children) {
-                const val = EasyAi.minmaxAdaptiveRecusive(child, player);
+                const val = this.minmaxAdaptiveRecusive(child, player);
                 bestValue = Math.min(bestValue, val);
             }
         }
@@ -247,7 +217,7 @@ class EasyAi implements IPlayer {
         console.log("Thinking!");
         const best: Placement | undefined
             // = EasyAi.minmax(gameState, 2);
-            = EasyAi.minmaxAdaptive(gameState);
+            = this.minmaxAdaptive(gameState);
         console.log("Done :P");
         this.placeCallback.invoke(best);
     }

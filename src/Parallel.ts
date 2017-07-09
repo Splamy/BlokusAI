@@ -16,7 +16,7 @@ class Parallel {
         return Parallel.canParallel;
     }
 
-    public static thinkEasyAi(tree: TreeData, player: PlayerId): void {
+    public static thinkEasyAi(ai: EasyAi, tree: TreeData, player: PlayerId): void {
         if (!Parallel.checkParallel())
             throw new Error("Parallel operations are not supported");
 
@@ -24,13 +24,14 @@ class Parallel {
 
         for (let i = 0; i < Parallel.extraCores; i++) {
             const split = Util.fairSplit(tree.Children!.length, i, Parallel.extraCores + 1);
-            Parallel.worker![i].postMessage(new ParallizeData(i, player, split.Start, split.Length, tree.Children!));
+            Parallel.worker![i].postMessage(
+                new ParallizeData(ai, i, player, split.Start, split.Length, tree.Children!));
         }
         const split = Util.fairSplit(tree.Children!.length, Parallel.extraCores, Parallel.extraCores + 1);
         const ownNodes = tree.Children!;
         for (let i = 0; i < ownNodes.length; i++) {
             const node = ownNodes[split.Start + i];
-            node.Value = EasyAi.minmaxAdaptiveRecusive(node, player);
+            node.Value = ai.minmaxAdaptiveRecusive(node, player);
         }
 
         while (true) {
@@ -70,7 +71,7 @@ self.onmessage = (msg) => {
     console.log(`Working from ${data.Start} to ${data.Start + data.Length}`);
     for (let i = 0; i < data.Length; i++) {
         const node = data.Nodes[data.Start + i];
-        node.Value = EasyAi.minmaxAdaptiveRecusive(node, data.Player);
+        node.Value = data.Ai.minmaxAdaptiveRecusive(node, data.Player);
     }
     postMessage(true, "*");
 };
@@ -78,6 +79,7 @@ self.onmessage = (msg) => {
 // tslint:disable max-classes-per-file
 class ParallizeData {
     constructor(
+        public Ai: EasyAi,
         public WorkerId: number,
         public Player: PlayerId,
         public Start: number,
