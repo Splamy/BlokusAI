@@ -12,6 +12,8 @@ class Main {
     public static init(): void {
         Main.viewGrid = new ViewGrid();
         Main.autoTimer = new Timer(Main.autoPlayLoop, 1);
+        //Main.genetic = new Timer(Main.geneTick, 1000);
+        Main.geneticAi = [new EasyAi(2, 2, 2, 2, 2), new EasyAi(2, 2, 2, 2, 2)];
 
         // generate color sheme for player 1 and 2
         Css.GenerateCustomStyle(0, 240);
@@ -27,6 +29,8 @@ class Main {
         Main.gameDiv = Util.getElementByIdSafe("game");
         Main.gameTimelineDiv = Util.getElementByIdSafe("gameTimeline") as HTMLInputElement;
         Main.gameTimelineDiv.oninput = Main.changeHistory;
+
+        //Main.genetic.start();
     }
 
     public static newGameFunc(): void {
@@ -76,6 +80,9 @@ class Main {
     private static selectorDiv: [HTMLElement, HTMLElement];
     private static gameTimelineDiv: HTMLInputElement;
 
+    //private static genetic: Timer;
+    private static geneticAi: [EasyAi, EasyAi];
+
     private static autoPlayLoop(): void {
         const gameState = Main.viewGrid.currentState();
 
@@ -95,7 +102,8 @@ class Main {
         }
 
         if (Main.isGameOver(gameState)) {
-            Main.autoTimer.stop();
+            // Main.autoTimer.stop();
+            Main.geneTick();
         }
     }
 
@@ -160,6 +168,7 @@ class Main {
                 return new Human(Main.viewGrid, selector);
             case "1": return new RandomAi();
             case "2": return new EasyAi();
+            case "3": return Main.geneticAi[selector!.player];
             default: throw new Error("unhandled player type");
         }
     }
@@ -184,6 +193,41 @@ class Main {
         const other = gameState.place(undefined);
         const otherOptions = other.getPlaceOption();
         return otherOptions.length === 0;
+    }
+
+    private static geneTick() {
+        const qbits = Main.viewGrid.currentState().getPlacedQbits();
+        const winnerP = qbits[PlayerId.p1] > qbits[Util.otherPlayer(PlayerId.p2)]
+            ? PlayerId.p1 : PlayerId.p2;
+
+        const winner = Main.geneticAi[winnerP];
+        const loser = Main.geneticAi[Util.otherPlayer(winnerP)];
+
+        if (Math.random() < 0.2)
+            loser.weightAccessSpace = winner.weightAccessSpace;
+        if (Math.random() < 0.2)
+            loser.weightLongestSpace = winner.weightLongestSpace;
+        if (Math.random() < 0.2)
+            loser.weightOpenCorner = winner.weightOpenCorner;
+        if (Math.random() < 0.2)
+            loser.weightPiece = winner.weightPiece;
+        if (Math.random() < 0.2)
+            loser.weightTrueLength = winner.weightTrueLength;
+
+        if (Math.random() < 0.2)
+            loser.weightAccessSpace += (Math.random() - 0.5);
+        if (Math.random() < 0.2)
+            loser.weightLongestSpace += (Math.random() - 0.5);
+        if (Math.random() < 0.2)
+            loser.weightOpenCorner += (Math.random() - 0.5);
+        if (Math.random() < 0.2)
+            loser.weightPiece += (Math.random() - 0.5);
+        if (Math.random() < 0.2)
+            loser.weightTrueLength += (Math.random() - 0.5);
+
+        console.log(`Old champion: (${winner.weightAccessSpace},${winner.weightLongestSpace},${winner.weightOpenCorner},${winner.weightPiece},${winner.weightTrueLength}) New challanger (${loser.weightAccessSpace},${loser.weightLongestSpace},${loser.weightOpenCorner},${loser.weightPiece},${loser.weightTrueLength})`);
+
+        Main.newGameFunc();
     }
 }
 

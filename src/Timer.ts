@@ -4,9 +4,9 @@ class Timer {
     private running: boolean;
     private timerId: number;
 
-    constructor(func: () => void, interval: number) {
+    constructor(func: () => void, msInterval: number) {
         this.func = func;
-        this.interval = interval;
+        this.interval = msInterval;
         this.running = false;
     }
 

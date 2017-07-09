@@ -12,11 +12,11 @@ class EasyAi implements IPlayer {
     private static readonly defWeightAccessSpace: number = 2;
 
     constructor(
-        private weightPiece: number = EasyAi.defWeightPiece,
-        private weightOpenCorner: number = EasyAi.defWeightOpenCorner,
-        private weightTrueLength: number = EasyAi.defWeightTrueLength,
-        private weightLongestSpace: number = EasyAi.defWeightLongestSpace,
-        private weightAccessSpace: number = EasyAi.defWeightAccessSpace) {
+        public weightPiece: number = EasyAi.defWeightPiece,
+        public weightOpenCorner: number = EasyAi.defWeightOpenCorner,
+        public weightTrueLength: number = EasyAi.defWeightTrueLength,
+        public weightLongestSpace: number = EasyAi.defWeightLongestSpace,
+        public weightAccessSpace: number = EasyAi.defWeightAccessSpace) {
     }
 
     public value(gameState: GameState, player: PlayerId): number {
