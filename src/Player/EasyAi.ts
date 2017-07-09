@@ -3,7 +3,7 @@
 /// <reference path="../GameState.ts"/>
 
 class EasyAi implements IPlayer {
-    private static AiStepsAdaptive = 10000;
+    private static AiStepsAdaptive = 5000;
     private static readonly winVal = 10000;
     private static readonly defWeightPiece: number = 5;
     private static readonly defWeightOpenCorner: number = 2;
@@ -136,7 +136,7 @@ class EasyAi implements IPlayer {
         let depth = 0;
 
         // adaptive depth calculations
-        console.log("Adapting!");
+        //console.log("Adapting!");
         while (steps < EasyAi.AiStepsAdaptive && dq.swap()) {
             for (let i = 0; i < dq.swaplength; i++) {
                 const node = dq.dequeue();
@@ -155,10 +155,10 @@ class EasyAi implements IPlayer {
             }
             depth++;
         }
-        console.log(`Target depth:${depth} states:${steps}!`);
+        //console.log(`Target depth:${depth} states:${steps}!`);
 
         // minmax calculations
-        console.log("Working!");
+        //console.log("Working!");
 
         let bestOption: TreeData | undefined;
         let bestValue = Number.NEGATIVE_INFINITY;
@@ -181,9 +181,9 @@ class EasyAi implements IPlayer {
         }
 
         if (bestValue > EasyAi.winVal / 2) {
-            console.log("WIN (soon)!");
+            //console.log("WIN (soon)!");
         } else if (bestValue < -EasyAi.winVal / 2) {
-            console.log("LOSE (opt)!");
+            //console.log("LOSE (opt)!");
         }
 
         return bestOption!.Ply;
@@ -214,11 +214,11 @@ class EasyAi implements IPlayer {
     public readonly placeCallback = new Ev<Placement>();
 
     public display(gameState: GameState): void {
-        console.log("Thinking!");
+        //console.log("Thinking!");
         const best: Placement | undefined
             // = EasyAi.minmax(gameState, 2);
             = this.minmaxAdaptive(gameState);
-        console.log("Done :P");
+        //console.log("Done :P");
         this.placeCallback.invoke(best);
     }
 }

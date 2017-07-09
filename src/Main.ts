@@ -197,7 +197,7 @@ class Main {
 
     private static geneTick() {
         const qbits = Main.viewGrid.currentState().getPlacedQbits();
-        const winnerP = qbits[PlayerId.p1] > qbits[Util.otherPlayer(PlayerId.p2)]
+        const winnerP = qbits[PlayerId.p1] > qbits[PlayerId.p2]
             ? PlayerId.p1 : PlayerId.p2;
 
         const winner = Main.geneticAi[winnerP];
