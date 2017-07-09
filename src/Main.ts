@@ -214,15 +214,16 @@ class Main {
         if (Math.random() < 0.2)
             loser.weightTrueLength = winner.weightTrueLength;
 
-        if (Math.random() < 0.2)
+        const xval = Math.random();
+        if (xval < 0.2)
             loser.weightAccessSpace += (Math.random() - 0.5);
-        if (Math.random() < 0.2)
+        else if (xval < 0.4)
             loser.weightLongestSpace += (Math.random() - 0.5);
-        if (Math.random() < 0.2)
+        else if (xval < 0.6)
             loser.weightOpenCorner += (Math.random() - 0.5);
-        if (Math.random() < 0.2)
+        else if (xval < 0.8)
             loser.weightPiece += (Math.random() - 0.5);
-        if (Math.random() < 0.2)
+        else
             loser.weightTrueLength += (Math.random() - 0.5);
 
         console.log(`Old champion: (${winner.weightAccessSpace},${winner.weightLongestSpace},${winner.weightOpenCorner},${winner.weightPiece},${winner.weightTrueLength}) New challanger (${loser.weightAccessSpace},${loser.weightLongestSpace},${loser.weightOpenCorner},${loser.weightPiece},${loser.weightTrueLength})`);
