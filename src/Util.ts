@@ -37,6 +37,16 @@ class Util {
         return elem;
     }
 
+    public static fairSplit(full: number, me: number, max: number): { Start: number, Length: number } {
+        if (me < full % max) {
+            const len = full / max + 1;
+            return { Length: len, Start: len * me };
+        } else {
+            const len = full / max;
+            return { Length: len, Start: length * me + full % max };
+        }
+    }
+
     /* tslint:disable */
     public static disableScroll(): void {
         if (window.addEventListener) // older FF

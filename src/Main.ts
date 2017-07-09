@@ -1,4 +1,5 @@
 /// <reference path="Shape.ts"/>
+/// <reference path="Parallel.ts"/>
 /// <reference path="Util.ts"/>
 /// <reference path="Timer.ts"/>
 /// <reference path="DataTable.ts"/>
@@ -9,6 +10,9 @@
 
 class Main {
     public static init(): void {
+        Main.viewGrid = new ViewGrid();
+        Main.autoTimer = new Timer(Main.autoPlayLoop, 1);
+
         // generate color sheme for player 1 and 2
         Css.GenerateCustomStyle(0, 240);
 
@@ -29,7 +33,6 @@ class Main {
         const sizeSelector
             = Util.getElementByIdSafe("newGame_size") as HTMLInputElement;
         RuleSet.setGridSize(parseInt(sizeSelector.value, 10));
-        Main.emptyTurns = 0;
 
         Main.viewGrid.cbClear.clear();
         Main.viewGrid.cbClick.clear();
@@ -61,15 +64,14 @@ class Main {
 
     private static readonly debugView: boolean = true;
 
-    private static readonly viewGrid: ViewGrid = new ViewGrid();
     private static readonly players: [IPlayer, IPlayer] = [Dummy.Instance, Dummy.Instance];
     private static readonly selectors: [ShapeSelector | undefined, ShapeSelector | undefined] = [undefined, undefined];
     private static isDisplayCallback: boolean = false;
     private static aiProcessedDisplay: boolean = false;
-    private static readonly autoTimer: Timer = new Timer(Main.autoPlayLoop, 1);
+    private static autoTimer: Timer;
     private static readonly gameHistory: GameState[] = [];
-    private static emptyTurns: number = 0;
 
+    private static viewGrid: ViewGrid;
     private static gameDiv: HTMLElement;
     private static selectorDiv: [HTMLElement, HTMLElement];
     private static gameTimelineDiv: HTMLInputElement;
@@ -100,12 +102,6 @@ class Main {
     private static placeCallback(placement?: Placement): void {
         const state = Main.viewGrid.currentState();
         const newState = state.place(placement);
-
-        // check for empty moves to recognize end of game
-        if (placement === undefined)
-            Main.emptyTurns++;
-        else
-            Main.emptyTurns = 0;
 
         // doing histoy features
         const nextHistId = parseInt(Main.gameTimelineDiv.value, 10) + 1;
@@ -190,5 +186,15 @@ class Main {
     }
 }
 
-window.onload = Main.init;
 function newGame(this: HTMLElement, ev: Event): void { Main.newGameFunc(); }
+
+// check if we are a worker to do nothing
+if (typeof WorkerGlobalScope !== "undefined" && self instanceof WorkerGlobalScope) {
+    console.log("Worker initialized");
+} else {
+    window.onload = Main.init;
+    if (Parallel.checkParallel())
+        console.log("Parallel operations supported");
+    else
+        console.log("Parallel operations not supported");
+}

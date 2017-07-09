@@ -194,6 +194,15 @@ class ViewGrid implements IView, IState {
                 Css.applyPlayerColor(this.grid[y][x].classList, this.gameState.gameGrid[y][x]);
             }
         }
+        for (const pId of Player.Ids) {
+            const start = RuleSet.StartPos[pId];
+            if (gameState.gameGrid[start.y][start.x] === PlayerId.none
+                || gameState.gameGrid[start.y][start.x] === PlayerId.hover) {
+                Css.applyPlayerHighlight(this.grid[start.y][start.x].classList, pId);
+            } else {
+                Css.applyPlayerHighlight(this.grid[start.y][start.x].classList, undefined);
+            }
+        }
     }
 
     public debugDisplayCorner(corner: Corner[]): void {

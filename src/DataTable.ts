@@ -6,7 +6,7 @@ class DataTable {
         const space = EasyAi.getSpace(gameState);
         for (const pId of Player.Ids) {
             ret[pId] += DataTable.generateRow("Bits", String(qbits[pId]));
-            ret[pId] += DataTable.generateRow("Edges", String(corner[pId].length));
+            ret[pId] += DataTable.generateRow("Corner", String(corner[pId].length));
             ret[pId] += DataTable.generateRow("Space usage", space[pId].LongestSpace.toFixed(4));
             ret[pId] += DataTable.generateRow("Accessible space", space[pId].AccessSpace.toFixed(4));
         }

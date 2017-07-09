@@ -56,7 +56,7 @@ class GameState {
             if (curCornerMap.length === 0) {
                 // might be first turn or was player's last :P
                 if (availShapesTurn.every((x) => x)) {
-                    const startPos = this.getStartingPos();
+                    const startPos = RuleSet.StartPos[this.turn];
                     for (const pos of placement.getPosArr()) {
                         if (pos.equals(startPos)) {
                             isValid = true;
@@ -262,7 +262,7 @@ class GameState {
 
     private getEmptyPlaceOptions(): Placement[] {
         const emptyPlacement: Placement[] = [];
-        const startPos = this.getStartingPos();
+        const startPos = RuleSet.StartPos[this.turn];
 
         for (const shape of Shape.AllShapes) { // go over all available shapes
             for (let varNum = 0; varNum < shape.Variants.length; varNum++) { // go over all variants of that shape
@@ -280,11 +280,5 @@ class GameState {
         }
 
         return emptyPlacement;
-    }
-
-    private getStartingPos(): Pos {
-        return (this.turn === PlayerId.p1)
-            ? new Pos(4, 4)
-            : new Pos(this.gameGrid[0].length - 5, this.gameGrid.length - 5);
     }
 }
