@@ -144,7 +144,8 @@ class Main {
             data.innerHTML = dataSet[pId];
         }
 
-        Main.selectorDiv[gameState.turn].classList.add("turn");
+        if (qbits === undefined)
+            Main.selectorDiv[gameState.turn].classList.add("turn");
 
         if (Main.debugView) {
             const debugCorMap = gameState.getCornerMap();
