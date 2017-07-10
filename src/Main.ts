@@ -13,7 +13,8 @@ class Main {
         Main.viewGrid = new ViewGrid();
         Main.autoTimer = new Timer(Main.autoPlayLoop, 1);
         //Main.genetic = new Timer(Main.geneTick, 1000);
-        Main.geneticAi = [new EasyAi(2, 2, 2, 2, 2), new EasyAi(2, 2, 2, 2, 2)];
+        //Main.geneticAi = [new EasyAi(2, 2, 2, 2, 2), new EasyAi(2, 2, 2, 2, 2)];
+        Main.geneticAi = [new EasyAi(1.136, 2.032, 2.389, 1.821, 2.035), new EasyAi(1.025, 0.062, 2.388, 1.749, 1.520)];
 
         // generate color sheme for player 1 and 2
         Css.GenerateCustomStyle(0, 240);
@@ -102,8 +103,8 @@ class Main {
         }
 
         if (Main.isGameOver(gameState)) {
-            // Main.autoTimer.stop();
-            Main.geneTick();
+            Main.autoTimer.stop();
+            //Main.geneTick();
         }
     }
 
@@ -168,7 +169,8 @@ class Main {
                 return new Human(Main.viewGrid, selector);
             case "1": return new RandomAi();
             case "2": return new EasyAi();
-            case "3": return Main.geneticAi[selector!.player];
+            case "3": return new EasyAi(1.136, 2.032, 2.389, 1.821, 2.035);
+            case "4": return new EasyAi(1.025, 0.062, 2.388, 1.749, 1.520);
             default: throw new Error("unhandled player type");
         }
     }
