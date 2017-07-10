@@ -1,13 +1,5 @@
-\documentclass[12pt]{beamer}
+\documentclass[12pt, draft]{beamer}
 \usetheme{Darmstadt}
-%\usetheme[height=1em]{Rochester}
-
-\setbeamertemplate{frametitle}{
-    \nointerlineskip
-    \begin{beamercolorbox}[wd=\paperwidth,ht=0.75ex,dp=1ex,left]{frametitle}
-        \hspace*{1ex}\insertframetitle
-    \end{beamercolorbox}
-}
 
 \usepackage[utf8]{inputenc}
 \usepackage[german]{babel}
@@ -16,6 +8,7 @@
 \usepackage{amsfonts}
 \usepackage{amssymb}
 \usepackage{tikz}
+\usepackage{tabularx}
 
 \title{Implementation eines Blokus-Spielers}
 \author{\mbox{Lukas Jagemann}}
@@ -39,12 +32,30 @@
 \end{frame}
 
 \section{Blokus}
-\subsection{Überblick} \begin{frame}\end{frame}
+\subsection{Überblick}
+\begin{frame}
+	Entstanden $\sim$2000\\
+	Ursprünglich für 4 Spieler
+    \begin{figure}[tp]
+        \centering
+        \resizebox{0.7\linewidth}{!}{\includegraphics[width=\linewidth]{media/blokus4p.jpg}}\\
+        \tiny Quelle: \url{https://media.takealot.com/covers\_tsins/32082437/81LEjjVViUL.\_SL1500\_-zoom.jpg}
+    \end{figure}
+\end{frame}
+\begin{frame}
+	\begin{tabularx}{\hsize}{*2{>{\centering\arraybackslash}X}}
+		\includegraphics[width=\linewidth]{media/blokus3p.jpg}\linebreak
+		\tiny Quelle: \url{http://www.passionforpuzzles.com/weblog/wp-content/uploads/2010/12/613KSlRx9oS._SL1500_.jpg}
+	    &
+		\includegraphics[width=\linewidth]{media/blokus2p.jpg}\linebreak
+		\tiny Quelle: \url{http://boardgaming.com/wp-content/uploads/2012/02/blokus-duo-game-in-play.jpg}
+	\end{tabularx}
+\end{frame}
 % Entstanden ~2000 als 4 spieler gemeinschaftsspiel
 % 
 \subsection{Wie man spielt} \begin{frame}\end{frame}
 \subsection{Wie man startet} \begin{frame}\end{frame}
-\subsection{Online Resourcen} \begin{frame}\end{frame} % ?
+\subsection{Online Ressourcen} \begin{frame}\end{frame} % ?
 
 \section{Das Projekt}
 \subsection{Wunderschönes CSS3 und HTML5} \begin{frame}\end{frame}
@@ -112,7 +123,7 @@
 % sehr stark heuristik basierend
 \subsection{Priorisieren von Gebieten in MiniMax} \begin{frame}\end{frame}
 % Mehr Rechenleistung in interessante Gebiete stecken
-\subsection{Neuschreiben in besseren Sprache} \begin{frame}\end{frame}
+\subsection{Neuschreiben, in einer besseren Sprache} \begin{frame}\end{frame}
 % Performance, Memorymanagemenet, Threads
 
 \end{document}
