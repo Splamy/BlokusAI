@@ -1,5 +1,6 @@
 \documentclass[12pt]{beamer}
-\usetheme[height=1em]{Rochester}
+\usetheme{Darmstadt}
+%\usetheme[height=1em]{Rochester}
 
 \setbeamertemplate{frametitle}{
     \nointerlineskip
@@ -33,12 +34,85 @@
 \end{frame}
 
 \begin{frame}{Inhalt}
+	\setcounter{tocdepth}{1}
     \tableofcontents
 \end{frame}
 
-\section{Kap1}
-\begin{frame}{Kap1}
-	Interesting stuff
-\end{frame}
+\section{Blokus}
+\subsection{Überblick} \begin{frame}\end{frame}
+% Entstanden ~2000 als 4 spieler gemeinschaftsspiel
+% 
+\subsection{Wie man spielt} \begin{frame}\end{frame}
+\subsection{Wie man startet} \begin{frame}\end{frame}
+\subsection{Online Resourcen} \begin{frame}\end{frame} % ?
+
+\section{Das Projekt}
+\subsection{Wunderschönes CSS3 und HTML5} \begin{frame}\end{frame}
+% valide
+\subsection{TypeScript, das bessere JavaScript} \begin{frame}\end{frame}
+% classen
+% strenges typsystem
+% ide support
+% einheitlicher kompiler -> es3,5,6,...
+\subsection{Code Struktur} \begin{frame}\end{frame}
+\subsection{GameState} \begin{frame}\end{frame}
+% History slider
+% Saving states
+
+\section{Minimax}
+\subsection{Wie funktioniert MiniMax} \begin{frame}\end{frame}
+% Ziel: beide spieler spielen optimal
+\subsection{Grafische Veranschaulichung} \begin{frame}\end{frame}
+\subsection{Wann MiniMax gut funktioniert} \begin{frame}\end{frame}
+% Geringes branching
+% Berechenbarer status
+% (oft gegen ende stark)
+\subsection{...und wann eher weniger} \begin{frame}\end{frame}
+% hohes branching
+% wenig 
+\subsection{Abwandlungen} \begin{frame}\end{frame}
+% aplha beta heuristiken
+
+\section{Die Logik}
+\subsection{Konzept} \begin{frame}\end{frame}
+\subsection{Gewichtung: Bits} \begin{frame}\end{frame}
+\subsection{Gewichtung: Ecken} \begin{frame}\end{frame}
+\subsection{Gewichtung: TrueLength} \begin{frame}\end{frame}
+\subsection{Gewichtung: Weitestes Feld} \begin{frame}\end{frame}
+\subsection{Gewichtung: Erreichbare Felder} \begin{frame}\end{frame}
+\subsection{Gewichtung finden} \begin{frame}\end{frame}
+% Selber nachdenken
+% Erfahrung
+% Problem: Unnormierte Werte
+\subsection{...oder finden lassen} \begin{frame}\end{frame}
+% Genetic failure :P
+
+\section{Optimierungen}
+% Javascript...
+\subsection{Problem: MiniMax Tiefe?} \begin{frame}\end{frame}
+% hohe kosten für evaluation
+\subsection{Lösung: Adaptiver MiniMax} \begin{frame}\end{frame}
+% zacken diagramm
+\subsection{Berechnungen wiederverwenden} \begin{frame}\end{frame}
+\subsection{und notfalls löschen} \begin{frame}\end{frame}
+\subsection{Multithreading (oder so)} \begin{frame}\end{frame}
+\subsection{Inkrementelle GameStates} \begin{frame}\end{frame}
+
+% + alpha/beta
+
+\section{Mögliche Optimierungen (Ausblick)}
+\subsection{Kleine Steine am Anfang ignorieren} \begin{frame}\end{frame}
+\subsection{Dynamische Gewichtung} \begin{frame}\end{frame}
+\subsection{Summen-Erreichbare Felder} \begin{frame}\end{frame}
+% bla
+% =======
+\subsection{Anderer Algorithmus?} \begin{frame}\end{frame}
+% Bild mit den zwei einsern
+% Monte carlo ?
+% sehr stark heuristik basierend
+\subsection{Priorisieren von Gebieten in MiniMax} \begin{frame}\end{frame}
+% Mehr Rechenleistung in interessante Gebiete stecken
+\subsection{Neuschreiben in besseren Sprache} \begin{frame}\end{frame}
+% Performance, Memorymanagemenet, Threads
 
 \end{document}
