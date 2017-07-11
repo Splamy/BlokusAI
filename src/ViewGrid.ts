@@ -225,7 +225,7 @@ class ViewGrid implements IView, IState {
             }
         }
 
-        if (Main.DebugMode) {
+        if (Main.DebugCorner) {
             const debugCorMap = gameState.getCornerMap();
             this.debugDisplayCorner([...debugCorMap[0], ...debugCorMap[1]]);
         }

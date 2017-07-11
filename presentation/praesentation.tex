@@ -9,6 +9,10 @@
 \usepackage{amssymb}
 \usepackage{tikz}
 \usepackage{tabularx}
+\usepackage{pgfpages}
+\usepackage{color}
+
+\setbeameroption{show notes on second screen}
 
 \title{Implementation eines Blokus-Spielers}
 \author{\mbox{Lukas Jagemann}}
@@ -18,15 +22,16 @@
 \begin{document}
 
 \begin{frame}
-    %\begin{figure}[h]
-    %    \centering
-    %    \resizebox{0.5\linewidth}{!}{\includegraphics{../media/logo.eps}}
-    %\end{figure}
+    \begin{figure}[h]
+        \centering
+        \resizebox{0.5\linewidth}{!}{\includegraphics{media/blokus.png}}
+    \end{figure}
     \vspace*{-20pt}
     \titlepage
 \end{frame}
 
 \begin{frame}{Inhalt}
+	\note{...}
 	\setcounter{tocdepth}{1}
     \tableofcontents
 \end{frame}
@@ -51,16 +56,99 @@
 		\tiny Quelle: \url{http://boardgaming.com/wp-content/uploads/2012/02/blokus-duo-game-in-play.jpg}
 	\end{tabularx}
 \end{frame}
-% Entstanden ~2000 als 4 spieler gemeinschaftsspiel
-% 
-\subsection{Wie man spielt} \begin{frame}\end{frame}
-\subsection{Wie man startet} \begin{frame}\end{frame}
-\subsection{Online Ressourcen} \begin{frame}\end{frame} % ?
+
+\subsection{Wie man startet}
+\begin{frame}
+	\includegraphics[width=0.8\linewidth]{media/how2play0.png}
+\end{frame}
+\begin{frame}
+	\includegraphics[width=0.8\linewidth]{media/how2play1.png}
+\end{frame}
+
+\subsection{Wie man spielt}
+\begin{frame}
+	\begin{tabular}{c c}
+		\huge \color{green} $\checkmark$ & \\
+		\includegraphics[width=0.5\linewidth]{media/how2play2.png}
+		&
+	\end{tabular}
+\end{frame}
+\begin{frame}
+	\begin{tabular}{c c}
+		\huge \color{green} $\checkmark$ & \huge \color{green} $\checkmark$\\
+		\includegraphics[width=0.5\linewidth]{media/how2play2.png}
+		&
+		\includegraphics[width=0.5\linewidth]{media/how2play3.png}
+	\end{tabular}
+\end{frame}
+\begin{frame}
+\begin{tabular}{c c}
+	\huge \color{red} $\times$ & \\
+	\includegraphics[width=0.5\linewidth]{media/how2play4.png}
+	&
+\end{tabular}
+\end{frame}
+\begin{frame}
+\begin{tabular}{c c}
+	\huge \color{red} $\times$ & \huge \color{green} $\checkmark$\\
+	\includegraphics[width=0.5\linewidth]{media/how2play4.png}
+	&
+	\includegraphics[width=0.5\linewidth]{media/how2play5.png}
+\end{tabular}
+\end{frame}
+
+\subsection{Wie man gewinnt}
+\begin{frame}
+	\note{Begriff 'Bits' erklären!}
+	Spieler mit den meisten 'Bits' auf dem Feld gewinnt.
+	\includegraphics[width=0.7\linewidth]{media/how2play6.png}
+\end{frame}
+
+\subsection{Online Ressourcen}
+\begin{frame}
+	\note{Strategy guter Einstieg\\ Pentolla online spielen. Aktive community!\\Eigenwerbung}
+	\begin{itemize}
+		\item \url{http://blokusstrategy.com/}
+		\item \url{http://pentolla.com/play/}
+		\item und jetzt auch: \url{http://splamy.com/blokus/}
+	\end{itemize}
+\end{frame}
+
 
 \section{Das Projekt}
-\subsection{Wunderschönes CSS3 und HTML5} \begin{frame}\end{frame}
-% valide
-\subsection{TypeScript, das bessere JavaScript} \begin{frame}\end{frame}
+\subsection{Wunderschönes CSS3(LESS) und HTML5}
+\begin{frame}
+	\frametitle{HTML5}
+	\begin{itemize}
+		\note{Alternative: SVG; Aufwendige Effekte\\Alternative: Canvas2D; Canvas selber zeichnen, Reihenfolge beachten, clickevents selber umrechen\\(ein kandidat mit svg), (zwei mit canvas)}
+		\item Valides HTML5 !
+		\item Beste Kompatibilität zwischen aktuellen Browsern
+		\item Kurzzeitig Canvas2D, dann doch 'plain' HTML
+	\end{itemize}
+\end{frame}
+\begin{frame}
+	\note{Farben in echtzeit änderbar}
+	\frametitle{CSS3}
+	\begin{itemize}
+		\item Einfache hardware-beschleunigte Effekte:\\
+			\includegraphics{media/beautiful0.png}
+		\item Transformationen und Animationen:
+			\includegraphics{media/beautiful1.png}
+	\end{itemize}
+\end{frame}
+\begin{frame}
+	\frametitle{LESS}
+	\note{Alternative SCSS, SASS,...\\Hust, alle Mühen vergebens; Seite sieht trozdem miserabel aus.}
+	\begin{itemize}
+		\item LESS ist ein CSS precompiler
+		\item Praktische Funktionen wie z.B. Variablen und Farbmanipulationen
+	\end{itemize}
+\end{frame}
+
+\subsection{TypeScript, das bessere JavaScript}
+\begin{frame}
+	
+\end{frame}
 % classen
 % strenges typsystem
 % ide support

@@ -63,6 +63,7 @@ class Main {
     }
 
     public static readonly DebugMode: boolean = true;
+    public static readonly DebugCorner: boolean = false;
 
     private static readonly players: [IPlayer, IPlayer] = [Dummy.Instance, Dummy.Instance];
     private static readonly selectors: [ShapeSelector | undefined, ShapeSelector | undefined] = [undefined, undefined];
