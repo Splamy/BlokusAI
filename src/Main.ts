@@ -62,7 +62,7 @@ class Main {
         Main.autoTimer.start();
     }
 
-    private static readonly debugView: boolean = true;
+    public static readonly DebugMode: boolean = true;
 
     private static readonly players: [IPlayer, IPlayer] = [Dummy.Instance, Dummy.Instance];
     private static readonly selectors: [ShapeSelector | undefined, ShapeSelector | undefined] = [undefined, undefined];
@@ -146,11 +146,6 @@ class Main {
 
         if (qbits === undefined)
             Main.selectorDiv[gameState.turn].classList.add("turn");
-
-        if (Main.debugView) {
-            const debugCorMap = gameState.getCornerMap();
-            Main.viewGrid.debugDisplayCorner([...debugCorMap[0], ...debugCorMap[1]]);
-        }
     }
 
     private static selectionToClass(selection: string, selector?: ShapeSelector): IPlayer {

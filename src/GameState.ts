@@ -25,6 +25,13 @@ class GameState {
         public readonly gameGrid: PlayerId[][],
         public readonly turn: PlayerId) { }
 
+    public hackSet(pos: Pos, player: PlayerId): void {
+        this.placedQbits = undefined;
+        this.cornerMap = undefined;
+        this.placeOptions = undefined;
+        this.gameGrid[pos.y][pos.x] = player;
+    }
+
     public isFreeNoTouch(placement: Placement): boolean {
         const m = RuleSet.GridSize - 1;
         for (const pos of placement.getPosArr()) {

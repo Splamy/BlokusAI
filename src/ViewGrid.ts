@@ -103,6 +103,11 @@ class ViewGrid implements IView, IState {
         const cell: IGridCell = this as any;
         if (cell.gridOwner === undefined)
             return;
+        if (Main.DebugMode && ev.shiftKey) {
+            cell.gridOwner.gameState!.hackSet(cell.pos, PlayerId.p1);
+            cell.gridOwner.display(cell.gridOwner.gameState!);
+            return;
+        }
         cell.gridOwner.cbClick.invoke(cell.gridOwner, cell.pos);
     }
 
@@ -110,6 +115,11 @@ class ViewGrid implements IView, IState {
         const cell: IGridCell = this as any;
         if (cell.gridOwner === undefined)
             return true;
+        if (Main.DebugMode && ev.shiftKey) {
+            cell.gridOwner.gameState!.hackSet(cell.pos, PlayerId.p2);
+            cell.gridOwner.display(cell.gridOwner.gameState!);
+            return false;
+        }
         cell.gridOwner.cbClear.invoke(cell.gridOwner);
         return false;
     }
@@ -213,6 +223,11 @@ class ViewGrid implements IView, IState {
             for (const pos of gameState.lastPlacement.getPosArr()) {
                 Css.applyPlayerSet(this.grid[pos.y][pos.x].classList, other);
             }
+        }
+
+        if (Main.DebugMode) {
+            const debugCorMap = gameState.getCornerMap();
+            this.debugDisplayCorner([...debugCorMap[0], ...debugCorMap[1]]);
         }
     }
 
