@@ -17,7 +17,7 @@ class RuleSet {
         RuleSet.NormalizeOpenCorner = Shape.AllShapes.reduce(
             (sum, sava) => sum + sava.Variants[0].Corners.length, 0);
         RuleSet.NormalizePiece = Shape.AllShapes.reduce(
-            (max, sava) => Math.max(max, sava.Variants[0].Corners.length), Number.NEGATIVE_INFINITY);
+            (max, sava) => max + sava.Value, 0);
         RuleSet.StartPos[PlayerId.p1] = new Pos(4, 4);
         RuleSet.StartPos[PlayerId.p2] = new Pos(gridSize - 5, gridSize - 5);
     }

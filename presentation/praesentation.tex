@@ -12,6 +12,7 @@
 \usepackage{pgfpages}
 \usepackage{listings}
 \usepackage{color}
+\usepackage[edges]{forest}
 
 \setbeameroption{show notes on second screen}
 
@@ -154,7 +155,7 @@
 	\end{itemize}
 \end{frame}
 \begin{frame}
-	\note{Farben in echtzeit änderbar}
+	\note{Farben in echtzeit änderbar\\ecken mit transformationen}
 	\frametitle{CSS3}
 	\begin{itemize}
 		\item Einfache hardware-beschleunigte Effekte:\\
@@ -244,55 +245,424 @@ let a: boolean = 5; // FEHLER!
 % Ziel: beide spieler spielen optimal
 \subsection{Grafische Veranschaulichung}
 \begin{frame}
+	Wertung: $Bits_{own}-Bits_{enemy}$\\
+	\pause
+	\includegraphics[width=\linewidth]{media/mm1.png}
 \end{frame}
+
+\begin{frame}
+	\includegraphics[width=\linewidth]{media/mm3.png}
+\end{frame}
+
+\begin{frame}
+	\includegraphics[width=\linewidth]{media/mm4.png}
+\end{frame}
+
+\begin{frame}[fragile]
+\forestset{
+	declare toks={graphics}{},
+}
+\begin{forest}
+	before typesetting nodes={
+		for tree={
+			content/.wrap 2 pgfmath args={\includegraphics[#2]{#1}}{content()}{graphics()},
+		},
+		where={isodd(n_children())}{calign=child, calign child/.wrap pgfmath arg={#1}{int((n_children()+1)/2)}}{},
+	},
+	for tree={
+		parent anchor=children,
+		child anchor=parent,
+		edge={line width=2.0pt},
+	},
+	[media/mm1.png, graphics={scale=0.4}
+		[media/mm2.png, graphics={scale=0.4}]
+		[media/mm3.png, graphics={scale=0.4}]
+	]
+\end{forest}
+\end{frame}
+
+\begin{frame}[fragile]
+\forestset{
+	declare toks={graphics}{},
+}
+\begin{forest}
+	before typesetting nodes={
+		for tree={
+			content/.wrap 2 pgfmath args={\includegraphics[#2]{#1}}{content()}{graphics()},
+		},
+		where={isodd(n_children())}{calign=child, calign child/.wrap pgfmath arg={#1}{int((n_children()+1)/2)}}{},
+	},
+	for tree={
+		parent anchor=children,
+		child anchor=parent,
+		edge={line width=2.0pt},
+	},
+	[media/mm1.png, graphics={scale=0.1}
+		[media/mm2.png, graphics={scale=0.2}
+			[media/mm7.png, graphics={scale=0.3}
+				[media/mm8.png, graphics={scale=0.3}]
+			]
+		]
+		[media/mm3.png, graphics={scale=0.2}]
+	]
+\end{forest}
+\end{frame}
+
+\begin{frame}[fragile]
+\forestset{
+	declare toks={graphics}{},
+}
+\hspace*{-1cm}
+\begin{forest}
+	before typesetting nodes={
+		for tree={
+			content/.wrap 2 pgfmath args={\includegraphics[#2]{#1}}{content()}{graphics()},
+		},
+		where={isodd(n_children())}{calign=child, calign child/.wrap pgfmath arg={#1}{int((n_children()+1)/2)}}{},
+	},
+	for tree={
+		parent anchor=children,
+		child anchor=parent,
+		edge={line width=2.0pt},
+	},
+	[media/mm1.png, graphics={scale=0.1}
+		[media/mm2.png, graphics={scale=0.25}
+			[media/mm7.png, graphics={scale=0.3}
+				[media/mm8.png, graphics={scale=0.3}]
+			]
+		]
+		[media/mm3.png, graphics={scale=0.25}
+			[media/mm4.png, graphics={scale=0.3}]
+			[media/mm5.png, graphics={scale=0.3}
+				[media/mm6.png, graphics={scale=0.3}]
+			]
+		]
+	]
+\end{forest}
+\end{frame}
+
+\begin{frame}[fragile]
+\forestset{
+	declare toks={graphics}{},
+}
+\hspace*{-1cm}
+\begin{forest}
+	before typesetting nodes={
+		for tree={
+			content/.wrap 2 pgfmath args={\includegraphics[#2]{#1}}{content()}{graphics()},
+		},
+		where={isodd(n_children())}{calign=child, calign child/.wrap pgfmath arg={#1}{int((n_children()+1)/2)}}{},
+	},
+	for tree={
+		parent anchor=children,
+		child anchor=parent,
+		edge={line width=2.0pt},
+	},
+	[media/mm1.png, graphics={scale=0.1}
+		[media/mm2.png, graphics={scale=0.25}
+			[media/mm7.png, graphics={scale=0.3}
+				[media/mm8.png, graphics={scale=0.3}, edge label={node[midway,auto,font=\small]{3}} ]
+			]
+		]
+		[media/mm3.png, graphics={scale=0.25}
+			[media/mm4.png, graphics={scale=0.3}, edge label={node[midway,auto,font=\small]{-2}}]
+			[media/mm5.png, graphics={scale=0.3}
+				[media/mm6.png, graphics={scale=0.3}, edge label={node[midway,auto,font=\small]{2}} ]
+			]
+		]
+	]
+\end{forest}
+\end{frame}
+
+\begin{frame}[fragile]
+\forestset{
+	declare toks={graphics}{},
+}
+\hspace*{-1cm}
+\begin{forest}
+	before typesetting nodes={
+		for tree={
+			content/.wrap 2 pgfmath args={\includegraphics[#2]{#1}}{content()}{graphics()},
+		},
+		where={isodd(n_children())}{calign=child, calign child/.wrap pgfmath arg={#1}{int((n_children()+1)/2)}}{},
+	},
+	for tree={
+		parent anchor=children,
+		child anchor=parent,
+		edge={line width=2.0pt},
+	},
+	[media/mm1.png, graphics={scale=0.1}
+		[media/mm2.png, graphics={scale=0.25}
+			[media/mm7.png, graphics={scale=0.3}, edge label={node[midway,auto,font=\small]{3}}
+				[media/mm8.png, graphics={scale=0.3}, edge label={node[midway,auto,font=\small]{3}} ]
+			]
+		]
+		[media/mm3.png, graphics={scale=0.25}
+			[media/mm4.png, graphics={scale=0.3}, edge label={node[midway,auto,font=\small]{-2}}]
+			[media/mm5.png, graphics={scale=0.3}, edge label={node[midway,auto,font=\small]{2}}
+				[media/mm6.png, graphics={scale=0.3}, edge label={node[midway,auto,font=\small]{2}} ]
+			]
+		]
+	]
+\end{forest}
+\end{frame}
+
+\begin{frame}[fragile]
+\forestset{
+	declare toks={graphics}{},
+}
+\hspace*{-1cm}
+\begin{forest}
+	before typesetting nodes={
+		for tree={
+			content/.wrap 2 pgfmath args={\includegraphics[#2]{#1}}{content()}{graphics()},
+		},
+		where={isodd(n_children())}{calign=child, calign child/.wrap pgfmath arg={#1}{int((n_children()+1)/2)}}{},
+	},
+	for tree={
+		parent anchor=children,
+		child anchor=parent,
+		edge={line width=2.0pt},
+	},
+	[media/mm1.png, graphics={scale=0.1}
+		[media/mm2.png, graphics={scale=0.25}, edge label={node[midway,auto,font=\small]{3}}
+			[media/mm7.png, graphics={scale=0.3}, edge label={node[midway,auto,font=\small]{3}}
+				[media/mm8.png, graphics={scale=0.3}, edge label={node[midway,auto,font=\small]{3}} ]
+			]
+		]
+		[media/mm3.png, graphics={scale=0.25}, edge label={node[midway,auto,font=\small]{-2}}
+			[media/mm4.png, graphics={scale=0.3}, edge label={node[midway,auto,font=\small]{-2}}]
+			[media/mm5.png, graphics={scale=0.3}, edge label={node[midway,auto,font=\small]{2}}
+				[media/mm6.png, graphics={scale=0.3}, edge label={node[midway,auto,font=\small]{2}} ]
+			]
+		]
+	]
+\end{forest}
+\end{frame}
+
 
 \subsection{Wann MiniMax gut funktioniert}
 \begin{frame}
+    \begin{itemize}
+      \item<1-| alert@4> Niedriger Verzweigungsfaktor
+      \item<2-> Aussagekräftige Spielzustandsbewertungen
+      \item<3-> MiniMax wird gegen Ende oft sehr stark
+    \end{itemize}
 \end{frame}
-% Geringes branching
-% Berechenbarer status
-% (oft gegen ende stark)
+
 \subsection{...und wann eher weniger}
 \begin{frame}
+	\includegraphics[width=\linewidth]{media/mmexp1.png}
 \end{frame}
-% möglichkeiten graph hier
-% hohes branching
-% wenig 
+
 \subsection{Abwandlungen}
 \begin{frame}
+	\note{TODO}
+    \begin{itemize}
+		\item<1-> Alpha–beta pruning
+		\item<2-> Negamax
+		\item<2-> MaxiMin
+    \end{itemize}
 \end{frame}
 % aplha beta heuristiken
 
 \section{Die Logik}
 \subsection{Konzept}
 \begin{frame}
+	\note{TODO}
+	\begin{itemize}
+		\item<1-> Viel mehr Wert auf Heuristik legen
+		\item<2-> Verschiedene Bewertungen kombinieren
+		\item<3-> %TODO
+    \end{itemize}
 \end{frame}
+
 \subsection{Gewichtung: Bits}
 \begin{frame}
+	Mehr Steine = Besser!\\
+	\pause
+	Gewichtung: $Bits_{own}$\\
+	\pause
+	\includegraphics[width=\linewidth]{media/wgh1.png}
 \end{frame}
+
 \subsection{Gewichtung: Ecken}
 \begin{frame}
+	\note{Dead Corner erklären}
+	Mehr Ecken = Mehr Möglichkeiten!\\
+	\pause
+	Gewichtung: $Corner_{own}$\\
+	\pause
+	\includegraphics[width=0.6\linewidth]{media/wgh2.png}
 \end{frame}
+\begin{frame}
+	Mehr Ecken = Mehr Möglichkeiten!\\
+	Gewichtung: $Corner_{own}$\\
+	\includegraphics[width=0.6\linewidth]{media/wgh3.png}
+\end{frame}
+\begin{frame}
+	Mehr eigene Ecken, weniger gegnerische Ecken!\\
+	\pause
+	Gewichtung: $Corner_{own} - Corner_{enemy}$\\
+	\pause
+	\includegraphics[width=0.6\linewidth]{media/wgh4.png}
+\end{frame}
+\begin{frame}
+	Mehr eigene Ecken, weniger gegnerische Ecken!\\
+	Gewichtung: $Corner_{own} - Corner_{enemy}$\\
+	\includegraphics[width=0.6\linewidth]{media/wgh5.png}
+\end{frame}
+
 \subsection{Gewichtung: TrueLength}
 \begin{frame}
+	\note{True Length, genial! Moment mal was ist das eig?\\Erklären...\\Und wofür brauchen wir das?\\-> Effektivität eines Steins (Nächste Folie)}
+	True Length/Rubik Length!?\\
+	\pause
+	Gewichtung: $TrueLength_{own}$\\
+	\pause
+	\includegraphics[width=0.8\linewidth]{media/wgh6.png}\\
+	\tiny Quelle: \url{http://blokusstrategy.com/early-pieces-and-rubik-distance/}
 \end{frame}
+\begin{frame}
+	True Length/Rubik Length!\\
+	Gewichtung: $TrueLength_{own}$\\
+	\includegraphics[width=0.8\linewidth]{media/wgh7.png}\\
+	\tiny Quelle: \url{http://blokusstrategy.com/early-pieces-and-rubik-distance/}
+\end{frame}
+\begin{frame}
+	True Length/Rubik Length!\\
+	Gewichtung: $Corner_{own} + TrueLength_{own}$\\
+	\pause
+	\includegraphics[width=0.6\linewidth]{media/wgh8.png}
+\end{frame}
+\begin{frame}
+	True Length/Rubik Length!\\
+	Gewichtung: $Corner_{own} + TrueLength_{own}$\\
+	\includegraphics[width=0.6\linewidth]{media/wgh9.png}
+\end{frame}
+
 \subsection{Gewichtung: Weitestes Feld}
 \begin{frame}
+	Weitestes Feld\\
+	\pause
+	Gewichtung: $Bits_{own} - FurthestField_{own}$\\
+	\pause
+	\includegraphics[width=0.6\linewidth]{media/wgh10.png}
 \end{frame}
+\begin{frame}
+	\note{Hier is was komisches passiert! Folie gleich}
+	Weitestes Feld\\
+	Gewichtung: $Bits_{own} - FurthestField_{own}$\\
+	\only<1>{\includegraphics[width=0.6\linewidth]{media/wgh11.png}}
+	\only<2>{\includegraphics[width=0.6\linewidth]{media/wgh12.png}}
+\end{frame}
+\begin{frame}
+	Mein weitestes Feld <> generisches weitestes Feld\\
+	\pause
+	Gewichtung: $Bits_{own} - FurthestField_{own} + FurthestField_{enemy}$\\
+	\pause
+	\includegraphics[width=0.6\linewidth]{media/wgh13.png}
+\end{frame}
+\begin{frame}
+	Mein weitestes Feld <> generisches weitestes Feld\\
+	Gewichtung: $Bits_{own} - FurthestField_{own} + FurthestField_{enemy}$\\
+	\includegraphics[width=0.6\linewidth]{media/wgh14.png}
+\end{frame}
+
 \subsection{Gewichtung: Erreichbare Felder}
 \begin{frame}
+	\note{Wiederverwertung von vorheriger Berechnung}
+	Erreichbare Felder = gute Felder!\\
+	\pause
+	Gewichtung: $AccesibleSpace_{own}$ bzw. $- DeadSpace_{own}$
+	\pause
+	\includegraphics[width=0.6\linewidth]{media/wgh15.png}
 \end{frame}
+\begin{frame}
+	\note{Wo man nicht hinkommt kann man nicht bestaft werden einen so langen Weg hin zu brauchen.}
+	Erreichbare Felder = gute Felder!\\
+	Gewichtung: $AccesibleSpace_{own}$
+	\only<1>{\includegraphics[width=0.6\linewidth]{media/wgh16.png}}
+	\only<2>{\includegraphics[width=0.6\linewidth]{media/wgh17.png} \vspace{2cm} \Huge =26}
+	\only<3>{\includegraphics[width=0.6\linewidth]{media/wgh18.png} \vspace{2cm} \Huge =7}
+\end{frame}
+\begin{frame}
+	Erreichbare Felder = gute Felder!\\
+	Gewichtung: $Bits_{own} - FurthestField_{own} + AccesibleSpace_{own}$
+	\pause
+	\includegraphics[width=0.6\linewidth]{media/wgh19.png}
+\end{frame}
+\begin{frame}
+\note{Schon gar nicht schlecht\\i1 völlig falsch\\i1 vor dem i2\\Kann man ihm aber nich übel nehmen bei der Rechentiefe}
+	Erreichbare Felder = gute Felder!\\
+	Gewichtung: $Bits_{own} - FurthestField_{own} + AccesibleSpace_{own}$
+	\includegraphics[width=0.6\linewidth]{media/wgh20.png}
+\end{frame}
+\begin{frame}
+	\note{Genial, nicht nur seinen Weg gesischert, sonder auch uns den ganzen Weg abgeschnitten}
+	Erreichbare Felder = gute Felder!\\
+	Gewichtung: $Bits_{own} - FurthestField_{own} + AccesibleSpace_{own} - AccesibleSpace_{enemy}$\\
+	\pause
+	\includegraphics[width=0.6\linewidth]{media/wgh21.png}
+\end{frame}
+
+\subsection{Gewichtung: Sieg}
+\begin{frame}
+Normalerweise wird bei MiniMax ein Sieg mit $+\infty$ und eine Niederlage mit $-\infty$ bewertet.
+\pause
+\includegraphics[width=0.6\linewidth]{media/wgh22.png}
+\end{frame}
+\begin{frame}
+Stattdessen wird hier mit $+10000$ und $-10000$ bewertet.
+\pause
+\includegraphics[width=0.6\linewidth]{media/wgh23.png}
+\end{frame}
+
 \subsection{Gewichtung finden}
 \begin{frame}
-\note{Alles in einen Topf werfen, umrühren, und sich fragen warum die AI genauso schlecht spielt wie vorher!}
+	\note{Alles in einen Topf werfen, umrühren, und sich fragen warum die AI genauso schlecht spielt wie vorher!}
+	\only<1-3>{
+		\pause
+		Aktuelle Gewichtung:\\$Bits_{own} \linebreak + Corner_{own} - Corner_{enemy} \linebreak + TrueLength_{own} \linebreak - FurthestField_{own} + FurthestField_{enemy} \linebreak + AccesibleSpace_{own} - AccesibleSpace_{enemy}$\\
+		\pause
+		Problem:\\
+		$Bits \in \left[0,89\right]$\\
+		$Corner \in \left[0,133\right)$\\
+		$TrueLength \in \left[0,fieldlength * 2 \right)$\\
+		$FurthestField \in \left[0,fieldlength * 2 \right)$\\
+		$AccesibleSpace \in \left[0, fieldlength^2 \right)$\\
+	}
+	\only<4>{
+		Lösung:\\
+		$ (Bits_{own}) / Bits_{max}$ (=89)\\
+		$ + (Corner_{own} - Corner_{enemy}) / Corner_{max}$ (=133)\\
+		$ + (TrueLength_{own}) / (fieldlength * 2)$\\
+		$ - (FurthestField_{own} + FurthestField_{enemy}) / (fieldlength * 2)$\\
+		$ + (AccesibleSpace_{own} - AccesibleSpace_{enemy}) / (fieldlength^2)$
+	}
 \end{frame}
-% Selber nachdenken
-% Erfahrung
-% Problem: Unnormierte Werte
+\begin{frame}
+	$$ \frac{Bits_{own}}{Bits_{max}} * Bits_{weigth}$$\\
+	$$ +\frac{Corner_{own} - Corner_{enemy}}{Corner_{max}}  * Corner_{weigth}$$\\
+	$$ +\frac{TrueLength_{own}}{fieldlength * 2} * TrueLength_{weigth}$$\\
+	$$ -\frac{FurthestField_{own} + FurthestField_{enemy}}{fieldlength * 2} * FurthestField_{weigth}$$\\
+	$$ +\frac{AccesibleSpace_{own} - AccesibleSpace_{enemy}}{fieldlength^2} * AccesibleSpace_{weigth}$$
+\end{frame}
+\begin{frame}
+	Aber wie findet man gute Gewichtungen?\\
+	\begin{itemize}
+		\item<1-> Alle gleich werten
+		\item<2-> Gut nachdenken und mit Erfahrung
+		\item<3-> Ausprobieren!
+		\item<4-> Genetische Ai und viel Zeit
+	\end{itemize}
+\end{frame}
+
 \subsection{...oder finden lassen}
 \begin{frame}
+	\only<1>{Also starten und...}
+	\only<2>{\includegraphics[width=1\linewidth]{media/wghnext.png}\\ \tiny Quelle: \url{http://cdn.windowsreport.com/wp-content/uploads/2016/08/aw-snap-google-chrome-windows-10.png}}
 \end{frame}
-% Genetic failure :P
 
 \section{Optimierungen}
 % Javascript...

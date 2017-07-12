@@ -1,0 +1,53 @@
+\documentclass[12pt]{beamer}
+\usetheme{Darmstadt}
+
+\usepackage[utf8]{inputenc}
+\usepackage[german]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{tikz}
+\usepackage{tabularx}
+\usepackage{pgfpages}
+\usepackage{listings}
+\usepackage{color}
+\usepackage[edges]{forest}
+
+\begin{document}
+	
+\begin{frame}[fragile]
+	\forestset{
+		declare toks={graphics}{},
+	}
+	\begin{forest}
+	before typesetting nodes={
+		for tree={
+			content/.wrap 2 pgfmath args={\includegraphics[#2]{#1}}{content()}{graphics()},
+		},
+		where={isodd(n_children())}{calign=child, calign child/.wrap pgfmath arg={#1}{int((n_children()+1)/2)}}{},
+	},
+	for tree={
+		parent anchor=children,
+		child anchor=parent,
+		edge={line width=2.0pt},
+	},
+	[media/mm1.png, graphics={scale=0.1}
+		[media/mm2.png, graphics={scale=0.25}
+			[media/mm7.png, graphics={scale=0.3}
+				[media/mm8.png, graphics={scale=0.3}]
+			]
+		]
+		[media/mm3.png, graphics={scale=0.25}
+			[media/mm4.png, graphics={scale=0.3}]
+			[media/mm5.png, graphics={scale=0.3}
+				[media/mm6.png, graphics={scale=0.3}]
+			]
+		]
+	]
+	\end{forest}
+\end{frame}
+
+
+
+\end{document}
