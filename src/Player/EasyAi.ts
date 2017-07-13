@@ -172,7 +172,8 @@ class EasyAi implements IPlayer {
             }
         } else {
             for (const node of tree.Children) {
-                const nodeVal = this.minmaxAdaptiveRecusive(node, gameState.turn);
+                const nodeVal = this.minmaxAdaptiveRecusive(node, gameState.turn,
+                    Number.NEGATIVE_INFINITY, Number.POSITIVE_INFINITY);
                 if (nodeVal > bestValue) {
                     bestValue = nodeVal;
                     bestOption = node;
@@ -189,21 +190,27 @@ class EasyAi implements IPlayer {
         return bestOption!.Ply;
     }
 
-    public minmaxAdaptiveRecusive(node: TreeData, player: PlayerId): number {
+    public minmaxAdaptiveRecusive(node: TreeData, player: PlayerId, a: number, b: number): number {
         let bestValue;
         if (node.Children === undefined) {
             bestValue = this.value(node.State, player);
         } else if (node.Max) {
             bestValue = Number.NEGATIVE_INFINITY;
             for (const child of node.Children) {
-                const val = this.minmaxAdaptiveRecusive(child, player);
+                const val = this.minmaxAdaptiveRecusive(child, player, a, b);
                 bestValue = Math.max(bestValue, val);
+                a = Math.max(a, val);
+                if (b <= a)
+                    break;
             }
         } else {
             bestValue = Number.POSITIVE_INFINITY;
             for (const child of node.Children) {
-                const val = this.minmaxAdaptiveRecusive(child, player);
+                const val = this.minmaxAdaptiveRecusive(child, player, a, b);
                 bestValue = Math.min(bestValue, val);
+                b = Math.min(b, val);
+                if (b <= a)
+                    break;
             }
         }
         node.Children = undefined;
