@@ -1,4 +1,4 @@
-\documentclass[12pt, draft]{beamer}
+\documentclass[12pt]{beamer}
 \usetheme{Darmstadt}
 
 \usepackage[utf8]{inputenc}
@@ -172,7 +172,6 @@
 		\item LESS ist ein CSS precompiler
 		\item Praktische Funktionen wie z.B. Variablen und Farbmanipulationen
 	\end{itemize}
-% TODO vielleicht noch ein Bild hier, aber nicht nötig
 \end{frame}
 
 \subsection{TypeScript, das bessere JavaScript}
@@ -365,7 +364,7 @@ let a: boolean = 5; // FEHLER!
 			]
 		]
 		[media/mm3.png, graphics={scale=0.25}
-			[media/mm4.png, graphics={scale=0.3}, edge label={node[midway,auto,font=\small]{-2}}]
+			[media/mm4.png, graphics={scale=0.3}, edge label={node[midway,auto,font=\small]{-1}}]
 			[media/mm5.png, graphics={scale=0.3}
 				[media/mm6.png, graphics={scale=0.3}, edge label={node[midway,auto,font=\small]{2}} ]
 			]
@@ -398,7 +397,7 @@ let a: boolean = 5; // FEHLER!
 			]
 		]
 		[media/mm3.png, graphics={scale=0.25}
-			[media/mm4.png, graphics={scale=0.3}, edge label={node[midway,auto,font=\small]{-2}}]
+			[media/mm4.png, graphics={scale=0.3}, edge label={node[midway,auto,font=\small]{-1}}]
 			[media/mm5.png, graphics={scale=0.3}, edge label={node[midway,auto,font=\small]{2}}
 				[media/mm6.png, graphics={scale=0.3}, edge label={node[midway,auto,font=\small]{2}} ]
 			]
@@ -430,8 +429,8 @@ let a: boolean = 5; // FEHLER!
 				[media/mm8.png, graphics={scale=0.3}, edge label={node[midway,auto,font=\small]{3}} ]
 			]
 		]
-		[media/mm3.png, graphics={scale=0.25}, edge label={node[midway,auto,font=\small]{-2}}
-			[media/mm4.png, graphics={scale=0.3}, edge label={node[midway,auto,font=\small]{-2}}]
+		[media/mm3.png, graphics={scale=0.25}, edge label={node[midway,auto,font=\small]{-1}}
+			[media/mm4.png, graphics={scale=0.3}, edge label={node[midway,auto,font=\small]{-1}}]
 			[media/mm5.png, graphics={scale=0.3}, edge label={node[midway,auto,font=\small]{2}}
 				[media/mm6.png, graphics={scale=0.3}, edge label={node[midway,auto,font=\small]{2}} ]
 			]
@@ -457,23 +456,23 @@ let a: boolean = 5; // FEHLER!
 
 \subsection{Abwandlungen}
 \begin{frame}
-	\note{TODO}
+	\note{MaxiMin: keine Ahnung über generischen Zug, worst-case/ am wenigst schlechtesten zug finden. Verwendet bei nicht null-summen-spielen}
     \begin{itemize}
-		\item<1-> Alpha–beta pruning
+		\item<1-> MaxiMin
 		\item<2-> Negamax
-		\item<2-> MaxiMin
+		\item<3-> Alpha–beta pruning
     \end{itemize}
 \end{frame}
-% aplha beta heuristiken
 
 \section{Die Logik}
 \subsection{Konzept}
 \begin{frame}
-	\note{TODO}
-	\begin{itemize}
-		\item<1-> Viel mehr Wert auf Heuristik legen
-		\item<2-> Verschiedene Bewertungen kombinieren
-		\item<3-> %TODO
+	Wie ist diese KI entstanden
+	\pause
+	\begin{itemize}[<+(1)->]
+		\item Mit einfachen Bewertungen begonnen
+		\item Nach und nach verschiedene Bewertungen kombiniert
+		\item Mehr Wert auf 'Zukunftswerte'
     \end{itemize}
 \end{frame}
 
@@ -543,9 +542,11 @@ let a: boolean = 5; // FEHLER!
 
 \subsection{Gewichtung: Weitestes Feld}
 \begin{frame}
+	\note{Je weiter ein Feld weg, desto schwerer zu erreichen\\Wir fügen Bits hinzu sonst hört er zu früh auf grosse Steine zu legen\\}
 	Weitestes Feld\\
 	\pause
 	Gewichtung: $Bits_{own} - FurthestField_{own}$\\
+	\note{Technische ausführung: A\\Zwar i5: schlecht, dafür diesmal (5,5) in die richtige Richtung}
 	\pause
 	\includegraphics[width=0.6\linewidth]{media/wgh10.png}
 \end{frame}
@@ -636,9 +637,9 @@ Stattdessen wird hier mit $+10000$ und $-10000$ bewertet.
 		Lösung:\\
 		$ (Bits_{own}) / Bits_{max}$ (=89)\\
 		$ + (Corner_{own} - Corner_{enemy}) / Corner_{max}$ (=133)\\
-		$ + (TrueLength_{own}) / (fieldlength * 2)$\\
-		$ - (FurthestField_{own} + FurthestField_{enemy}) / (fieldlength * 2)$\\
-		$ + (AccesibleSpace_{own} - AccesibleSpace_{enemy}) / (fieldlength^2)$
+		$ + (TrueLength_{own}) / (fieldlength * 2)$ (=28)\\
+		$ - (FurthestField_{own} + FurthestField_{enemy}) / (fieldlength * 2)$ (=28)\\
+		$ + (AccesibleSpace_{own} - AccesibleSpace_{enemy}) / (fieldlength^2)$ (=196)
 	}
 \end{frame}
 \begin{frame}
@@ -665,7 +666,7 @@ Stattdessen wird hier mit $+10000$ und $-10000$ bewertet.
 	\only<2>{\includegraphics[width=1\linewidth]{media/wghnext.png}\\ \tiny Quelle: \url{http://cdn.windowsreport.com/wp-content/uploads/2016/08/aw-snap-google-chrome-windows-10.png}}
 \end{frame}
 
-\section{Optimierungen}
+\section{(Mögliche) Optimierungen + Ausblick}
 % \begin{itemize}[<+(1)->]
 \subsection{Problem: MiniMax Tiefe?}
 \begin{frame}
@@ -687,17 +688,18 @@ Array an fixer Tiefen:
 % hohe kosten für evaluation
 \subsection{Lösung: Adaptiver MiniMax}
 \begin{frame}
-	Lösung: Adaptiver MiniMax\\
+	Lösung: Adaptiver MiniMax
 	\pause
-	\centering
-	\begin{tikzpicture}[sibling distance=5em,
-	every node/.style = {shape=circle, draw, align=center }]]
-	\node {}
-	child { node { } }
-	child { node { } }
-	child { node { } }
-	child { node { } };
-	\end{tikzpicture}
+	\begin{center}
+		\begin{tikzpicture}[sibling distance=5em,
+		every node/.style = {shape=circle, draw, align=center }]]
+		\node {}
+		child { node { } }
+		child { node { } }
+		child { node { } }
+		child { node { } };
+		\end{tikzpicture}
+	\end{center}
 \end{frame}
 \begin{frame}[fragile]
 	\begin{center}
@@ -715,56 +717,236 @@ Array an fixer Tiefen:
 	\begin{flushleft}
 		\pause
 		Wiederhole solange $NodeCount_{curdepth} < AdaptiveMax$
-		\pause
-		\note{Aber warum current NodeCount}
-		\\Das Verhältnis zwischen erstellen eines neuen GameStates und Evaluation davon ist etwa 1:10
+		\note{Aber warum current NodeCount\\Warum nicht CurrentOptions\\CurrentOptions sehr teuer zu finden ~400 am Anfang}
 	\end{flushleft}
 \end{frame}
 \begin{frame}
-
+	\includegraphics[width=\linewidth]{media/adapt.png}
 \end{frame}
 
 % zacken diagramm
 \subsection{Berechnungen wiederverwenden}
-\begin{frame}
+\begin{frame}[fragile]
+	\note{Tradeoff zwischen Leistung und RAM\\Sehr bequem methoden aufrufen ohne auf Performance zu achten}
+	\begin{lstlisting}[language=JavaScript]
+public getValue(): Value {
+	if (this.value !== undefined)
+		return this.value;
+	
+	// calculate...
+}
+	\end{lstlisting}
+	\pause
+	\begin{lstlisting}[language=JavaScript]
+getPlaceOption(); // 8 refs
+getPlacedQbits(); // 4 refs
+getCornerMap(); // 7 refs
+	\end{lstlisting}
 \end{frame}
-\subsection{und notfalls löschen}
-\begin{frame}
-\end{frame}
-\subsection{Multithreading (oder so)}
-\begin{frame}
-\end{frame}
+
 \subsection{Inkrementelle GameStates}
-\begin{frame}
+\begin{frame}[fragile]
+\note{GS immutable\\ Leerer Zug = (fast) keine kosten (qbits, corner)}
+	\begin{lstlisting}[language=JavaScript]
+place(placement?: Placement): GameState
+	\end{lstlisting}
+	\pause
+	\begin{lstlisting}[language=JavaScript]
+nextState.placedQbits = this.getPlacedQbits().slice() as [number, number];
+nextState.placedQbits[this.turn] += placement.shape.Value;
+	\end{lstlisting}  
+	\pause
+	\note{Ecken: sicher nicht mehr passende Stücke speichern}
+	Weitere Möglichkeiten:\\
+	\begin{itemize} [<+(1)->]
+		\item Unveränderte Ecken weitergeben
+		\item Zusatzinformationen in Ecken speichern
+	\end{itemize}
 \end{frame}
 
-% + alpha/beta
+\subsection{GameStates löschen}
+\begin{frame}[fragile]
+	\note{All die schönen Berechnungen, aber man muss auch loslassen können}
+	\begin{lstlisting}[language=JavaScript]
+public minmaxAdaptiveRecusive(node: TreeData, player: PlayerId, a: number, b: number): number {
+	// calculate...
 
-\section{Mögliche Optimierungen (Ausblick)}
+	node.Children = undefined;
+	node.State = undefined as any;
+	return bestValue;
+}
+	\end{lstlisting}  
+\end{frame}
+
+\subsection{Multithreading (oder so)}
+\begin{frame}[fragile]
+	\note{MiniMax sehr gut parallelisierbar\\Alpha-beta verliert an stärke}
+	Idee: MiniMax parallelisieren
+	\pause
+	\note{Keine Thread synchronisation / 'join()'}
+	\\Problem: JavaScript hat nur Threads für arme
+	\pause
+	\begin{lstlisting}[language=JavaScript]
+> Main.autoPlayLoop
+> EasyAi.display
+> EasyAi.minmaxAdaptive
+	\end{lstlisting}
+	\pause
+	Lösung: ???
+\end{frame}
+
+\subsection{Alpha-Beta Pruning}
+\begin{frame}
+	Alpha-Beta-Pruning ist eine Optimierung von MiniMax\\
+	\pause
+	\begin{center}
+		\begin{tikzpicture}[
+		level 1/.style={sibling distance=7em},
+		level 2/.style={sibling distance=3em},
+		level 3/.style={sibling distance=2em},
+		text width=1.0em, inner sep=0.2em,
+		every node/.style = {shape=circle, draw, align=center, text centered }]]
+		\node [shape=rectangle] {  }
+		child { node {  } 
+			child { node [shape=rectangle] { 8 } }
+			child { node [shape=rectangle] { 6 } }
+		}
+		child { node {  } 
+			child { node [shape=rectangle] { 3 } }
+			child { node [shape=rectangle] { 7 } }
+			child { node [shape=rectangle] { 2 } }
+		};
+		\end{tikzpicture}
+	\end{center}
+\end{frame}
+\begin{frame}
+	\begin{center}
+		\begin{tikzpicture}[
+		level 1/.style={sibling distance=7em},
+		level 2/.style={sibling distance=3em},
+		level 3/.style={sibling distance=2em},
+		text width=1.0em, inner sep=0.2em,
+		every node/.style = {shape=circle, draw, align=center, text centered }]]
+		\node [shape=rectangle] {  }
+		child { node { 6 } 
+			child { node [shape=rectangle] { 8 } }
+			child { node [shape=rectangle] { 6 } }
+		}
+		child { node { <3 } 
+			child { node [shape=rectangle] { 3 } }
+			child { node [shape=rectangle] { 7 } }
+			child { node [shape=rectangle] { 2 } }
+		};
+		\end{tikzpicture}
+	\end{center}
+\end{frame}
+\begin{frame}
+	\begin{center}
+		\begin{tikzpicture}[
+		level 1/.style={sibling distance=7em},
+		level 2/.style={sibling distance=3em},
+		level 3/.style={sibling distance=2em},
+		text width=1.0em, inner sep=0.2em,
+		every node/.style = {shape=circle, draw, align=center, text centered }]]
+		\node [shape=rectangle] { 6 }
+		child { node { 6 } 
+			child { node [shape=rectangle] { 8 } }
+			child { node [shape=rectangle] { 6 } }
+		}
+		child { node { <3 } 
+			child { node [shape=rectangle] { 3 } }
+			child { node [shape=rectangle, color=gray] { 7 } }
+			child { node [shape=rectangle, color=gray] { 2 } }
+		};
+		\end{tikzpicture}
+	\end{center}
+\end{frame}
+
 \subsection{Kleine Steine am Anfang ignorieren}
 \begin{frame}
+	\note{Ab hier beginnen mögliche Optimierungen!!!}
+	Gewisse Steine sind am Anfang einfach besser.\\
+	\pause
+	\begin{center}
+		\includegraphics[width=0.4\linewidth]{media/opt1.png}
+	\end{center}
 \end{frame}
+
 \subsection{Dynamische Gewichtung}
 \begin{frame}
+	\note{3 Phasen:\\Ausbreiten\\Abschneiden\\Bessere Plätze sichern\\Problem: nicht grade einfach}
+	\only<1>{
+		$Bits * Bits_{weigth}$\\
+		$Corner * Corner_{weigth}$\\
+		$TrueLength * TrueLength_{weigth}$\\
+		$FurthestField * FurthestField_{weigth}$\\
+		$AccesibleSpace * AccesibleSpace_{weigth}$
+	}
+	\only<2-3>{
+		$Bits * Bits_{weigth\_i}$\\
+		$Corner * Corner_{weigth\_i}$\\
+		$TrueLength * TrueLength_{weigth\_i}$\\
+		$FurthestField * FurthestField_{weigth\_i}$\\
+		$AccesibleSpace * AccesibleSpace_{weigth\_i}$\\
+		\pause
+		\ \\
+	}
+	\only<3> {
+		\begin{tabular}{c|c|c|c}
+			               & Start & Mid & End \\ \hline
+			     Bits      &   +   &  +  & ++  \\ \hline
+			    Corner     &  ++   &  +  &  o  \\ \hline
+			  TrueLength   &  ++   &  o  &  o  \\ \hline
+			FurthestField  &   o   & ++  &  +  \\ \hline
+			AccesibleSpace &   o   &  +  & ++
+		\end{tabular}	
+	}
 \end{frame}
+
 \subsection{Summen-Erreichbare Felder}
 \begin{frame}
+	\includegraphics[width=0.5\linewidth]{media/wgh10.png}\\
+	\pause
+	Statt Entfernung zum weitesten, Summe aller Entfernungen.\\
+	\pause
+	Ziel: Weit entfernte oder leicht blockierbare Flächen stärker bestrafen.\\
+	\pause
+	$\sum_{i=0}^{fieldCount}{dist(field_i)}$ bzw. $\sum_{i=0}^{fieldCount}{dist(field_i)^2}$
 \end{frame}
-% bla
-% =======
+
 \subsection{Anderer Algorithmus?}
 \begin{frame}
+	\note{Mote Carlo?\\Problem bei stark heuristik basierenden algos\\Proprietärer algo...}
+	\only<1>{\includegraphics[width=0.6\linewidth]{media/prob1.png}}
+	\only<2>{\includegraphics[width=0.5\linewidth]{media/prob2.png}}
+	\only<2>{\includegraphics[width=0.5\linewidth]{media/prob3.png}}
+	\only<3>{\includegraphics[width=0.6\linewidth]{media/prob4.png}}
 \end{frame}
-% Bild mit den zwei einsern
-% Monte carlo ?
-% sehr stark heuristik basierend
+
 \subsection{Priorisieren von Gebieten in MiniMax}
 \begin{frame}
+	\note{Mehr Rechenleistung in interessante Gebiete stecken\\Viel rechenleistung bei rot verloren\\Noch ein bissl was an aussenrändern}
+	\only<1>{\includegraphics[width=0.6\linewidth]{media/prob5.png}}
+	\only<2>{\includegraphics[width=0.6\linewidth]{media/prob6.png}}
 \end{frame}
 % Mehr Rechenleistung in interessante Gebiete stecken
 \subsection{Neuschreiben, in einer besseren Sprache}
 \begin{frame}
+	\note{Perf: Bessere Optimierungen, int-Operationen\\Memory: 8 -> 1 bytes, mitunter auch schneller}
+	Neuschreiben in C, C++, Rust, ... ?
+	\begin{itemize}[<+(1)->]
+		\item Performanz
+		\item Kontrolliertes Memorymanagement
+		\item Threads
+		\item Export nach WebAssembly
+	\end{itemize}
 \end{frame}
-% Performance, Memorymanagemenet, Threads
+
+\subsection{Demo?}
+\begin{frame}
+	\begin{center}
+		\Huge Zeit für Live-Demo ?
+	\end{center}
+\end{frame}
 
 \end{document}
